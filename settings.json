@@ -1,0 +1,26 @@
+{
+"core" :
+    {
+        "debug": true,
+        "debug_level" : 1,
+        "workers" : 2,
+        "message_pump_timeout" : 50,
+        "logger_pump_timeout" : 500,
+        "settings_update_timeout" : 15,
+        "port": 8888 
+    },
+"sqla" : 
+    { 
+        "uri" : "postgresql+psycopg2://agatsuma:agatsuma@dbhost:5432/agatsuma",
+        "parameters" : 
+            { 
+                "encoding" : "utf-8",
+                "echo" : false
+            }
+    },
+"test" :
+    {
+        "test" : "dummy",
+        "rotest" : "dummy"
+    }
+}
