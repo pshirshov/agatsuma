@@ -86,6 +86,7 @@ class Settings(object):
         types = {}
         comments = {}
         actual = 0
+        rocount = 0
         for group, name, ro, stype, comment in descriptors.values():
             if not group in settings:
                 problems.append("Group '%s' (%s) not found in settings" % 
@@ -114,12 +115,12 @@ class Settings(object):
             comments[group][name] = comment
             if ro:
                 rosettings[group].append(name)
-                
+                rocount += 1
             actual += 1
         if problems:
             log.core.error('\n'.join(problems))
             raise Exception("Can't load settings")
-        log.core.info('%d settings found in config, %d are actual (%d read-only)' % (len(descriptors), actual, len(rosettings)))
+        log.core.info('%d settings found in config, %d are actual (%d read-only)' % (len(descriptors), actual, rocount))
         #Settings.settings = newsettings
         Settings.roSettings = rosettings
         Settings.types = types
@@ -133,14 +134,17 @@ class Settings(object):
         #print settings
         #print type(settings)
         #if not timestamp:
-        log.core.info("Installing new config data in thread %s" % str(multiprocessing.current_process()))
+        process = multiprocessing.current_process()
+        log.core.info("Installing new config data in process '%s' with PID %d" % (str(process.name), process.pid))
+        if settings["core"]["debug_level"] > 0:
+            log.core.debug("New config: %s" % str(settings))
         timestamp = datetime.datetime.now()
         Settings.settings.update(settings)
         Settings.configData = {"data": settings,
                                "update" : timestamp,
                               }
         if updateShared:
-            log.core.info("Propagating new config data to workers")
+            log.core.info("Propagating new config data to another processes")
             Core.sharedConfigData.update(Settings.configData)
 
     @staticmethod

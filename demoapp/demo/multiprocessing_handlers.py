@@ -77,12 +77,13 @@ class MPPumpHandler(MsgPumpHandler):
     def get(self):
       self.write("Hello, from MPPumpHandler!<br>")
       self.write(Settings.test.test)
-      Settings.test.test = u"Changing option, it will be propagated into all workers"
+      #Settings.test.test = u"Changing option, it will be propagated into all workers"
       self.write("<br/>")
       self.async(self.test, (1, ), self.onWorkerCompleted)     
 
     @FidelityWorker
     def test(handlerId, *args):
+        Settings.test.test = u"123123"
         for x in range(1, 15):
             log.core.info("test %d" % x)
             time.sleep(1)

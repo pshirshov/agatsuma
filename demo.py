@@ -16,8 +16,7 @@ try:
 except (KeyboardInterrupt, SystemExit):
     core.stop()
 
-# TODO: Tornado forking support
-# TODO: disable changing settings from workers
+# TODO: Tornado forking support (when new Tornado will be released)
 # TODO: before/after request callbacks
 # TODO: template engine
 # TODO: deployment
