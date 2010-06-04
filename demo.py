@@ -16,13 +16,14 @@ try:
 except (KeyboardInterrupt, SystemExit):
     core.stop()
 
-# TODO: Tornado forking support (when new Tornado will be released)
 # TODO: before/after request callbacks
-# TODO: template engine
+# TODO: entry points analogue
 # TODO: deployment
+
+# TODO: template engine
 # TODO: caching decorator
 # TODO: applyFilters    
+
+# TODO: Tornado forking support (when new Tornado will be released)
 # TODO: py3k
-# TODO: entry points analogue
 # TODO: update options via HTTP from master server (or propagate to set of slaves)
-# TODO: optional name for registerTable

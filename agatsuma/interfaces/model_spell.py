@@ -3,17 +3,28 @@
 import sqlalchemy.orm as orm
 
 class ModelSpell(object):
+    def __init__(self):
+        self.__tables = {}       
+
+    def registerTable(self, table, attrName = None):
+        if not attrName:
+            attrName = table.name           
+        if not ((getattr(self, attrName, None) is not None) or (table in self.__tables.values())):
+            setattr(self, attrName, table)
+        else:
+            raise Exception("Table '%s' already registered" % attrName)
+        self.__tables[attrName] = table
+    
+    def registerMapping(self, core, ClassToMap, tableToMap, **kwargs):
+        properties = kwargs.get("properties", {})
+        spells = core._implementationsOf(ModelSpell)
+        for spell in spells:
+            properties = spell.updateTableProperties(self, properties, tableToMap, ClassToMap)
+        orm.mapper(ClassToMap, tableToMap, properties)
+        
     def initMetadata(self, metadata):
         pass
-
-    def registerTable(self, table):
-        if not getattr(self, table.name, None):
-            setattr(self, table.name, table)
-        else:
-            raise Exception("Table '%s' already registered" % table.name)
-            #self.tables = {}
-        #self.tables[table.name] = table
-
+    
     def updateTableProperties(self, spell, properties, table, Class):
         return properties
 
@@ -23,14 +34,6 @@ class ModelSpell(object):
     def setupORM(self, core):
         pass
     
-    def registerMapping(self, core, ClassToMap, tableToMap, **kwargs):
-        properties = kwargs.get("properties", {})
-        spells = core._implementationsOf(ModelSpell)
-        for spell in spells:
-            properties = spell.updateTableProperties(self, properties, tableToMap, ClassToMap)
-        orm.mapper(ClassToMap, tableToMap, properties)
-        
-
     """
     # UNUSED FOR NOW...
     #TODO: temporary ?
@@ -43,15 +46,6 @@ class ModelSpell(object):
 
     def entryPointsList(self):
         return []
-
-    def initORM(self, orm, engine, dialectProps, propDict):
-        pass
-
-    def extendORMProperties(self, orm, engine, dialectProps, propDict):
-        pass
-
-    def deployCallback(self):
-        pass
 
     def beforeRequestCallback(self, baseController):
         pass

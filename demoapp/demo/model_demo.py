@@ -39,6 +39,7 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
                   'deps' : ("agatsuma_sqla",)
                  }
         AbstractSpell.__init__(self, 'sqla_demo_spell', config)
+        ModelSpell.__init__(self)
 
     def initMetadata(self, metadata):
         users_table = sa.Table('users',
@@ -54,7 +55,7 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
                             sa.Column("user_id" , sa.types.Integer, sa.ForeignKey('users.id')),
                             sa.Column('message', sa.types.String),
         )        
-        self.registerTable(posts_table)
+        self.registerTable(posts_table, "postsTable")
         
     def performDeployment(self):
         spell = Core.instance.spellsDict["agatsuma_sqla"]  
@@ -64,11 +65,11 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
     def setupORM(self, core):
         userProps = {'posts' : orm.relation(Post, 
                      cascade = "all, delete, delete-orphan",
-                     order_by = [self.posts.c.id]),
+                     order_by = [self.postsTable.c.id]),
                     }
         postProps = {'user' : orm.relation(User)}
         self.registerMapping(core, User, self.users, properties = userProps)
-        self.registerMapping(core, Post, self.posts, properties = postProps)   
+        self.registerMapping(core, Post, self.postsTable, properties = postProps)   
         
     def initRoutes(self, map):
         map.extend([(r"/test/model/recreate", DBRecreateHandler),
