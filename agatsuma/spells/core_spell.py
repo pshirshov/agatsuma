@@ -20,6 +20,7 @@ class CoreSpell(AbstractSpell):
         core.registerOption("!core.message_pump_timeout", int, "Message pushing interval")
         core.registerOption("!core.logger_pump_timeout", int, "Logging output interval")
         core.registerOption("!core.settings_update_timeout", int, "Update timeout for workers")
+        core.registerOption("!core.pidfile", unicode, "File with PIDs of all Agatsuma's processes")
 
     def postConfigure(self, core):
         log.core.info("Initializing URI map..")

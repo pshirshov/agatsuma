@@ -51,6 +51,7 @@ class Enumerator(object):
             namespacesToImport.extend(fileList)
 
         spells = {}
+        print namespacesToImport
         log.core.info('Started spells enumerator...')
         for nsToImport in namespacesToImport:
             if not nsToImport in self.prohibitedSpells:
@@ -72,7 +73,7 @@ class Enumerator(object):
                     for possibleSpell in possibleSpells:
                         instance = possibleSpell()
                         plid = instance.spellId()
-                        #log.core.info("Importing spell: %s; base=%s" % (plid, nsToImport))
+                        log.core.info("Importing spell: %s; base=%s" % (plid, nsToImport))
 
                         if not spells.has_key(plid):
                             #nsName = basicNamespace + mod.__name__

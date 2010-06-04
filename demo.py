@@ -13,17 +13,17 @@ core = Core(appRoot, appConfig,
             appSpells = ["core_spell", "core_filters", "core_sqla"])
 try:
     core.start()
-except Exception, e:
-    print e
-finally:    
-    log.core.info("Stopping server...")
-    #core.stop()
+except (KeyboardInterrupt, SystemExit):
+    core.stop()
 
+# TODO: Tornado forking support
+# TODO: disable changing settings from workers
+# TODO: before/after request callbacks
 # TODO: template engine
 # TODO: deployment
 # TODO: caching decorator
-# TODO: alchemy
 # TODO: applyFilters    
 # TODO: py3k
 # TODO: entry points analogue
 # TODO: update options via HTTP from master server (or propagate to set of slaves)
+# TODO: optional name for registerTable

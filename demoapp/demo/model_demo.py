@@ -17,8 +17,6 @@ from agatsuma.interfaces.handling_spell import HandlingSpell
 from agatsuma.interfaces.model_spell import ModelSpell
 from agatsuma.handler import AgatsumaHandler, MsgPumpHandler, FidelityWorker
 
-from agatsuma.spells.core_sqla import SQLASpell
-
 class Post(object):
     def __init__(self, message):
         self.message = message
@@ -59,8 +57,9 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
         self.registerTable(posts_table)
         
     def performDeployment(self):
-        SQLASpell.meta.drop_all()
-        SQLASpell.meta.create_all()
+        spell = Core.instance.spellsDict["agatsuma_sqla"]  
+        spell.meta.drop_all()
+        spell.meta.create_all()
         
     def setupORM(self, core):
         userProps = {'posts' : orm.relation(Post, 
@@ -84,7 +83,7 @@ class DBRecreateHandler(tornado.web.RequestHandler):
         
 class ModelTestHandler(tornado.web.RequestHandler):
     def get(self):
-        session=self.application.SqlaSess
+        session=self.application.SqlaSess # self.application == Core.instance
         userscount = session.query(User).count()
         self.write("Hello from ModelTestHandler.<br/>Current users count is %d<br/>" % userscount)
         newuser = User('user_%d' % (userscount + 1), 'qwerty')

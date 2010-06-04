@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-#import signal
+import signal
 import Queue
 
 import tornado.httpserver
@@ -41,23 +41,21 @@ from multiprocessing import Manager
 #sharedConfig = manager
 
 def updateSettings(timeout):
-    #print "It's hooita time", timeout
     threading.Timer(timeout, updateSettings, (timeout, )).start()    
-    #print Core.sharedConfigData
-    #print Core.sharedConfigData
     # Settings in current thread is in old state
     # If we detect, that shared object has updated config
     # we reparse it
     prevUpdate = Settings.configData['update']
     lastUpdate = Core.sharedConfigData['update']
-    #print prevUpdate
-    #print lastUpdate
     if (prevUpdate < lastUpdate):
         log.core.info("Thread %s received new config, updating..." % str( multiprocessing.current_process()))
         #Core.settings.parseSettings(Core.sharedConfigData['data'], Settings.descriptors)
         Settings.setConfigData(Core.sharedConfigData['data'], False)
 
 def workerInitializer(timeout):
+    pid = multiprocessing.current_process().pid
+    Core.instance.writePid(pid)
+    Core.pids.append(pid)    
     log.core.debug("Initializing thread %s. Starting config update checker with %ds timeout" % (multiprocessing.current_process(), timeout))
     updateSettings(timeout)
 
@@ -65,8 +63,20 @@ class Core(tornado.web.Application):
     mqueue = None
     configUpdateManager = Manager()
     sharedConfigData = configUpdateManager.dict()
+    pids = configUpdateManager.list()
+    instance = None
 
+    def writePid(self, pid, recreate = False):
+        mode = "a+"
+        if recreate:
+            mode = "w+"
+        f = open(Settings.core.pidfile, mode)
+        f.write("%d\n" % pid)
+        f.close()
+        
     def __init__(self, appDir, appConfig, **kwargs):
+        assert Core.instance is None
+        Core.instance = self
         tornado.autoreload.start()
         self.ioloop = tornado.ioloop.IOLoop.instance()
         
@@ -102,6 +112,10 @@ class Core(tornado.web.Application):
             spell.postConfigure(self)
         log.core.info("Spells initialization completed")    
 
+        pid = multiprocessing.current_process().pid
+        Core.pids.append(pid)
+        self.writePid(pid, True)
+        
         self.messagePumpNeeded = False
         from agatsuma.handler import MsgPumpHandler
         for uri, handler in self.URIMap:
@@ -112,6 +126,7 @@ class Core(tornado.web.Application):
                 break       
                 
         workers = Settings.core.workers
+        log.core.debug("Main process' PID: %d" % pid)
         log.core.debug("Starting %d workers..." % workers)
         self.pool = Pool(processes=workers, initializer = workerInitializer, initargs = (Settings.core.settings_update_timeout, ))
         
@@ -121,7 +136,7 @@ class Core(tornado.web.Application):
         
         tornado.web.Application.__init__(self, self.URIMap)
         log.core.info("Initialization completed")
-        #signal.signal(signal.SIGINT, self.interrupt)
+        signal.signal(signal.SIGTERM, self.sigHandler)
     
     def start(self):
         #self.application = (self.URIMap)
@@ -137,14 +152,21 @@ class Core(tornado.web.Application):
             log.core.debug("Starting message pump...")
             mpump.start()
         else:
-            log.core.debug("Message pump initiation skipped, it isn't  required for any spell")
+            log.core.debug("Message pump initiation skipped, it isn't required for any spell")
         log.core.info("=" * 60)
         log.core.info("Starting %s/Agatsuma in server mode on port %d..." % (self.appName, port))
         log.core.info("=" * 60)
         self.ioloop.start()
 
+    def sigHandler(self, signum, frame):
+        log.core.debug("Received signal %d" % signum)
+        self.stop()
+        
     def stop(self):
+        log.core.info("Stopping Agatsuma...")
         self.pool.close()
+        #self.HTTPServer.stop()
+        self.ioloop.stop()
         
     def messagePump(self):
         while not self.mqueue.empty():
