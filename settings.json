@@ -16,7 +16,7 @@
         "parameters" : 
             { 
                 "encoding" : "utf-8",
-                "echo" : false
+                "echo" : true
             }
     },
 "test" :

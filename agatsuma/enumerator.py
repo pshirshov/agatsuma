@@ -8,9 +8,9 @@ from agatsuma.log import log
 from agatsuma.interfaces import AbstractSpell
 
 class Enumerator(object):
-    def __init__(self, core, appDir):
+    def __init__(self, core, appDir, prohibitedSpells):
         self.appDir = appDir
-        self.prohibitedSpells = [] # TODO: config
+        self.prohibitedSpells = prohibitedSpells
         self.core = core
         #def appBaseName(self):
         #  return self.__module__.split('.')[0]
@@ -38,7 +38,7 @@ class Enumerator(object):
         for root, dirs, files in os.walk(spellsDir):
             def useFilePred(file):
                 if file in self.prohibitedSpells:
-                    log.core.warning('File ignored due config settings: %s' % file)
+                    log.core.warning('File ignored due app settings: %s' % file)
                     return False
                 return True
             fileList = filter(lambda x: x.endswith('.py') and not x.startswith('__'), files)
@@ -91,7 +91,7 @@ class Enumerator(object):
                 else:
                     log.core.info('Not a spellspace: %s' % nsToImport)
             else:
-                log.core.warning('Namespace ignored due config settings: %s' % nsToImport)
+                log.core.warning('Namespace ignored due app settings: %s' % nsToImport)
 
         log.core.info("IMPORT STAGE COMPLETED. Imported %d spells:" % len(spells))
         for spell in spells.values():

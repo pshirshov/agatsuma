@@ -3,7 +3,7 @@
 import tornado.web
 import logging
 from agatsuma.core import Core
-from agatsuma.interfaces.request_spell import RequestSpell
+from agatsuma.interfaces import RequestSpell
 from agatsuma.errors import EAbstractFunctionCall
 
 class AgatsumaHandler(tornado.web.RequestHandler):
@@ -17,19 +17,6 @@ class AgatsumaHandler(tornado.web.RequestHandler):
         self.application.pool.apply_async(method, 
                                           (id(self), ) + args, 
                                           callback=self.async_callback(callback)) 
-
-class FidelityWorker(object):
-    functions = {}
-    def __init__(self, worker):
-        self.workerId = id(worker)
-        self.workerName = worker.__name__
-        FidelityWorker.functions[self.workerId] = worker
-
-    def __call__(self, *args, **kwargs):
-        try:
-            return FidelityWorker.functions[self.workerId](*args, **kwargs)
-        except Exception, e:
-            logging.error("Exception in MP worker", exc_info=True)
         
 class MsgPumpHandler(AgatsumaHandler):
     def __init__(self, application, request):

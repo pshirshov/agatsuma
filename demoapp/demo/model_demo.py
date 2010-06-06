@@ -13,7 +13,7 @@ from agatsuma.settings import Settings
 from agatsuma.log import log
 
 from agatsuma.interfaces import AbstractSpell, HandlingSpell, ModelSpell
-from agatsuma.handlers import AgatsumaHandler, MsgPumpHandler, FidelityWorker
+from agatsuma.framework.tornado import AgatsumaHandler, MsgPumpHandler, FidelityWorker
 
 class Post(object):
     def __init__(self, message):
@@ -53,13 +53,8 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
                             sa.Column("user_id" , sa.types.Integer, sa.ForeignKey('users.id')),
                             sa.Column('message', sa.types.String),
         )        
-        self.registerTable(posts_table, "postsTable")
-        
-    def performDeployment(self):
-        spell = Core.instance.spellsDict["agatsuma_sqla"]  
-        spell.meta.drop_all()
-        spell.meta.create_all()
-        
+        self.registerTable(posts_table, "postsTable")       
+       
     def setupORM(self, core):
         userProps = {'posts' : orm.relation(Post, 
                      cascade = "all, delete, delete-orphan",
@@ -70,15 +65,17 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
         self.registerMapping(core, Post, self.postsTable, properties = postProps)   
         
     def initRoutes(self, map):
-        map.extend([(r"/test/model/recreate", DBRecreateHandler),
-                    (r"/test/model/test", ModelTestHandler),
+        map.extend([(r"/test/model/test", ModelTestHandler),
                     (r"/test/model/mptest", ModelMPTestHandler),
-                   ])
-                   
-class DBRecreateHandler(tornado.web.RequestHandler):
-    def get(self):
-        spell = self.application.spellsDict["sqla_demo_spell"]  
-        spell.performDeployment()
+                   ])                   
+       
+    def performDeployment(self, core):
+        log.core.debug("Hello from the demo deployment callback. Now we can add objects into DB")
+        session=core.SqlaSess # self.application == Core.instance
+        userscount = session.query(User).count()
+        newuser = User('user_%d' % (userscount + 1), 'qwerty')
+        session.add(newuser)
+        session.commit() 
         
 class ModelTestHandler(tornado.web.RequestHandler):
     def get(self):

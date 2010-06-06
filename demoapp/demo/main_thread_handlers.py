@@ -7,7 +7,7 @@ from agatsuma.core import Core
 from agatsuma.settings import Settings
 from agatsuma.log import log
 
-from agatsuma.interfaces AbstractSpell, HandlingSpell
+from agatsuma.interfaces import AbstractSpell, HandlingSpell
 
 class MTDemoSpell(AbstractSpell, HandlingSpell):
     def __init__(self):

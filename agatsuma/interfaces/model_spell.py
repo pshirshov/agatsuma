@@ -28,7 +28,7 @@ class ModelSpell(object):
     def updateTableProperties(self, spell, properties, table, Class):
         return properties
 
-    def performDeployment(self):
+    def performDeployment(self, core):
         pass   
     
     def setupORM(self, core):

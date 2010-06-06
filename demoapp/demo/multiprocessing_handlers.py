@@ -8,7 +8,7 @@ from agatsuma.settings import Settings
 from agatsuma.log import log
 
 from agatsuma.interfaces import AbstractSpell, HandlingSpell, FilteringSpell, RequestSpell
-from agatsuma.handlers import AgatsumaHandler, MsgPumpHandler, FidelityWorker
+from agatsuma.framework.tornado import AgatsumaHandler, MsgPumpHandler, FidelityWorker
 
 class NullSpell(AbstractSpell, FilteringSpell):
     def __init__(self):
@@ -23,9 +23,13 @@ class NullSpell(AbstractSpell, FilteringSpell):
     def testFilter(self, inp):
         return inp.replace("Hello", "Oh hi")        
         
+    def entryPoint(self, argv):
+        log.core.info("Demo entry point called with argv %s" % argv)
+        
     def preConfigure(self, core):
         core.registerOption("!test.rotest", unicode, "Test read-only setting")
         core.registerOption("test.test", unicode, "Test setting")
+        core.registerEntryPoint("demoPoint", self.entryPoint)
 
 
 class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
@@ -34,6 +38,8 @@ class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
                   'info' : ()
                  }
         AbstractSpell.__init__(self, 'mp_demo_spell', config)
+        
+    def preConfigure(self, core):        
         import logging
         log.newLogger("test", logging.DEBUG)
         

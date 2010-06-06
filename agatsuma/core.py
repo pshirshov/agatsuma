@@ -3,43 +3,20 @@ import os
 import re
 import logging
 import signal
-import Queue
+
+import threading
+import multiprocessing
+from multiprocessing import Pool, Manager
+from multiprocessing import Queue as MPQueue
+from weakref import WeakValueDictionary
 
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 
-from multiprocessing import Pool
-from multiprocessing import Queue as MPQueue
-
 from agatsuma.enumerator import Enumerator
 from agatsuma.log import log
 from agatsuma.settings import Settings
-#from agatsuma.spells import core as CoreSpell
-
-import tornado.autoreload
-from weakref import WeakValueDictionary
-
-#import time
-#import pickle
-
-"""
-import copy_reg
-import types
-
-def reduce_method(m):
-    return (getattr, (m.__self__, m.__func__.__name__))
-
-copy_reg.pickle(types.MethodType, reduce_method)
-"""
-
-import multiprocessing
-import threading
-from multiprocessing import Manager
-
-#manager = Manager()
-#sharedConfigContent = manager.Value('u', "")
-#sharedConfig = manager
 
 def updateSettings():
     # Settings in current thread is in old state
@@ -71,27 +48,11 @@ class Core(tornado.web.Application):
     sharedConfigData = configUpdateManager.dict()
     pids = configUpdateManager.list()
     instance = None
-
-    def writePid(self, pid):
-        mode = "a+"
-        pidfile = Settings.core.pidfile
-        if not os.path.exists(pidfile):
-            mode = "w+"            
-        f = open(pidfile, mode)
-        f.write("%d\n" % pid)
-        f.close()
-        
-    def removePid(self):
-        pidfile = Settings.core.pidfile
-        if os.path.exists(pidfile):
-            os.remove(pidfile)
         
     def __init__(self, appDir, appConfig, **kwargs):
         assert Core.instance is None
         Core.instance = self
-        tornado.autoreload.start()
-        self.ioloop = tornado.ioloop.IOLoop.instance()
-        
+       
         self.logger = log()
         self.logger.initiateLoggers()
         log.newLogger("core", logging.DEBUG)
@@ -104,10 +65,12 @@ class Core(tornado.web.Application):
         self.spellsDict = {}
         self.filterStack = []
         self.registeredSettings = {}
+        self.entryPoints = {}
         
         #self.globalFilterStack = [] #TODO: templating and this
         self.mpHandlerInstances = WeakValueDictionary()
-        enumerator = Enumerator(self, appDir)
+        prohibitedSpells = kwargs.get("prohibitedSpells", [])
+        enumerator = Enumerator(self, appDir, prohibitedSpells)
         essentialSpellSpaces = self.appSpells
         essentialSpellSpaces = map(lambda s: "agatsuma.spells.%s" % s, essentialSpellSpaces)
         enumerator.enumerateSpells(essentialSpellSpaces)
@@ -126,7 +89,7 @@ class Core(tornado.web.Application):
         
         self.removePid()
         self.messagePumpNeeded = False
-        from agatsuma.handlers import MsgPumpHandler
+        from agatsuma.framework.tornado import MsgPumpHandler
         for uri, handler in self.URIMap:
             if issubclass(handler, MsgPumpHandler):
                 self.messagePumpNeeded = True
@@ -144,12 +107,31 @@ class Core(tornado.web.Application):
         for spell in self._implementationsOf(AbstractSpell):
             spell.postPoolInit(self)
         
-        tornado.web.Application.__init__(self, self.URIMap, debug = Settings.core.debug)
+        tornado.web.Application.__init__(self, self.URIMap, 
+                                         debug = Settings.core.debug, # autoreload
+                                        )
         log.core.info("Initialization completed")
         signal.signal(signal.SIGTERM, self.sigHandler)
-    
+
+    def writePid(self, pid):
+        mode = "a+"
+        pidfile = Settings.core.pidfile
+        if not os.path.exists(pidfile):
+            mode = "w+"            
+        f = open(pidfile, mode)
+        f.write("%d\n" % pid)
+        f.close()
+        
+    def removePid(self):
+        pidfile = Settings.core.pidfile
+        if os.path.exists(pidfile):
+            os.remove(pidfile)
+
+    def runEntryPoint(self, name, argv):
+        self.entryPoints[name](argv)
+        
     def start(self):
-        #self.application = (self.URIMap)
+        self.ioloop = tornado.ioloop.IOLoop.instance()
         port = Settings.core.port
         pumpTimeout = Settings.core.message_pump_timeout
         assert len(self.URIMap) > 0
@@ -244,3 +226,9 @@ class Core(tornado.web.Application):
             self.registeredSettings[fqn] = settingDescr
         else:
             raise Exception("Bad setting name: '%s' (%s)" % (settingName, settingComment))
+        
+    def registerEntryPoint(self, entryPointId, epFn):
+        if not entryPointId in self.entryPoints:
+            self.entryPoints[entryPointId] = epFn
+        else:
+            raise Exception("Entry point with name '%s' is already registered" % entryPointId)

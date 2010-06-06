@@ -43,9 +43,3 @@ class AbstractSpell(object):
 
     def postPoolInit(self, core):
         pass
-
-    """
-    # TODO:
-    def entryPointsList(self):
-        return []
-    """

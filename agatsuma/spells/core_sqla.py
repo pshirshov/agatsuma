@@ -18,17 +18,30 @@ class SQLASpell(AbstractSpell):
                  }
         AbstractSpell.__init__(self, 'agatsuma_sqla', config)
         SQLASpell.protoMeta = sa.MetaData() 
-        
+
+    def deploy(self, argv):
+        spells = Core.instance._implementationsOf(ModelSpell)
+        log.core.info("Initializing Database...")
+        if spells:
+            if "recreate" in argv:
+                log.core.info("Recreating schema...")
+                self.meta.drop_all()
+                self.meta.create_all()
+            for spell in spells:
+                spell.performDeployment(Core.instance)
+            log.core.info("Deployment completed")
+        else:
+            log.core.info("Model spells not found")
+
     def preConfigure(self, core):
         core.registerOption("!sqla.uri", unicode, "SQLAlchemy engine URI")
         core.registerOption("!sqla.parameters", dict, "kwargs for create_engine")
+        core.registerEntryPoint("agatsuma:sqla_init", self.deploy)
 
     def postConfigure(self, core):
-        #print "OLOLO" * 20, Settings.sqla.uri, Settings.sqla.parameters
-
         spells = core._implementationsOf(ModelSpell)
         if spells:
-            log.core.info("Initializing SQLAlchemy engine and session..")
+            log.core.info("Initializing SQLAlchemy engine and session...")
             Core.SqlaEngine = sa.create_engine(Settings.sqla.uri, **Settings.sqla.parameters)
             SessionClass = orm.sessionmaker()
             Session = orm.scoped_session(SessionClass)
@@ -39,7 +52,7 @@ class SQLASpell(AbstractSpell):
                 spell.initMetadata(SQLASpell.protoMeta)
             SQLASpell.meta = SQLASpell.metaCopy()
             SQLASpell.meta.bind = core.SqlaEngine
-            log.core.info("Setting up ORM..")
+            log.core.info("Setting up ORM...")
             for spell in spells:
                 spell.setupORM(core)
             log.core.info("Model initialized")
@@ -52,3 +65,4 @@ class SQLASpell(AbstractSpell):
         # little bugfix
         meta.ddl_listeners = sa.util.defaultdict(list)
         return meta
+       
