@@ -3,7 +3,7 @@
 
 import os
 import sys
-from agatsuma.core import Core
+from agatsuma.framework.tornado import TornadoCore
 from agatsuma.log import log
 
 appRoot = os.path.join(os.path.dirname(__file__), 'demoapp')
@@ -12,7 +12,7 @@ appConfig = "settings.json"
 
 print sys.argv
 
-core = Core(appRoot, appConfig, 
+core = TornadoCore(appRoot, appConfig, 
             appName = "Agatsuma Demo Application",
             appSpells = ["core_spell", "core_filters", "core_sqla"],
             #prohibitedSpells = ["spellspace.py", "demoapp.demo.multiprocessing_handlers"] # file names or namespaces
@@ -36,15 +36,15 @@ else:
     core.runEntryPoint(entryPointName, sys.argv)
 
 # TODO: tornado-independent core
-# TODO: py3k
 # TODO: sessions
 # TODO: url building
-# TODO: customized errors handling
 # TODO: x-headers
 
 # TODO: template engine
 # TODO: caching decorator
 # TODO: applyFilters    
 
+# TODO: customized errors handling (Tornado patching needed)
+# TODO: py3k (when Tornado will be ported)
 # TODO: Tornado forking support (when new Tornado will be released)
 # TODO: update options via HTTP from master server (or propagate to set of slaves)

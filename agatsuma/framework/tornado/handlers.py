@@ -2,7 +2,7 @@
 
 import tornado.web
 import logging
-from agatsuma.core import Core
+from tornado_core import TornadoCore
 from agatsuma.interfaces import RequestSpell
 from agatsuma.errors import EAbstractFunctionCall
 
@@ -27,7 +27,7 @@ class MsgPumpHandler(AgatsumaHandler):
         
     @staticmethod
     def sendMessage(id, message):
-        Core.mqueue.put((id, message))
+        TornadoCore.mqueue.put((id, message))
         
     def processMessage(self, message):
         raise EAbstractFunctionCall() 

@@ -7,16 +7,17 @@ import signal
 import threading
 import multiprocessing
 from multiprocessing import Pool, Manager
-from multiprocessing import Queue as MPQueue
 from weakref import WeakValueDictionary
-
-import tornado.httpserver
-import tornado.ioloop
-import tornado.web
 
 from agatsuma.enumerator import Enumerator
 from agatsuma.log import log
 from agatsuma.settings import Settings
+
+"""
+Warning: common core is only able to propagate settings update to process 
+         pool. 
+         Updating settings in main thread is subclass' problem
+"""
 
 def updateSettings():
     # Settings in current thread is in old state
@@ -42,13 +43,12 @@ def workerInitializer(timeout):
     log.core.debug("Initializing worker process '%s' with PID %d. Starting config update checker with %ds timeout" % (str(process.name), process.pid, timeout))
     updateSettingsByTimer(timeout)
 
-class Core(tornado.web.Application):
-    mqueue = None
+class Core(object):
     configUpdateManager = Manager()
     sharedConfigData = configUpdateManager.dict()
     pids = configUpdateManager.list()
     instance = None
-        
+    
     def __init__(self, appDir, appConfig, **kwargs):
         assert Core.instance is None
         Core.instance = self
@@ -74,7 +74,6 @@ class Core(tornado.web.Application):
         essentialSpellSpaces = self.appSpells
         essentialSpellSpaces = map(lambda s: "agatsuma.spells.%s" % s, essentialSpellSpaces)
         enumerator.enumerateSpells(essentialSpellSpaces)
-        #print self.registeredSettings
 
         from agatsuma.interfaces.abstract_spell import AbstractSpell
         log.core.info("Initializing spells...")
@@ -88,15 +87,8 @@ class Core(tornado.web.Application):
         log.core.info("Spells initialization completed")    
         
         self.removePid()
-        self.messagePumpNeeded = False
-        from agatsuma.framework.tornado import MsgPumpHandler
-        for uri, handler in self.URIMap:
-            if issubclass(handler, MsgPumpHandler):
-                self.messagePumpNeeded = True
-                Core.mqueue = MPQueue()
-                self.waitingCallbacks = []
-                break       
-                
+        self._prePoolInit()
+        
         workers = Settings.core.workers
         log.core.debug("Starting %d workers..." % workers)
         self.pool = Pool(processes=workers, 
@@ -106,12 +98,15 @@ class Core(tornado.web.Application):
         log.core.info("Calling post-pool-init routines...")
         for spell in self._implementationsOf(AbstractSpell):
             spell.postPoolInit(self)
-        
-        tornado.web.Application.__init__(self, self.URIMap, 
-                                         debug = Settings.core.debug, # autoreload
-                                        )
+
         log.core.info("Initialization completed")
         signal.signal(signal.SIGTERM, self.sigHandler)
+
+    def _prePoolInit(self):
+        pass
+    
+    def _stop(self):
+        pass
 
     def writePid(self, pid):
         mode = "a+"
@@ -129,83 +124,17 @@ class Core(tornado.web.Application):
 
     def runEntryPoint(self, name, argv):
         self.entryPoints[name](argv)
-        
-    def start(self):
-        self.ioloop = tornado.ioloop.IOLoop.instance()
-        port = Settings.core.port
-        pumpTimeout = Settings.core.message_pump_timeout
-        assert len(self.URIMap) > 0
-
-        self.logger.setMPHandler(self.ioloop)
-        self.HTTPServer = tornado.httpserver.HTTPServer(self)
-        self.HTTPServer.listen(port)
-        """
-        # Preforking is only available in Tornado GIT
-        if Settings.core.forks > 0:
-            self.HTTPServer.bind(port)
-            self.HTTPServer.start()
-        """
-        pid = multiprocessing.current_process().pid
-        Core.pids.append(pid)
-        self.writePid(pid)
-        log.core.debug("Main process' PID: %d" % pid)
-        configChecker = tornado.ioloop.PeriodicCallback(updateSettings, 
-                                                        1000 * Settings.core.settings_update_timeout, 
-                                                        io_loop=self.ioloop)        
-        configChecker.start()
-        
-        if self.messagePumpNeeded:
-            mpump = tornado.ioloop.PeriodicCallback(self.messagePump, 
-                                                    pumpTimeout, 
-                                                    io_loop=self.ioloop)
-            log.core.debug("Starting message pump...")
-            mpump.start()
-        else:
-            log.core.debug("Message pump initiation skipped, it isn't required for any spell")
-        log.core.info("=" * 60)
-        log.core.info("Starting %s/Agatsuma in server mode on port %d..." % (self.appName, port))
-        log.core.info("=" * 60)
-        self.ioloop.start()
 
     def sigHandler(self, signum, frame):
         log.core.debug("Received signal %d" % signum)
         self.stop()
-        
+    
     def stop(self):
         log.core.info("Stopping Agatsuma...")
         self.pool.close()
-        #self.HTTPServer.stop()
-        self.ioloop.stop()
+        self._stop()
         self.removePid()
-        
-    def messagePump(self):
-        while not self.mqueue.empty():
-            try:
-                message = self.mqueue.get_nowait()
-                if Settings.core.debug_level > 0:
-                    log.core.debug("message: '%s'" % str(message))
-                if message and type(message) is tuple:
-                    handlerId = message[0]
-                    if handlerId in self.mpHandlerInstances:
-                        self.mpHandlerInstances[handlerId].processMessage(message)
-                    else:
-                        log.core.warning("unknown message recepient: '%s'" % str(message))
-                else:
-                    log.core.debug("bad message: '%s'" % str(message))
-            except Queue.Empty, e:
-                log.core.debug("message: raised Queue.Empty")
-                    
-        if self.waitingCallbacks:
-            try:
-                for callback in self.waitingCallbacks:
-                    callback()
-            finally:
-                self.waitingCallbacks = []
-            
-    def handlerInitiated(self, handler):
-        # references are weak, so handler will be correctly destroyed and removed from dict automatically
-        self.mpHandlerInstances[id(handler)] = handler
-        
+    
     def _implementationsOf(self, InterfaceClass):
         return filter(lambda spell: issubclass(type(spell), InterfaceClass), self.spells)
 
@@ -232,3 +161,4 @@ class Core(tornado.web.Application):
             self.entryPoints[entryPointId] = epFn
         else:
             raise Exception("Entry point with name '%s' is already registered" % entryPointId)
+
