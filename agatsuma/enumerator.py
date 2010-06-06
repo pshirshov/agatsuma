@@ -5,7 +5,7 @@ import os
 import inspect
 
 from agatsuma.log import log
-from agatsuma.interfaces.abstract_spell import AbstractSpell
+from agatsuma.interfaces import AbstractSpell
 
 class Enumerator(object):
     def __init__(self, core, appDir):

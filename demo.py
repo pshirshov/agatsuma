@@ -16,14 +16,17 @@ try:
 except (KeyboardInterrupt, SystemExit):
     core.stop()
 
-# TODO: before/after request callbacks
+# TODO: tornado-independent core
 # TODO: entry points analogue
 # TODO: deployment
+# TODO: py3k
+# TODO: sessions
+# TODO: url building
+# TODO: customized URL handling
 
 # TODO: template engine
 # TODO: caching decorator
 # TODO: applyFilters    
 
 # TODO: Tornado forking support (when new Tornado will be released)
-# TODO: py3k
 # TODO: update options via HTTP from master server (or propagate to set of slaves)

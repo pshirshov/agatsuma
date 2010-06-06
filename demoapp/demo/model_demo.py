@@ -12,10 +12,8 @@ from agatsuma.core import Core
 from agatsuma.settings import Settings
 from agatsuma.log import log
 
-from agatsuma.interfaces.abstract_spell import AbstractSpell
-from agatsuma.interfaces.handling_spell import HandlingSpell
-from agatsuma.interfaces.model_spell import ModelSpell
-from agatsuma.handler import AgatsumaHandler, MsgPumpHandler, FidelityWorker
+from agatsuma.interfaces import AbstractSpell, HandlingSpell, ModelSpell
+from agatsuma.handlers import AgatsumaHandler, MsgPumpHandler, FidelityWorker
 
 class Post(object):
     def __init__(self, message):

@@ -33,26 +33,4 @@ class ModelSpell(object):
     
     def setupORM(self, core):
         pass
-    
-    """
-    # UNUSED FOR NOW...
-    #TODO: temporary ?
-    def spellName(self):
-        return self.__pName
-
-    # new methods
-    def updateGlobals(self, globj):
-        pass
-
-    def entryPointsList(self):
-        return []
-
-    def beforeRequestCallback(self, baseController):
-        pass
-
-    def globalFiltersList(self):
-        return []
-
-    def filtersList(self):
-        return []
-   """
+ 

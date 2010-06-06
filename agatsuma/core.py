@@ -126,7 +126,7 @@ class Core(tornado.web.Application):
         
         self.removePid()
         self.messagePumpNeeded = False
-        from agatsuma.handler import MsgPumpHandler
+        from agatsuma.handlers import MsgPumpHandler
         for uri, handler in self.URIMap:
             if issubclass(handler, MsgPumpHandler):
                 self.messagePumpNeeded = True
@@ -144,7 +144,7 @@ class Core(tornado.web.Application):
         for spell in self._implementationsOf(AbstractSpell):
             spell.postPoolInit(self)
         
-        tornado.web.Application.__init__(self, self.URIMap)
+        tornado.web.Application.__init__(self, self.URIMap, debug = Settings.core.debug)
         log.core.info("Initialization completed")
         signal.signal(signal.SIGTERM, self.sigHandler)
     

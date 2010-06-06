@@ -3,6 +3,20 @@
 import tornado.web
 import logging
 from agatsuma.core import Core
+from agatsuma.interfaces.request_spell import RequestSpell
+from agatsuma.errors import EAbstractFunctionCall
+
+class AgatsumaHandler(tornado.web.RequestHandler):
+    def __init__(self, application, request, transforms=None):
+        tornado.web.RequestHandler.__init__(self, application, request, transforms)
+        spells = self.application._implementationsOf(RequestSpell)
+        for spell in spells:
+            spell.beforeRequestCallback(self)
+        
+    def async(self, method, args, callback):
+        self.application.pool.apply_async(method, 
+                                          (id(self), ) + args, 
+                                          callback=self.async_callback(callback)) 
 
 class FidelityWorker(object):
     functions = {}
@@ -16,16 +30,6 @@ class FidelityWorker(object):
             return FidelityWorker.functions[self.workerId](*args, **kwargs)
         except Exception, e:
             logging.error("Exception in MP worker", exc_info=True)
-
-class AgatsumaHandler(tornado.web.RequestHandler):
-    def async(self, method, args, callback):
-        self.application.pool.apply_async(method, 
-                                          (id(self), ) + args, 
-                                          callback=self.async_callback(callback)) 
-      
-class EAbstractFunctionCall(Exception):
-    def __repr__(self):
-        return "Call to abstract function"
         
 class MsgPumpHandler(AgatsumaHandler):
     def __init__(self, application, request):

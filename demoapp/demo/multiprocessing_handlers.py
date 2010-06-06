@@ -7,10 +7,8 @@ from agatsuma.core import Core
 from agatsuma.settings import Settings
 from agatsuma.log import log
 
-from agatsuma.interfaces.abstract_spell import AbstractSpell
-from agatsuma.interfaces.handling_spell import HandlingSpell
-from agatsuma.interfaces.filtering_spell import FilteringSpell
-from agatsuma.handler import AgatsumaHandler, MsgPumpHandler, FidelityWorker
+from agatsuma.interfaces import AbstractSpell, HandlingSpell, FilteringSpell, RequestSpell
+from agatsuma.handlers import AgatsumaHandler, MsgPumpHandler, FidelityWorker
 
 class NullSpell(AbstractSpell, FilteringSpell):
     def __init__(self):
@@ -30,13 +28,18 @@ class NullSpell(AbstractSpell, FilteringSpell):
         core.registerOption("test.test", unicode, "Test setting")
 
 
-class DemoSpell(AbstractSpell, HandlingSpell):
+class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
     def __init__(self):
         config = {'name' : 'Demo spell for multiprocessing handlers',
                   'info' : ()
                  }
         AbstractSpell.__init__(self, 'mp_demo_spell', config)
+        import logging
+        log.newLogger("test", logging.DEBUG)
         
+    def beforeRequestCallback(self, handler):
+        log.test.debug("beforeRequestCallback: %s" % str(handler))
+
     def initRoutes(self, map):
         map.extend([(r"/test/mp/worker", MPWorkerHandler),                   
                     (r"/test/mp/pump", MPPumpHandler),

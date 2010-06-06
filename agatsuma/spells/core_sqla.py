@@ -9,8 +9,7 @@ from agatsuma.log import log
 from agatsuma.settings import Settings
 from agatsuma.core import Core
 
-from agatsuma.interfaces.abstract_spell import AbstractSpell
-from agatsuma.interfaces.model_spell import ModelSpell
+from agatsuma.interfaces import AbstractSpell, ModelSpell
         
 class SQLASpell(AbstractSpell):
     def __init__(self):

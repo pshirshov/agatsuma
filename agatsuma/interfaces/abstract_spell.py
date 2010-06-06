@@ -45,27 +45,7 @@ class AbstractSpell(object):
         pass
 
     """
-    # UNUSED FOR NOW...
-    #TODO: temporary ?
-    def spellName(self):
-        return self.__pName
-
-    # new methods
-    def updateGlobals(self, globj):
-        pass
-
+    # TODO:
     def entryPointsList(self):
         return []
-
-    def initORM(self, orm, engine, dialectProps, propDict):
-        pass
-
-    def extendORMProperties(self, orm, engine, dialectProps, propDict):
-        pass
-
-    def deployCallback(self):
-        pass
-
-    def beforeRequestCallback(self, baseController):
-        pass
-   """
+    """
