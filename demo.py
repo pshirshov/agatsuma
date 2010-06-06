@@ -40,6 +40,7 @@ else:
 # TODO: sessions
 # TODO: url building
 # TODO: customized errors handling
+# TODO: x-headers
 
 # TODO: template engine
 # TODO: caching decorator

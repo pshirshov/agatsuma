@@ -9,6 +9,8 @@ from agatsuma.errors import EAbstractFunctionCall
 class AgatsumaHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, transforms=None):
         tornado.web.RequestHandler.__init__(self, application, request, transforms)
+
+    def prepare(self):
         spells = self.application._implementationsOf(RequestSpell)
         for spell in spells:
             spell.beforeRequestCallback(self)
