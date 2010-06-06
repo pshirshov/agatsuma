@@ -42,7 +42,7 @@ class TornadoCore(Core, tornado.web.Application):
 
     def __updateLogger(self):
         #from agatsuma.settings import Settings
-        pumpTimeout = Settings.core.logger_pump_timeout
+        pumpTimeout = Settings.tornado.logger_pump_timeout
         self.logger.logQueue = MPQueue()
         log.instance = self.logger
         self.logger.logPump = tornado.ioloop.PeriodicCallback(self.processLog, 
@@ -53,8 +53,8 @@ class TornadoCore(Core, tornado.web.Application):
     
     def start(self):
         self.ioloop = tornado.ioloop.IOLoop.instance()
-        port = Settings.core.port
-        pumpTimeout = Settings.core.message_pump_timeout
+        pumpTimeout = Settings.tornado.message_pump_timeout
+        port = Settings.tornado.port
         assert len(self.URIMap) > 0
 
         #self.logger.setMPHandler(self.ioloop)

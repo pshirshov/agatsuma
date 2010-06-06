@@ -12,12 +12,9 @@ class CoreSpell(AbstractSpell):
         AbstractSpell.__init__(self, 'agatsuma_core', config)
         
     def preConfigure(self, core):
-        core.registerOption("!core.port", int, "Web server port")
         core.registerOption("!core.debug", bool, "Debug mode")
         core.registerOption("!core.debug_level", int, "Debug level. Possible values: 0, 1 (debug message pump), 2 (debug threads)")
         core.registerOption("!core.workers", int, "Size of working processes pool")
-        core.registerOption("!core.message_pump_timeout", int, "Message pushing interval")
-        core.registerOption("!core.logger_pump_timeout", int, "Logging output interval")
         core.registerOption("!core.settings_update_timeout", int, "Update timeout for workers")
         core.registerOption("!core.pidfile", unicode, "File with PIDs of all Agatsuma's processes")
 
@@ -36,3 +33,15 @@ class CoreSpell(AbstractSpell):
                 log.core.debug("* %s" % str(p))  
         else:
             raise Exception("Handling spells not found!")
+        
+class TornadoSpell(AbstractSpell):
+    def __init__(self):
+        config = {'info' : 'Agatsuma Tornado Spell',
+                  'deps' : ()
+                 }
+        AbstractSpell.__init__(self, 'agatsuma_tornado', config)
+        
+    def preConfigure(self, core):
+        core.registerOption("!tornado.port", int, "Web server port")
+        core.registerOption("!tornado.message_pump_timeout", int, "Message pushing interval")
+        core.registerOption("!tornado.logger_pump_timeout", int, "Logging output interval")

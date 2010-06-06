@@ -4,11 +4,14 @@
         "debug": true,
         "debug_level" : 1,
         "workers" : 2,
+        "settings_update_timeout" : 15,
+        "pidfile" : "pidfile~"
+    },
+"tornado" :
+    {
         "message_pump_timeout" : 50,
         "logger_pump_timeout" : 500,
-        "settings_update_timeout" : 15,
-        "port": 8888,
-        "pidfile" : "pidfile~"
+        "port": 8888
     },
 "sqla" : 
     { 
