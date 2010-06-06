@@ -21,9 +21,7 @@ Warning: common core is only able to propagate settings update to process
 
 def updateSettings():
     # Settings in current thread is in old state
-    # If we detect, that shared object has updated config
-    # we reparse it
-    #print "check", multiprocessing.current_process()
+    # If we detect, that shared object has updated config we replace it
     prevUpdate = Settings.configData['update']
     lastUpdate = Core.sharedConfigData['update']
     if (prevUpdate < lastUpdate):

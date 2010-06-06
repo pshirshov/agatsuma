@@ -8,7 +8,7 @@ import tornado.web
 
 from agatsuma.core import Core, updateSettings
 from agatsuma.settings import Settings
-from agatsuma.log import log
+from agatsuma.log import log, MPQueueHandler
 
 class TornadoCore(Core, tornado.web.Application):   
     mqueue = None
@@ -32,13 +32,33 @@ class TornadoCore(Core, tornado.web.Application):
         #self.HTTPServer.stop()
         self.ioloop.stop()
 
+    def processLog(self):
+        while not log.instance.logQueue.empty():
+            try:
+                message = log.instance.logQueue.get_nowait()
+                log.rootHandler.realHandler.emit(message)
+            except Queue.Empty, e:
+                log.instance.rootHandler.realHandler.emit("log: raised Queue.Empty")
+
+    def __updateLogger(self):
+        #from agatsuma.settings import Settings
+        pumpTimeout = Settings.core.logger_pump_timeout
+        self.logger.logQueue = MPQueue()
+        log.instance = self.logger
+        self.logger.logPump = tornado.ioloop.PeriodicCallback(self.processLog, 
+                                                              pumpTimeout, 
+                                                              io_loop=self.ioloop)
+        log.rootHandler = MPQueueHandler(self.logger.logQueue, log.rootHandler)
+        self.logger.logPump.start()
+    
     def start(self):
         self.ioloop = tornado.ioloop.IOLoop.instance()
         port = Settings.core.port
         pumpTimeout = Settings.core.message_pump_timeout
         assert len(self.URIMap) > 0
 
-        self.logger.setMPHandler(self.ioloop)
+        #self.logger.setMPHandler(self.ioloop)
+        self.__updateLogger()
         self.HTTPServer = tornado.httpserver.HTTPServer(self)
         self.HTTPServer.listen(port)
         """
