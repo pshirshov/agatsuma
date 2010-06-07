@@ -45,7 +45,8 @@ class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
         
     def beforeRequestCallback(self, handler):
         log.test.debug("beforeRequestCallback: %s" % str(handler))
-
+        log.test.debug("request: %s" % str(handler.request))
+    
     def initRoutes(self, map):
         map.extend([(r"/test/mp/worker", MPWorkerHandler),                   
                     (r"/test/mp/pump", MPPumpHandler),

@@ -35,10 +35,12 @@ else:
     entryPointName = sys.argv[1]
     core.runEntryPoint(entryPointName, sys.argv)
 
-# TODO: tornado-independent core
 # TODO: sessions
 # TODO: url building
 # TODO: x-headers
+# TODO: settings saving (maybe into database)
+# TODO: Unit tests
+# TODO: Sphinx documentation
 
 # TODO: template engine
 # TODO: caching decorator
