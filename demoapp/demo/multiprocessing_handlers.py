@@ -61,6 +61,10 @@ class MPWorkerHandler(AgatsumaHandler):
     """
     @tornado.web.asynchronous
     def get(self):
+      print "GET>", self.session.get("govno", None)
+      self.session["sesskey"] = "sessval"
+      self.sessman.save(self.session)
+      self.sessman.delete(self.session)
       self.write("Hello from MPWorkerHandler!<br>")
       self.async(self.test, (1, ), self.onWorkerCompleted)
 

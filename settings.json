@@ -9,9 +9,17 @@
     },
 "tornado" :
     {
+        "port": 8888,
         "message_pump_timeout" : 50,
         "logger_pump_timeout" : 500,
-        "port": 8888
+        "cookie_secret" : "NYANYANYANYANYA",
+        "parameters" : 
+            { 
+            }
+    },
+"sessions" : {
+        "storage_uri" : "",
+        "expiration_interval" : 3600
     },
 "sqla" : 
     { 
@@ -19,12 +27,12 @@
         "parameters" : 
             { 
                 "encoding" : "utf-8",
-                "echo" : true
+                "echo" : false
             }
     },
 "test" :
     {
-        "test" : "dummy",
+        "test" : "dummy2",
         "rotest" : "dummy"
     }
 }

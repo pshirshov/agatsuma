@@ -15,7 +15,7 @@ class CoreSpell(AbstractSpell):
         core.registerOption("!core.debug", bool, "Debug mode")
         core.registerOption("!core.debug_level", int, "Debug level. Possible values: 0, 1 (debug message pump), 2 (debug threads)")
         core.registerOption("!core.workers", int, "Size of working processes pool")
-        core.registerOption("!core.settings_update_timeout", int, "Update timeout for workers")
+        core.registerOption("!core.settings_update_timeout", int, "Update timeout for workers (sec)")
         core.registerOption("!core.pidfile", unicode, "File with PIDs of all Agatsuma's processes")
 
     def postConfigure(self, core):
@@ -43,5 +43,41 @@ class TornadoSpell(AbstractSpell):
         
     def preConfigure(self, core):
         core.registerOption("!tornado.port", int, "Web server port")
-        core.registerOption("!tornado.message_pump_timeout", int, "Message pushing interval")
-        core.registerOption("!tornado.logger_pump_timeout", int, "Logging output interval")
+        core.registerOption("!tornado.cookie_secret", unicode, "cookie secret")
+        core.registerOption("!tornado.parameters", dict, "Kwarg parameters for tornado application")
+        core.registerOption("!tornado.message_pump_timeout", int, "Message pushing interval (msec)")
+        core.registerOption("!tornado.logger_pump_timeout", int, "Logging output interval (msec)")
+
+from agatsuma.interfaces import RequestSpell
+from agatsuma.session.base_session_manager import DummySessionManager
+
+class SessionSpell(AbstractSpell, RequestSpell):
+    def __init__(self):
+        config = {'info' : 'Agatsuma Session Spell',
+                  'deps' : ()
+                 }
+        AbstractSpell.__init__(self, 'agatsuma_session', config)
+        
+    def preConfigure(self, core):
+        core.registerOption("!sessions.storage_uri", unicode, "Storage URI")
+        core.registerOption("!sessions.expiration_interval", int, "Default session length in seconds")
+
+    def postConfigure(self, core):
+        log.core.info("Initializing Session Storage..")
+        self.sessman = DummySessionManager() # TODO: select appropriate session class
+        
+    def beforeRequestCallback(self, handler):
+        # TODO: on-demand loading strategy
+        cookie = handler.get_secure_cookie("AgatsumaSessId")
+        print "COOKIE>", cookie
+        session = None
+        if cookie:
+            session = self.sessman.load(cookie)
+        if not session:
+            session = self.sessman.new(handler.request.remote_ip, handler.request.headers["User-Agent"])
+        session.handler = handler
+        handler.session = session
+        handler.sessman = self.sessman
+        self.sessman.save(session)
+            
+       

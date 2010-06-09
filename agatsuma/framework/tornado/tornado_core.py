@@ -15,9 +15,12 @@ class TornadoCore(Core, tornado.web.Application):
    
     def __init__(self, appDir, appConfig, **kwargs):
         Core.__init__(self, appDir, appConfig, **kwargs)
-        tornado.web.Application.__init__(self, self.URIMap, 
-                                         debug = Settings.core.debug, # autoreload
-                                        )
+        tornadoSettings = {'debug': Settings.core.debug, # autoreload
+                           'cookie_secret' : str(Settings.tornado.cookie_secret),
+                          }
+        tornadoSettings.update(Settings.tornado.parameters)
+        tornado.web.Application.__init__(self, self.URIMap, **tornadoSettings)
+        
     def _prePoolInit(self):
         self.messagePumpNeeded = False
         from agatsuma.framework.tornado import MsgPumpHandler

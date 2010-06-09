@@ -35,7 +35,8 @@ else:
     entryPointName = sys.argv[1]
     core.runEntryPoint(entryPointName, sys.argv)
 
-# TODO: sessions
+# TODO: move TornadoSpell to separate file
+# TODO: sessions: on-demand, timestamp updates, expiration
 # TODO: url building
 # TODO: x-headers
 # TODO: settings saving (maybe into database)

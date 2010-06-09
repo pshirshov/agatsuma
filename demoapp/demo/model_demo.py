@@ -87,7 +87,7 @@ class ModelTestHandler(tornado.web.RequestHandler):
         newuser.posts.append(Post("Oh nyaa~!"))
         session.commit() 
         self.write("One user added")
-        
+
 class ModelMPTestHandler(AgatsumaHandler):
     @tornado.web.asynchronous
     def get(self):
@@ -104,6 +104,34 @@ class ModelMPTestHandler(AgatsumaHandler):
         newuser.posts.append(Post("Oh nyaa~!"))
         session.commit() 
         ret += "One user added"
+        return ret
+
+    def onWorkerCompleted(self, ret):
+        self.write(ret)
+        self.finish()         
+
+import multiprocessing
+
+class ModelMPStressTestHandler(AgatsumaHandler):
+    @tornado.web.asynchronous
+    def get(self):
+      self.write("Hello from MPWorkerHandler!<br>")
+      self.async(self.test, (1, ), self.onWorkerCompleted)
+
+    @FidelityWorker
+    def test(handlerId, *args):       
+        session=Core.SqlaSess
+        ret = "Hello from ModelMPStressTestHandler!"
+        for x in range(1,50000):
+            userscount = session.query(User).count()
+            newuser = User('user_%d' % (userscount + 1), 'qwerty')
+            session.add(newuser)
+            newuser.posts.append(Post("Oh nyaa~!"))
+            if not x % 50:
+                session.commit() 
+            if not x % 100:
+                log.core.info("%s: %d" % (str(multiprocessing.current_process().name), x))
+            #ret += "One user added"
         return ret
 
     def onWorkerCompleted(self, ret):
