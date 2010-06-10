@@ -11,6 +11,7 @@ class DummySessionManager(BaseSessionManager):
         self.sessions = {}     
 
     def cleanup(self):
+        log.sessions.critical("Cleaning not supported, destroying all")
         self.sessions = {}
 
     def destroyData(self, sessionId):

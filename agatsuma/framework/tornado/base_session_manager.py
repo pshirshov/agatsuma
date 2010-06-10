@@ -19,16 +19,15 @@ class BaseSessionManager(object):
         
     def new(self, ip, user_agent):
         newId = self._generate_session_id()
-        #sess = Session(newId, { 'timestamp' : datetime.datetime.now() })
         sess = Session(newId, {})
         sess.fill(ip, user_agent)
         return sess
         
     def load(self, sessionId):
         sessData = self.loadData(sessionId)
-        log.sessions.debug("Loaded session %s with data %s expired and destroyed" % (sessionId, str(sessData)))
+        log.sessions.debug("Loaded session %s with data %s loaded" % (sessionId, str(sessData)))
         if sessData:
-            if datetime.datetime.now() >= self.sessionDoomsday(sessData["timestamp"]):
+            if datetime.datetime.now() >= self._sessionDoomsday(sessData["timestamp"]):
                 log.sessions.debug("Session %s expired and destroyed" % sessionId)
                 self.destroyData(sessionId)
                 return None
@@ -60,9 +59,11 @@ class BaseSessionManager(object):
         pass
     
     def destroyData(self, sessionId):
+        """ destroys session in storage """
         pass
 
     def loadData(self, sessionId):
+        """ returns session data if exists, otherwise returns None """
         pass
 
 

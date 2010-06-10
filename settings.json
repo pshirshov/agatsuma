@@ -18,7 +18,7 @@
             }
     },
 "sessions" : {
-        "storage_uri" : "dummy+None",
+        "storage_uri" : "mongodb+mongodb://dbhost:27017/agatsuma",
         "expiration_interval" : 20
     },
 "sqla" : 

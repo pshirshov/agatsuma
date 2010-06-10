@@ -12,7 +12,6 @@ from agatsuma.core import Core
 from agatsuma.settings import Settings
 from agatsuma.log import log
 from agatsuma.interfaces import AbstractSpell, RequestSpell
-#from agatsuma.session.base_session_manager import DummySessionManager
 
 class SessionSpell(AbstractSpell, RequestSpell):
     def __init__(self):
@@ -29,7 +28,6 @@ class SessionSpell(AbstractSpell, RequestSpell):
 
     def postConfigure(self, core):
         log.core.info("Initializing Session Storage..")
-        # TODO: get settings and open connection in children
         rex = re.compile(r"^(\w+)\+(.*)$")
         match = rex.match(Settings.sessions.storage_uri)
         if match:
@@ -40,7 +38,6 @@ class SessionSpell(AbstractSpell, RequestSpell):
             self.sessman = spell.instantiateBackend(uri)
         else:
             raise Exception("Incorrect session storage URI")
-        #self.sessman = DummySessionManager() # TODO: select appropriate session class
         
     def beforeRequestCallback(self, handler):
         # TODO: on-demand loading strategy
@@ -50,14 +47,13 @@ class SessionSpell(AbstractSpell, RequestSpell):
         if cookie:
             session = self.sessman.load(cookie)
             if session:
-                print "here"
                 session.handler = handler
                 # Update timestamp if left time < than spent time
                 timestamp = session["timestamp"]
                 now = datetime.datetime.now() 
                 print "spent", (now - timestamp)
-                print "left", (self.sessman.sessionDoomsday(timestamp)- now)
-                if (now - timestamp) >= (self.sessman.sessionDoomsday(timestamp)- now):
+                print "left", (self.sessman._sessionDoomsday(timestamp)- now)
+                if (now - timestamp) >= (self.sessman._sessionDoomsday(timestamp)- now):
                     print "Updating session's timestamp"
                     self.sessman.save(session)
         if not session:
