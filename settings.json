@@ -19,7 +19,7 @@
     },
 "sessions" : {
         "storage_uri" : "",
-        "expiration_interval" : 3600
+        "expiration_interval" : 20
     },
 "sqla" : 
     { 

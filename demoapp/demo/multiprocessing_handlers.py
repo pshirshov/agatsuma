@@ -61,15 +61,16 @@ class MPWorkerHandler(AgatsumaHandler):
     """
     @tornado.web.asynchronous
     def get(self):
-      print "GET>", self.session.get("govno", None)
+      print "GET>", self.session.get("sesskey", None)
       self.session["sesskey"] = "sessval"
-      self.sessman.save(self.session)
-      self.sessman.delete(self.session)
+      print "GET2>", self.session.get("sesskey", None)
+      self.session.save()
+      #self.sessman.delete(self.session)
       self.write("Hello from MPWorkerHandler!<br>")
       self.async(self.test, (1, ), self.onWorkerCompleted)
 
     @FidelityWorker
-    def test(handlerId, *args):       
+    def test(handlerId, *args):
         for x in range(1, 3):
             log.core.info("test %d" % x)
             time.sleep(1)

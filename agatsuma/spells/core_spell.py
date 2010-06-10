@@ -50,6 +50,7 @@ class TornadoSpell(AbstractSpell):
 
 from agatsuma.interfaces import RequestSpell
 from agatsuma.session.base_session_manager import DummySessionManager
+import datetime
 
 class SessionSpell(AbstractSpell, RequestSpell):
     def __init__(self):
@@ -73,11 +74,23 @@ class SessionSpell(AbstractSpell, RequestSpell):
         session = None
         if cookie:
             session = self.sessman.load(cookie)
+            if session:
+                print "here"
+                session.handler = handler
+                # Update timestamp if left time < than spent time
+                timestamp = session["timestamp"]
+                now = datetime.datetime.now() 
+                print "spent", (now - timestamp)
+                print "left", (self.sessman.sessionDoomsday(timestamp)- now)
+                if (now - timestamp) >= (self.sessman.sessionDoomsday(timestamp)- now):
+                    print "Updating session's timestamp"
+                    self.sessman.save(session)
         if not session:
             session = self.sessman.new(handler.request.remote_ip, handler.request.headers["User-Agent"])
-        session.handler = handler
+            session.handler = handler
+            self.sessman.save(session)
         handler.session = session
-        handler.sessman = self.sessman
-        self.sessman.save(session)
-            
+        session.sessman = self.sessman
+        #handler.sessman = self.sessman
+                    
        

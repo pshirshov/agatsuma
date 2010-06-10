@@ -32,6 +32,12 @@ class BaseSessionManager(object):
     def delete(self, session):
         pass
 
+    def destroyData(self, sessionId):
+        pass
+
+    def loadData(self, sessionId):
+        pass
+
 import datetime
 import copy
 
@@ -41,14 +47,22 @@ class DummySessionManager(BaseSessionManager):
        
     def new(self, ip, user_agent):
         newId = self._generate_session_id()
-        sess = Session(newId, {}) #, self, None)
+        #sess = Session(newId, { 'timestamp' : datetime.datetime.now() }) #, self, None)
+        sess = Session(newId, {})
         sess.fill(ip, user_agent)
         return sess
-        
+
+    def sessionDoomsday(self, moment):
+        return moment + datetime.timedelta(seconds=Settings.sessions.expiration_interval)
+
     def load(self, sessionId):
-        sessData = self.sessions.get(sessionId, None)
+        sessData = self.loadData(sessionId)
         print "LOADED>", sessData
         if sessData:
+            if datetime.datetime.now() >= self.sessionDoomsday(sessData["timestamp"]):
+                self.destroyData(sessionId)
+                print "destroying session"
+                return None
             sess = Session(sessionId, sessData) #, self, None)    
             sess.saved = True
             return sess
@@ -64,8 +78,10 @@ class DummySessionManager(BaseSessionManager):
         
     def save(self, session):
         print "SAVE>", session.data
-        self.sessions[session.id] = session.data
+        session["timestamp"] = datetime.datetime.now()
+        self.saveData(session.id, session.data)
         if session.handler and not session.cookieSent:
+            print "setting cookie"
             session.handler.set_secure_cookie(u"AgatsumaSessId", session.id)
             session.cookieSent = True
         else:
@@ -74,7 +90,7 @@ class DummySessionManager(BaseSessionManager):
         
     def delete(self, session):
         if session.id in self.sessions:
-            del self.sessions[session.id]
+            self.destroyData(session.id)
             if session.handler:
                 session.handler.clear_cookie("AgatsumaSessId")
             else:
@@ -82,3 +98,13 @@ class DummySessionManager(BaseSessionManager):
         else:
             print "deleting deleted"
         session.saved = False
+
+    def destroyData(self, sessionId):
+        del self.sessions[sessionId]
+
+    def loadData(self, sessionId):
+        return self.sessions.get(sessionId, None)
+
+    def saveData(self, sessionId, data):
+        self.sessions[sessionId] = data
+
