@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import multiprocessing
 from multiprocessing import Queue as MPQueue
 
@@ -14,6 +15,12 @@ class TornadoCore(Core, tornado.web.Application):
     mqueue = None
    
     def __init__(self, appDir, appConfig, **kwargs):
+        spellsDirs = []
+        spellsDirs.extend ([os.path.join('agatsuma', 'framework', 'tornado', 'spells'),
+                            os.path.join('agatsuma', 'framework', 'tornado', 'session_backends'),
+                            ])
+        spellsDirs.extend(kwargs.get('spellsDirs', []))
+        kwargs['spellsDirs'] = spellsDirs
         Core.__init__(self, appDir, appConfig, **kwargs)
         tornadoSettings = {'debug': Settings.core.debug, # autoreload
                            'cookie_secret' : str(Settings.tornado.cookie_secret),

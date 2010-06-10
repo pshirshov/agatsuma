@@ -58,7 +58,10 @@ class Core(object):
         
         self.URIMap = []
         self.appName = kwargs.get("appName", None)
-        self.appSpells = kwargs.get("appSpells", ["core_spells", "core_filters"])
+        self.appSpells = []
+        self.appSpells.extend(kwargs.get("appSpells", [])) #"core_spells", "core_filters"])
+        self.spellsDirs = []
+        self.spellsDirs.extend(kwargs.get("spellsDirs", []))
         self.spells = []
         self.spellsDict = {}
         self.filterStack = []
@@ -69,9 +72,13 @@ class Core(object):
         self.mpHandlerInstances = WeakValueDictionary()
         prohibitedSpells = kwargs.get("prohibitedSpells", [])
         enumerator = Enumerator(self, appDir, prohibitedSpells)
-        essentialSpellSpaces = self.appSpells
-        essentialSpellSpaces = map(lambda s: "agatsuma.spells.%s" % s, essentialSpellSpaces)
-        enumerator.enumerateSpells(essentialSpellSpaces)
+        
+        #essentialSpellSpaces = self.appSpells
+        #essentialSpellSpaces = map(lambda s: "agatsuma.spells.%s" % s, essentialSpellSpaces)
+        
+        #libRoot = os.path.realpath(os.path.dirname(__file__))
+        self.spellsDirs.extend ([os.path.join('agatsuma', 'spells')]) #[os.path.join(libRoot, 'spells')])
+        enumerator.enumerateSpells(self.appSpells, self.spellsDirs)
 
         from agatsuma.interfaces.abstract_spell import AbstractSpell
         log.core.info("Initializing spells...")

@@ -1,40 +1,20 @@
 # -*- coding: utf-8 -*-
-try:
-    import cPickle as pickle
-except:
-    import pickle
-
-import base64
 import collections
-import datetime
-import os
-#import time
-
-"""
-import csv
-import re
-import tempfile
-import types
-"""
 
 """
     Inspired by 
     http://github.com/milancermak/tornado/blob/master/tornado/session.py
 """
 
-
-
 class Session(collections.MutableMapping):
     def __init__(self, sess_id, data): #, manager, handler):
         self.id = sess_id
         self.data = data
-        #self.data["timestamp"] = datetime.datetime.now() 
-        #self.manager = manager
         self.handler = None
+        self.sessman = None
         self.saved = False
         self.cookieSent = False
-        self.sessman = None
-
+        
     def fill(self, ip, user_agent):
         self.data["ip"] = ip
         self.data["user_agent"] = user_agent

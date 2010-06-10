@@ -6,15 +6,19 @@ import sys
 from agatsuma.framework.tornado import TornadoCore
 from agatsuma.log import log
 
-appRoot = os.path.join(os.path.dirname(__file__), 'demoapp')
-appRoot = os.path.realpath(appRoot)
-appConfig = "settings.json"
+#appRoot = os.path.join(os.path.dirname(__file__), 'demoapp')
+#appRoot = os.path.join(os.path.dirname(__file__), 'demoapp')
+#appRoot = os.path.realpath(appRoot)
 
-print sys.argv
+# Very important: app root path should also be namespace name
+# So if we replace all '.' to '/' in appRoot we should get importable namespace
+appRoot = 'demoapp' 
+appConfig = "settings.json"
 
 core = TornadoCore(appRoot, appConfig, 
             appName = "Agatsuma Demo Application",
-            appSpells = ["core_spell", "core_filters", "core_sqla"],
+            #appSpells = ["core_spell", "core_filters", "core_sqla", 
+            #            "core_tornado", "tornado_session"],
             #prohibitedSpells = ["spellspace.py", "demoapp.demo.multiprocessing_handlers"] # file names or namespaces
             )
 
@@ -35,7 +39,6 @@ else:
     entryPointName = sys.argv[1]
     core.runEntryPoint(entryPointName, sys.argv)
 
-# TODO: move TornadoSpell to separate file
 # TODO: sessions: on-demand, timestamp updates, expiration
 # TODO: url building
 # TODO: x-headers

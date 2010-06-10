@@ -19,39 +19,45 @@ class Enumerator(object):
         self.core.spells.append(spell)
         self.core.spellsDict[spell.spellId()] = spell
 
-    def enumerateSpells(self, essentialSpellSpaces):
-        spellsDir = self.appDir #os.path.realpath(os.path.join(self.OPT.appPath, 'controllers'))
-        basicNamespace = os.path.basename(spellsDir)
+    def enumerateSpells(self, essentialSpellSpaces, additionalSpellPaths):
         if not self.core.appName:
-            self.core.appName = basicNamespace[0].capitalize() + basicNamespace[1:]
-        #sys.path.append(spellsDir)
+            self.core.appName = self.appDir[0].capitalize() + self.appDir[1:]
+        spellsDirs = [self.appDir]
+        spellsDirs.extend(additionalSpellPaths)
+        
         log.core.debug("System paths:")
         for p in sys.path:
             log.core.debug("* %s" % p)    
-            
         log.core.info("Collecting names of possible spells...")
-        log.core.info("Spells root directory: %s" % spellsDir)
-        log.core.info("Spells namespace: %s" % basicNamespace)
-
+        
         namespacesToImport = []
         namespacesToImport.extend(essentialSpellSpaces)
-        for root, dirs, files in os.walk(spellsDir):
-            def useFilePred(file):
-                if file in self.prohibitedSpells:
-                    log.core.warning('File ignored due app settings: %s' % file)
-                    return False
-                return True
-            fileList = filter(lambda x: x.endswith('.py') and not x.startswith('__'), files)
-            fileList = filter(useFilePred, fileList)
-            fileList = map(lambda x: os.path.join(root, x), fileList)
-            fileList = map(lambda x: os.path.splitext(x)[0], fileList)
-            fileList = map(lambda x: x.replace(spellsDir + os.path.sep, ''), fileList)
-            fileList = map(lambda x: x.replace(os.path.sep, '.'), fileList)
-            fileList = map(lambda x: "%s.%s" % (basicNamespace, x), fileList)
-            namespacesToImport.extend(fileList)
+        
+        for spellsDir in spellsDirs:
+            #spellsDir =  #os.path.realpath(os.path.join(self.OPT.appPath, 'controllers'))
+            #sys.path.append(spellsDir)          
+
+            basicNamespace = spellsDir.replace(os.path.sep, '.') #os.path.basename(spellsDir)                
+            log.core.info("Processing spells directory: %s" % spellsDir)
+            log.core.info("Spells namespace: %s" % basicNamespace)
+
+            for root, dirs, files in os.walk(spellsDir):
+                def useFilePred(file):
+                    if file in self.prohibitedSpells:
+                        log.core.warning('File ignored due app settings: %s' % file)
+                        return False
+                    return True
+                fileList = filter(lambda x: x.endswith('.py') and not x.startswith('__'), files)
+                fileList = filter(useFilePred, fileList)
+                fileList = map(lambda x: os.path.join(root, x), fileList)
+                fileList = map(lambda x: os.path.splitext(x)[0], fileList)
+                fileList = map(lambda x: x.replace(spellsDir + os.path.sep, ''), fileList)
+                fileList = map(lambda x: x.replace(os.path.sep, '.'), fileList)
+                fileList = map(lambda x: "%s.%s" % (basicNamespace, x), fileList)
+                namespacesToImport.extend(fileList)
 
         spells = {}
-        print namespacesToImport
+        log.core.debug('Collected namespaces: %s' % str(namespacesToImport))
         log.core.info('Started spells enumerator...')
         for nsToImport in namespacesToImport:
             if not nsToImport in self.prohibitedSpells:
