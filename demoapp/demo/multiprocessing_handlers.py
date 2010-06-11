@@ -7,7 +7,7 @@ from agatsuma.core import Core
 from agatsuma.settings import Settings
 from agatsuma.log import log
 
-from agatsuma.interfaces import AbstractSpell, HandlingSpell, FilteringSpell, RequestSpell
+from agatsuma.interfaces import AbstractSpell, HandlingSpell, FilteringSpell, RequestSpell, SessionHandler
 from agatsuma.framework.tornado import AgatsumaHandler, MsgPumpHandler, FidelityWorker
 
 class NullSpell(AbstractSpell, FilteringSpell):
@@ -53,7 +53,7 @@ class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
                     (r"/test/mp/timer", MPWorkerTimerHandler),
                 ])
     
-class MPWorkerHandler(AgatsumaHandler):
+class MPWorkerHandler(AgatsumaHandler, SessionHandler):
     """
     Handler with worker that perform operations in separate 
     process. Useful for long-running operations that

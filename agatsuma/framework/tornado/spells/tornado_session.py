@@ -12,6 +12,7 @@ from agatsuma.core import Core
 from agatsuma.settings import Settings
 from agatsuma.log import log
 from agatsuma.interfaces import AbstractSpell, RequestSpell
+from agatsuma.interfaces import SessionHandler
 
 class SessionSpell(AbstractSpell, RequestSpell):
     def __init__(self):
@@ -40,27 +41,27 @@ class SessionSpell(AbstractSpell, RequestSpell):
             raise Exception("Incorrect session storage URI")
         
     def beforeRequestCallback(self, handler):
-        # TODO: on-demand loading strategy
-        cookie = handler.get_secure_cookie("AgatsumaSessId")
-        print "COOKIE>", cookie
-        session = None
-        if cookie:
-            session = self.sessman.load(cookie)
-            if session:
+        if isinstance(handler, SessionHandler):
+            cookie = handler.get_secure_cookie("AgatsumaSessId")
+            log.sessions.debug("Loading session for %s" % cookie)
+            session = None
+            if cookie:
+                session = self.sessman.load(cookie)
+                if session:
+                    session.handler = handler
+                    # Update timestamp if left time < than elapsed time
+                    timestamp = session["timestamp"]
+                    now = datetime.datetime.now() 
+                    elapsed = now - timestamp
+                    left = (self.sessman._sessionDoomsday(timestamp)- now)
+                    if elapsed >= left:
+                        log.sessions.debug("Updating timestamp for session %s (E: %s, L: %s)" % (cookie, str(elapsed), str(left)))
+                        self.sessman.save(session)
+            if not session:
+                session = self.sessman.new(handler.request.remote_ip, 
+                                           handler.request.headers["User-Agent"])
                 session.handler = handler
-                # Update timestamp if left time < than spent time
-                timestamp = session["timestamp"]
-                now = datetime.datetime.now() 
-                print "spent", (now - timestamp)
-                print "left", (self.sessman._sessionDoomsday(timestamp)- now)
-                if (now - timestamp) >= (self.sessman._sessionDoomsday(timestamp)- now):
-                    print "Updating session's timestamp"
-                    self.sessman.save(session)
-        if not session:
-            session = self.sessman.new(handler.request.remote_ip, 
-                                       handler.request.headers["User-Agent"])
-            session.handler = handler
-            self.sessman.save(session)
-        handler.session = session
-        session.sessman = self.sessman
+                self.sessman.save(session)
+            handler.session = session
+            session.sessman = self.sessman
                     

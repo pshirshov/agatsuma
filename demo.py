@@ -34,7 +34,6 @@ else:
     entryPointName = sys.argv[1]
     core.runEntryPoint(entryPointName, sys.argv)
 
-# TODO: sessions: on-demand
 # TODO: session backends: memcache, database
 
 # TODO: url building
