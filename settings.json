@@ -5,7 +5,7 @@
         "debug_level" : 1,
         "workers" : 2,
         "settings_update_timeout" : 15,
-	"settings_storage" : "mongotable://agatsuma_settings",
+	"settings_storage" : "mongotable://agatsuma_data/settings",
         "pidfile" : "pidfile~"
     },
 "tornado" :
@@ -19,7 +19,7 @@
             }
     },
 "sessions" : {
-        "storage_uri" : "mongo+mongotable://agatsuma_sessions",
+        "storage_uri" : "mongo+mongotable://agatsuma_data/sessions",
         "expiration_interval" : 20
     },
 "sqla" : 
@@ -34,7 +34,7 @@
 "mongo" : 
     {
 	"uri" : "mongodb://dbhost:27017",
-	"databases" : ["agatsuma_sessions", "agatsuma_settings"]
+	"db_collections" : ["agatsuma_data"]
     },
 "test" :
     {

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pymongo
 import re
 import time
 import datetime
@@ -36,17 +35,20 @@ class MongoSessionManager(BaseSessionManager):
 
     def initConnection(self):
         log.sessions.info("Initializing MongoDB session backend using URI '%s'" % self.uri)
-        connData = self._parse_connection_details(self.uri)
+        connData = MongoSessionManager._parseMongoTableUri(self.uri)
         mongoSpell = Core.instance.spellsDict["agatsuma_mongodb"]
-        self.db = mongoSpell.agatsuma_sessions
+        self.connection = mongoSpell.connection
+        self.dbCollection = getattr(mongoSpell, connData[0])
+        self.db = getattr(self.dbCollection, connData[1])
         #self.connection = pymongo.Connection(connData[0], int(connData[1]))
         #self.dbSet = self.connection[connData[2]]
         #self.db = self.dbSet.sessions
         
     @staticmethod
-    def _parse_connection_details(details):
-        match = re.match('^mongotable://(\w+)$', details)
-        return match.group(1)
+    def _parseMongoTableUri(details):
+        # mongotable://collection/table
+        match = re.match('^mongotable://(\w+)/(\w+)$', details)
+        return match.group(1), match.group(2)
 
     def cleanup(self):
         self.db.remove({'expires': {'$lte': int(time.time())}})
@@ -102,31 +104,3 @@ class MongoSessionSpell(AbstractSpell, SessionBackendSpell):
         log.core.info("Cleaning old sessions in MongoDB")
         self.managerInstance.cleanup()
 
-class MongoDBSpell(AbstractSpell):
-    def __init__(self):
-        config = {'info' : 'MongoDB support',
-                  'deps' : ()
-                 }
-        AbstractSpell.__init__(self, 'agatsuma_mongodb', config)
-        
-    def preConfigure(self, core):
-        core.registerOption("!mongo.uri", unicode, "MongoDB host URI")
-        core.registerOption("!mongo.databases", list, "MongoDB databases to use")
-
-    def postConfigure(self, core):
-        self.initConnection()
-        
-    def initConnection(self):
-        log.core.info("Initializing MongoDB connections on URI '%s'" % Settings.mongo.uri)
-        connData = self._parse_connection_details(Settings.mongo.uri)
-        self.connection = pymongo.Connection(connData[0], int(connData[1]))
-        for dbName in Settings.mongo.databases:
-            assert type(dbName) is unicode
-            setattr(self, dbName, self.connection[dbName])
-        
-    @staticmethod
-    def _parse_connection_details(details):
-        # mongodb://[host[:port]]/db
-        match = re.match(r'^mongodb://([\S|\.]+?)?(?::(\d+))?$', details)
-        return  match.group(1), match.group(2) #, match.group(3) # host, port, database
-        
