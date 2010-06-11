@@ -35,13 +35,13 @@ else:
     core.runEntryPoint(entryPointName, sys.argv)
 
 # TODO: session backends: memcache, database
-# TODO: remove SQLA variables from core
 # TODO: pool disabling
 # TODO: settings checks/fixes
+# TODO: version hook
+# TODO: settings saving (maybe into database)
 
 # TODO: url building
 # TODO: x-headers
-# TODO: settings saving (maybe into database)
 # TODO: Unit tests
 # TODO: Sphinx documentation
 
@@ -50,6 +50,6 @@ else:
 # TODO: applyFilters    
 
 # TODO: customized errors handling (Tornado patching needed)
-# TODO: py3k (when Tornado will be ported)
 # TODO: Tornado forking support (when new Tornado will be released)
 # TODO: update options via HTTP from master server (or propagate to set of slaves)
+# TODO: py3k (when Tornado will be ported)
