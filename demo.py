@@ -35,6 +35,9 @@ else:
     core.runEntryPoint(entryPointName, sys.argv)
 
 # TODO: session backends: memcache, database
+# TODO: remove SQLA variables from core
+# TODO: pool disabling
+# TODO: settings checks/fixes
 
 # TODO: url building
 # TODO: x-headers

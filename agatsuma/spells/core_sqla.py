@@ -42,16 +42,16 @@ class SQLASpell(AbstractSpell):
         spells = core._implementationsOf(ModelSpell)
         if spells:
             log.core.info("Initializing SQLAlchemy engine and session...")
-            Core.SqlaEngine = sa.create_engine(Settings.sqla.uri, **Settings.sqla.parameters)
+            self.SqlaEngine = sa.create_engine(Settings.sqla.uri, **Settings.sqla.parameters)
             SessionClass = orm.sessionmaker()
             Session = orm.scoped_session(SessionClass)
-            Session.configure(bind=core.SqlaEngine)
-            Core.SqlaSess = Session()
+            Session.configure(bind=self.SqlaEngine)
+            self.SqlaSess = Session()
             log.core.info("Initializing SQLAlchemy data model..")
             for spell in spells:
                 spell.initMetadata(SQLASpell.protoMeta)
             SQLASpell.meta = SQLASpell.metaCopy()
-            SQLASpell.meta.bind = core.SqlaEngine
+            SQLASpell.meta.bind = self.SqlaEngine
             log.core.info("Setting up ORM...")
             for spell in spells:
                 spell.setupORM(core)

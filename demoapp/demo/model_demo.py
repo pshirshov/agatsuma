@@ -63,6 +63,9 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
         postProps = {'user' : orm.relation(User)}
         self.registerMapping(core, User, self.users, properties = userProps)
         self.registerMapping(core, Post, self.postsTable, properties = postProps)   
+
+        sqlaSpell = Core.instance.spellsDict["agatsuma_sqla"]
+        ModelDemoSpell.SqlaSess = sqlaSpell.SqlaSess
         
     def initRoutes(self, map):
         map.extend([(r"/test/model/test", ModelTestHandler),
@@ -71,15 +74,16 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
        
     def performDeployment(self, core):
         log.core.debug("Hello from the demo deployment callback. Now we can add objects into DB")
-        session=core.SqlaSess # self.application == Core.instance
+        session = getSession()
         userscount = session.query(User).count()
         newuser = User('user_%d' % (userscount + 1), 'qwerty')
         session.add(newuser)
         session.commit() 
+
         
 class ModelTestHandler(tornado.web.RequestHandler):
     def get(self):
-        session=self.application.SqlaSess # self.application == Core.instance
+        session = ModelDemoSpell.SqlaSess
         userscount = session.query(User).count()
         self.write("Hello from ModelTestHandler.<br/>Current users count is %d<br/>" % userscount)
         newuser = User('user_%d' % (userscount + 1), 'qwerty')
@@ -96,7 +100,7 @@ class ModelMPTestHandler(AgatsumaHandler):
 
     @FidelityWorker
     def test(handlerId, *args):       
-        session=Core.SqlaSess
+        session=ModelDemoSpell.SqlaSess
         userscount = session.query(User).count()
         ret = "Hello from ModelMPTestHandler.<br/>Current users count is %d<br/>" % userscount
         newuser = User('user_%d' % (userscount + 1), 'qwerty')
@@ -120,7 +124,7 @@ class ModelMPStressTestHandler(AgatsumaHandler):
 
     @FidelityWorker
     def test(handlerId, *args):       
-        session=Core.SqlaSess
+        session=ModelDemoSpell.SqlaSess
         ret = "Hello from ModelMPStressTestHandler!"
         for x in range(1,50000):
             userscount = session.query(User).count()
