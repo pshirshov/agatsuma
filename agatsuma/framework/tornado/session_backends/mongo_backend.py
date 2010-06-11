@@ -7,6 +7,7 @@ import datetime
 
 from agatsuma.log import log
 from agatsuma.settings import Settings
+from agatsuma.core import Core
 from agatsuma.interfaces import AbstractSpell
 from agatsuma.framework.tornado import SessionBackendSpell
 from agatsuma.framework.tornado import BaseSessionManager
@@ -36,15 +37,16 @@ class MongoSessionManager(BaseSessionManager):
     def initConnection(self):
         log.sessions.info("Initializing MongoDB session backend using URI '%s'" % self.uri)
         connData = self._parse_connection_details(self.uri)
-        self.connection = pymongo.Connection(connData[0], int(connData[1]))
-        self.dbSet = self.connection[connData[2]]
-        self.db = self.dbSet.sessions
+        mongoSpell = Core.instance.spellsDict["agatsuma_mongodb"]
+        self.db = mongoSpell.agatsuma_sessions
+        #self.connection = pymongo.Connection(connData[0], int(connData[1]))
+        #self.dbSet = self.connection[connData[2]]
+        #self.db = self.dbSet.sessions
         
     @staticmethod
     def _parse_connection_details(details):
-        # mongodb://[host[:port]]/db
-        match = re.match('^mongodb://([\S|\.]+?)?(?::(\d+))?/(\S+)$', details)
-        return match.group(1), match.group(2), match.group(3) # host, port, database
+        match = re.match('^mongotable://(\w+)$', details)
+        return match.group(1)
 
     def cleanup(self):
         self.db.remove({'expires': {'$lte': int(time.time())}})
