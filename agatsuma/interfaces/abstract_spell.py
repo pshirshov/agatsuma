@@ -40,6 +40,9 @@ class AbstractSpell(object):
 
     def postConfigure(self, core):
         pass
-
+    
+    def prePoolInit(self, core):
+        pass
+    
     def postPoolInit(self, core):
         pass

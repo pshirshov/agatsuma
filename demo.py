@@ -38,6 +38,7 @@ else:
 # TODO: settings checks/fixes
 # TODO: version hook
 # TODO: settings saving (maybe into database)
+# TODO: settings backends: database
 
 # TODO: url building
 # TODO: x-headers
@@ -52,3 +53,4 @@ else:
 # TODO: Tornado forking support (when new Tornado will be released)
 # TODO: update options via HTTP from master server (or propagate to set of slaves)
 # TODO: py3k (when Tornado will be ported)
+# TODO: multiple sessions backends

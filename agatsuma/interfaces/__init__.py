@@ -6,6 +6,8 @@ from model_spell import ModelSpell
 from filtering_spell import FilteringSpell
 from session_handler import SessionHandler
 from session import Session
+from settings_backend_spell import SettingsBackendSpell
+from settings_backend import SettingsBackend
 
 __all__ = ["AbstractSpell", 
            "HandlingSpell", 
@@ -13,5 +15,7 @@ __all__ = ["AbstractSpell",
            "ModelSpell", 
            "FilteringSpell", 
            "Session", 
-           "SessionHandler"
+           "SessionHandler",
+           "SettingsBackendSpell",
+           "SettingsBackend",
           ]

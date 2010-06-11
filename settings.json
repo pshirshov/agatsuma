@@ -1,11 +1,12 @@
 {
 "core" :
     {
+	"recovery" : false,
         "debug": true,
         "debug_level" : 1,
         "workers" : -2,
         "settings_update_timeout" : 15,
-	"settings_storage" : "mongotable://agatsuma_data/settings",
+	"settings_storage_uri" : "mongo+mongotable://agatsuma_data/settings",
         "pidfile" : "pidfile~"
     },
 "tornado" :

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import json
+
+import re
 import datetime
 import multiprocessing
 
@@ -36,8 +38,6 @@ class DictAccessProxy(object):
             else:
                 self.__dict[name] = value
                 Settings.setConfigData(Settings.settings)
-                #print "correct assignment"
-                # TODO: signals about change && updates
         else:
             object.__setattr__(self, name, value)
 
@@ -46,14 +46,12 @@ class DictAccessProxy(object):
 
 class SettingsMeta(type):
     def __setattr__(stype, name, value):
-       #print "@__set__", stype, name, value
        if name in type.__getattribute__(stype, "settings"):
            raise Exception("It's not allowed to overwrite settings group")
        else:
            type.__setattr__(stype, name, value)
 
     def __getattribute__(stype, name):
-        #print "@__get__", stype, name
         settings = type.__getattribute__(stype, "settings")
         if name in settings:
             return DictAccessProxy(name, # group
@@ -69,17 +67,36 @@ class Settings(object):
     settings = {}
     roSettings = []
     types = {}
+    recovery = False
     
-    def __init__(self, config, descriptors):
+    def __setattr__(self, name, value):
+        if name in type.__getattribute__(Settings, "settings"):
+            raise Exception("It's now allowed to overwrite settings group")
+        else:
+            object.__setattr__(self, name, value)
+
+    def __getattr__(self, name):
+        settings = type.__getattribute__(Settings, "settings")
+        if name in settings:
+            return DictAccessProxy(name, # group
+                                   settings[name], 
+                                   Settings.roSettings[name], 
+                                   Settings.types[name],
+                                   Settings.comments[name])
+        else:
+            return object.__getattribute__(self, name)
+    
+    def __init__(self, config, descriptors, **kwargs):
         conf = open(config, 'r')
         settings = conf.read()
+        Settings.recovery = kwargs.get('recovery', False)
         conf.close()
         log.core.info("Loading config '%s'" % config)
         self.parseSettings(settings, descriptors)
         log.core.info('Config loaded')
     
     def parseSettings(self, settings, descriptors):
-        settings = json.loads(settings)
+        settings = self.load(settings)
         problems = []
         newsettings = {}
         rosettings = {}
@@ -99,6 +116,9 @@ class Settings(object):
                 continue
             value = groupDict[name]
             rstype = type(value)
+            #if stype == str and type(value) == unicode:
+            #    rstype = unicode
+            #    value = str(value)
             fullname = '%s.%s' % (group, name)
             if rstype != stype:
                 problems.append("Setting '%s' (%s) has incorrect type '%s' instead of '%s'" % 
@@ -121,25 +141,21 @@ class Settings(object):
             log.core.error('\n'.join(problems))
             raise Exception("Can't load settings")
         log.core.info('%d settings found in config, %d are actual (%d read-only)' % (len(descriptors), actual, rocount))
-        #Settings.settings = newsettings
         Settings.roSettings = rosettings
         Settings.types = types
         Settings.comments = comments
         Settings.descriptors = descriptors
-        Settings.setConfigData(newsettings) #Settings.settings)
+        Settings.setConfigData(newsettings)
 
     @staticmethod
-    def setConfigData(settings, updateShared = True):#, timestamp = None):
+    def setConfigData(settings, updateShared = True):
         from agatsuma.core import Core
-        #print settings
-        #print type(settings)
-        #if not timestamp:
         process = multiprocessing.current_process()
         log.core.info("Installing new config data in process '%s' with PID %d" % (str(process.name), process.pid))
-        if settings["core"]["debug_level"] > 0:
-            log.core.debug("New config: %s" % str(settings))
         timestamp = datetime.datetime.now()
         Settings.settings.update(settings)
+        if settings["core"]["debug_level"] > 0:
+            log.core.debug("Updated config: %s" % str(Settings.settings))
         Settings.configData = {"data": settings,
                                "update" : timestamp,
                               }
@@ -147,26 +163,15 @@ class Settings(object):
             log.core.info("Propagating new config data to another processes")
             Core.sharedConfigData.update(Settings.configData)
 
-    @staticmethod
-    def dump():
+    def load(self, settings):
+        """
+        Should return json-like dictionary of settings
+        """
+        return json.loads(settings)
+    
+    def dump(self):
         return json.dumps(Settings.settings)
 
-    def __setattr__(self, name, value):
-        #print "__set__", name, value
-        if name in type.__getattribute__(Settings, "settings"):
-            raise Exception("It's now allowed to overwrite settings group")
-        else:
-            object.__setattr__(self, name, value)
-
-    def __getattr__(self, name):
-        settings = type.__getattribute__(Settings, "settings")
-        if name in settings:
-            return DictAccessProxy(name, # group
-                                   settings[name], 
-                                   Settings.roSettings[name], 
-                                   Settings.types[name],
-                                   Settings.comments[name])
-        else:
-            return object.__getattribute__(self, name)
-
-
+    @staticmethod
+    def saveSettings():
+        pass

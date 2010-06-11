@@ -92,7 +92,10 @@ class Core(object):
         log.core.info("Spells initialization completed")    
         
         self.removePid()
+        log.core.info("Calling pre-pool-init routines...")
         self._prePoolInit()
+        for spell in self._implementationsOf(AbstractSpell):
+            spell.prePoolInit(self)
 
         self.pool = None
         workers = Settings.core.workers
@@ -101,7 +104,9 @@ class Core(object):
             self.pool = Pool(processes=workers, 
                              initializer = workerInitializer, 
                              initargs = (Settings.core.settings_update_timeout, ))
-        
+        else:
+            log.core.info("Pool initiation skipped due negative workers count")
+            
         log.core.info("Calling post-pool-init routines...")
         for spell in self._implementationsOf(AbstractSpell):
             spell.postPoolInit(self)

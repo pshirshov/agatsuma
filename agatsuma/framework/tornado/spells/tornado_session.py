@@ -27,7 +27,7 @@ class SessionSpell(AbstractSpell, RequestSpell):
         core.registerOption("!sessions.storage_uri", unicode, "Storage URI")
         core.registerOption("!sessions.expiration_interval", int, "Default session length in seconds")
 
-    def postConfigure(self, core):
+    def prePoolInit(self, core):
         log.core.info("Initializing Session Storage..")
         rex = re.compile(r"^(\w+)\+(.*)$")
         match = rex.match(Settings.sessions.storage_uri)
