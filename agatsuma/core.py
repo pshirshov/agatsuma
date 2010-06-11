@@ -93,12 +93,14 @@ class Core(object):
         
         self.removePid()
         self._prePoolInit()
-        
+
+        self.pool = None
         workers = Settings.core.workers
-        log.core.debug("Starting %d workers..." % workers)
-        self.pool = Pool(processes=workers, 
-                         initializer = workerInitializer, 
-                         initargs = (Settings.core.settings_update_timeout, ))
+        if workers >= 0:
+            log.core.debug("Starting %d workers..." % workers)
+            self.pool = Pool(processes=workers, 
+                             initializer = workerInitializer, 
+                             initargs = (Settings.core.settings_update_timeout, ))
         
         log.core.info("Calling post-pool-init routines...")
         for spell in self._implementationsOf(AbstractSpell):
@@ -136,7 +138,8 @@ class Core(object):
     
     def stop(self):
         log.core.info("Stopping Agatsuma...")
-        self.pool.close()
+        if self.pool:
+            self.pool.close()
         self._stop()
         self.removePid()
     

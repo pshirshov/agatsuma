@@ -35,7 +35,6 @@ else:
     core.runEntryPoint(entryPointName, sys.argv)
 
 # TODO: session backends: memcache, database
-# TODO: pool disabling
 # TODO: settings checks/fixes
 # TODO: version hook
 # TODO: settings saving (maybe into database)

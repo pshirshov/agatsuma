@@ -14,7 +14,7 @@ class CoreSpell(AbstractSpell):
     def preConfigure(self, core):
         core.registerOption("!core.debug", bool, "Debug mode")
         core.registerOption("!core.debug_level", int, "Debug level. Possible values: 0, 1 (debug message pump), 2 (debug threads)")
-        core.registerOption("!core.workers", int, "Size of working processes pool")
+        core.registerOption("!core.workers", int, "Size of working processes pool. Negative to disable")
         core.registerOption("!core.settings_update_timeout", int, "Update timeout for workers (sec)")
         core.registerOption("!core.pidfile", unicode, "File with PIDs of all Agatsuma's processes")
 
