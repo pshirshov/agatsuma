@@ -171,7 +171,3 @@ class Settings(object):
     
     def dump(self):
         return json.dumps(Settings.settings)
-
-    @staticmethod
-    def saveSettings():
-        pass

@@ -19,6 +19,8 @@ class SettingsSpell(AbstractSpell):
         core.registerOption("!core.recovery", bool, "Recovery mode")
         
     def prePoolInit(self, core):
+        Settings.save = self.save
+        print Settings.save
         storageUri = Settings.core.settings_storage_uri
         recovery = Settings.recovery or Settings.core.recovery
         self.backend = None
@@ -59,3 +61,14 @@ class SettingsSpell(AbstractSpell):
             if updated:
                 Settings.setConfigData(Settings.settings)
             log.core.info("Settings updated from storage: %d" % updated)
+
+    def save(self):
+        log.core.info("Writing settings into storage...")
+        written = 0
+        for groupName in Settings.settings:
+            group = Settings.settings[groupName]
+            for setting in group:
+                if not setting in Settings.roSettings[groupName]:
+                    self.backend.save("%s.%s" % (groupName, setting), group[setting])
+                    written += 1
+        log.core.info("Settings written into storage: %d" % written)

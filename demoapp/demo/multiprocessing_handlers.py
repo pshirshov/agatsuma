@@ -68,7 +68,10 @@ class MPWorkerHandler(AgatsumaHandler, SessionHandler):
       #self.sessman.delete(self.session)
       self.write("Hello from MPWorkerHandler!<br>")
       self.async(self.test, (1, ), self.onWorkerCompleted)
-
+      import random
+      Settings.test.test = unicode(random.randint(1000, 9999))
+      Settings.save()
+      
     @FidelityWorker
     def test(handlerId, *args):
         for x in range(1, 3):

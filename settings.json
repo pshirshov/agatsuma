@@ -4,7 +4,7 @@
 	"recovery" : false,
         "debug": true,
         "debug_level" : 1,
-        "workers" : -2,
+        "workers" : 1,
         "settings_update_timeout" : 15,
 	"settings_storage_uri" : "mongo+mongotable://agatsuma_data/settings",
         "pidfile" : "pidfile~"

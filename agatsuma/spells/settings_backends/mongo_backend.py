@@ -33,14 +33,26 @@ class MongoSettingsBackend(SettingsBackend):
             data = self.db.find_one({'name': name})
             self.connection.end_request()
             if data:
-                return data
+                return data["value"]
         except pymongo.errors.AutoReconnect:
             log.core.critical("Mongo exception during loading %s" % name)
         except Exception, e:
             log.core.critical("Unknown exception during loadingL: %s" % str(e))
             self.connection.end_request()
         return currentValue
-            
+
+    def save(self, name, value):
+        try:
+            self.db.update(
+                {'name': name}, # equality criteria
+                {'name' : name,
+                 'value': value,
+                }, # new document
+                upsert=True)
+            self.connection.end_request()
+        except pymongo.errors.AutoReconnect:
+            log.core.critical("Mongo exception during saving %s=%s" % (name, str(value)))
+        
 class MongoSettingsSpell(AbstractSpell, SettingsBackendSpell):
     def __init__(self):
         config = {'info' : 'MongoDB settings storage',
