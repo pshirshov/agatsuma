@@ -69,7 +69,7 @@ class MongoSessionManager(BaseSessionManager):
         except pymongo.errors.AutoReconnect:
             log.sessions.critical("Mongo exception during loading %s" % session_id)
         except Exception, e:
-            log.sessions.critical("Unknown exception during loading %s" % str(e))
+            log.sessions.critical("Unknown exception during loading: %s" % str(e))
             self.connection.end_request()
 
     def saveData(self, session_id, data):

@@ -29,7 +29,17 @@ class MongoSettingsBackend(SettingsBackend):
         return match.group(1), match.group(2)
 
     def get(self, name, currentValue):
-        return "OLOLOLOLOLOLOLOLO"
+        try:
+            data = self.db.find_one({'name': name})
+            self.connection.end_request()
+            if data:
+                return data
+        except pymongo.errors.AutoReconnect:
+            log.core.critical("Mongo exception during loading %s" % name)
+        except Exception, e:
+            log.core.critical("Unknown exception during loadingL: %s" % str(e))
+            self.connection.end_request()
+        return currentValue
             
 class MongoSettingsSpell(AbstractSpell, SettingsBackendSpell):
     def __init__(self):

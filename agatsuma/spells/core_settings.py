@@ -44,14 +44,18 @@ class SettingsSpell(AbstractSpell):
             for groupName in Settings.settings:
                 group = Settings.settings[groupName]
                 newGroup = copy.deepcopy(group)
+                updatedInGroup = 0
                 for setting in group:
                     if not setting in Settings.roSettings[groupName]:
                         curVal = group[setting]
                         newVal = self.backend.get("%s.%s" % (groupName, setting), curVal)
+                        print curVal, "<>", newVal
                         if newVal != curVal:
-                            print "updating %s.%s" % (groupName, setting)
                             newGroup[setting] = newVal
                             updated += 1
-                    Settings.settings[groupName] = newGroup
-            Settings.setConfigData(Settings.settings)
+                            updatedInGroup += 1
+                    if updatedInGroup:
+                        Settings.settings[groupName] = newGroup
+            if updated:
+                Settings.setConfigData(Settings.settings)
             log.core.info("Settings updated from storage: %d" % updated)
