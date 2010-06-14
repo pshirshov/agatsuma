@@ -1,10 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
 import sys
 from agatsuma.framework.tornado import TornadoCore
-from agatsuma.log import log
 
 # Very important: app root path should also be namespace name
 # So if we replace all '.' to '/' in appRoot we should get importable namespace
@@ -37,7 +35,6 @@ else:
 # TODO: session backends: memcache, database
 # TODO: settings checks/fixes
 # TODO: version hook
-# TODO: settings saving (maybe into database)
 # TODO: settings backends: database
 
 # TODO: url building
