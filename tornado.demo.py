@@ -6,7 +6,7 @@ from agatsuma.framework.tornado import TornadoCore
 
 # Very important: app root path should also be namespace name
 # So if we replace all '.' to '/' in appRoot we should get importable namespace
-appRoot = 'demoapp' 
+appRoot = 'demo-tornado' 
 appConfig = "settings.json"
 
 core = TornadoCore(appRoot, appConfig, 
