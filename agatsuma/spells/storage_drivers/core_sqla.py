@@ -43,10 +43,10 @@ class SQLASpell(AbstractSpell):
         if spells:
             log.core.info("Initializing SQLAlchemy engine and session...")
             self.SqlaEngine = sa.create_engine(Settings.sqla.uri, **Settings.sqla.parameters)
-            SessionClass = orm.sessionmaker()
-            Session = orm.scoped_session(SessionClass)
-            Session.configure(bind=self.SqlaEngine)
-            self.SqlaSess = Session()
+            SessionFactory = orm.sessionmaker()
+            self.Session = orm.scoped_session(SessionFactory)
+            self.Session.configure(bind=self.SqlaEngine)
+            
             log.core.info("Initializing SQLAlchemy data model..")
             for spell in spells:
                 spell.initMetadata(SQLASpell.protoMeta)
@@ -56,9 +56,19 @@ class SQLASpell(AbstractSpell):
             for spell in spells:
                 spell.setupORM(core)
             log.core.info("Model initialized")
+
+            self.sqlaDefaultSess = self.makeSession()
+            for spell in spells:
+                spell.postORMSetup(core)
         else:
             log.core.info("Model spells not found")
-            
+
+    def makeSession(self):
+        """
+        Instantiates new session using ScopedSession helper
+        """
+        return self.Session()
+
     @staticmethod
     def metaCopy():
         meta = copy.deepcopy(SQLASpell.protoMeta)

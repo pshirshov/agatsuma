@@ -21,16 +21,27 @@ class ModelSpell(object):
         for spell in spells:
             properties = spell.updateTableProperties(self, properties, tableToMap, ClassToMap)
         orm.mapper(ClassToMap, tableToMap, properties)
+    
+    def updateTableStructure(self, spell, tableName, *args, **kwargs):
+        return (args, kwargs)
+
+    def updateTableProperties(self, spell, properties, table, Class):
+        return properties
         
     def initMetadata(self, metadata):
         pass
-    
-    def updateTableProperties(self, spell, properties, table, Class):
-        return properties
+
+    def setupORM(self, core):
+        pass
+ 
+    def postORMSetup(self, core):
+        """Model spell calls this callback after setupORM calls
+        
+        Arguments:
+        - `core`: Core instance
+        """
+        pass
 
     def performDeployment(self, core):
         pass   
     
-    def setupORM(self, core):
-        pass
- 

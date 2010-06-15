@@ -13,7 +13,7 @@ from agatsuma.settings import Settings
 from agatsuma.log import log
 
 from agatsuma.interfaces import AbstractSpell, HandlingSpell, ModelSpell
-from agatsuma.framework.tornado import AgatsumaHandler, MsgPumpHandler, FidelityWorker
+from agatsuma.framework.tornado import AgatsumaHandler, FidelityWorker
 
 class Post(object):
     def __init__(self, message):
@@ -41,20 +41,27 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
 
     def initMetadata(self, metadata):
         users_table = sa.Table('users',
-                            metadata,
-                            sa.Column('id', sa.types.Integer, primary_key=True),
-                            sa.Column('name', sa.types.String),
-                            sa.Column('password', sa.types.String)
+        metadata,
+        sa.Column('id', sa.types.Integer, primary_key=True),
+        sa.Column('name', sa.types.String),
+        sa.Column('password', sa.types.String)
         )
         self.registerTable(users_table)
         posts_table = sa.Table('posts',
-                            metadata,
-                            sa.Column('id', sa.types.Integer, primary_key=True),
-                            sa.Column("user_id" , sa.types.Integer, sa.ForeignKey('users.id')),
-                            sa.Column('message', sa.types.String),
+        metadata,
+        sa.Column('id', sa.types.Integer, primary_key=True),
+        sa.Column("user_id" , sa.types.Integer, sa.ForeignKey('users.id')),
+        sa.Column('message', sa.types.String),
         )        
-        self.registerTable(posts_table, "postsTable")       
-       
+        self.registerTable(posts_table, "postsTable") 
+        """
+        self.registerTable({'tableName' : 'users', 'propertyName' : None},
+                            sa.Column('id', sa.types.Integer, primary_key=True),
+                            sa.Column('name', sa.types.String),
+                            sa.Column('password', sa.types.String)
+                          )
+        self.registerTable({'tableName' : 'posts', 'propertyName' : 'postsTable'})
+        """
     def setupORM(self, core):
         userProps = {'posts' : orm.relation(Post, 
                      cascade = "all, delete, delete-orphan",
@@ -63,10 +70,11 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
         postProps = {'user' : orm.relation(User)}
         self.registerMapping(core, User, self.users, properties = userProps)
         self.registerMapping(core, Post, self.postsTable, properties = postProps)   
-
-        sqlaSpell = Core.instance.spellsDict["agatsuma_sqla"]
-        ModelDemoSpell.SqlaSess = sqlaSpell.SqlaSess
         
+    def postORMSetup(self, core):
+        sqlaSpell = Core.instance.spellsDict["agatsuma_sqla"]
+        ModelDemoSpell.SqlaSess = sqlaSpell.sqlaDefaultSess
+
     def initRoutes(self, map):
         map.extend([(r"/test/model/test", ModelTestHandler),
                     (r"/test/model/mptest", ModelMPTestHandler),
@@ -74,7 +82,7 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
        
     def performDeployment(self, core):
         log.core.debug("Hello from the demo deployment callback. Now we can add objects into DB")
-        session = getSession()
+        session = ModelDemoSpell.SqlaSess
         userscount = session.query(User).count()
         newuser = User('user_%d' % (userscount + 1), 'qwerty')
         session.add(newuser)
