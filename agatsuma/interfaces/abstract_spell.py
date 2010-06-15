@@ -10,8 +10,13 @@ class AbstractSpell(object):
             self.config = spellConfig
 
             self.__pName = spellConfig.get('info', None)
-            self.__pdeps = spellConfig.get('deps', None)
-
+            self.__pdeps = list(spellConfig.get('deps', () ))
+            
+            self.__pProvides = spellConfig.get('provides', () )
+            for requirement in spellConfig.get('requires', () ):
+                self.__pdeps.append('[%s]' % requirement)
+            self.__pdeps = tuple(self.__pdeps)
+            
         # internal variables, init in app_globals.py
         self.setDetails(None, '', '')
 
@@ -34,7 +39,10 @@ class AbstractSpell(object):
 
     def deps(self):
         return self.__pdeps
-        
+    
+    def provides(self):
+        return self.__pProvides
+    
     def preConfigure(self, core):
         pass
 

@@ -17,7 +17,8 @@ from agatsuma.interfaces import SessionHandler
 class SessionSpell(AbstractSpell, RequestSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Session Spell',
-                  'deps' : ()
+                  'deps' : (),
+                  'requires' : ('session_backend', ),
                  }
         AbstractSpell.__init__(self, 'agatsuma_session', config)
         
@@ -27,7 +28,7 @@ class SessionSpell(AbstractSpell, RequestSpell):
         core.registerOption("!sessions.storage_uri", unicode, "Storage URI")
         core.registerOption("!sessions.expiration_interval", int, "Default session length in seconds")
 
-    def prePoolInit(self, core):
+    def postConfigure(self, core):
         log.core.info("Initializing Session Storage..")
         rex = re.compile(r"^(\w+)\+(.*)$")
         match = rex.match(Settings.sessions.storage_uri)

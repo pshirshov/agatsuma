@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-import time
-import datetime
 
 from agatsuma.log import log
-from agatsuma.settings import Settings
 from agatsuma.core import Core
 from agatsuma.interfaces import AbstractSpell, SettingsBackendSpell, SettingsBackend
 
@@ -56,7 +53,8 @@ class MongoSettingsBackend(SettingsBackend):
 class MongoSettingsSpell(AbstractSpell, SettingsBackendSpell):
     def __init__(self):
         config = {'info' : 'MongoDB settings storage',
-                  'deps' : ('agatsuma_mongodb', )
+                  'deps' : ('agatsuma_mongodb', ),
+                  'provides' : ('settings_backend', )
                  }
         AbstractSpell.__init__(self, 'tornado_settings_backend_mongo', config)
         

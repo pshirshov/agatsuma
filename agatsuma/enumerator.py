@@ -3,6 +3,7 @@
 import sys
 import os
 import inspect
+import re
 
 from agatsuma.log import log
 from agatsuma.interfaces import AbstractSpell
@@ -55,8 +56,9 @@ class Enumerator(object):
                 fileList = map(lambda x: x.replace(os.path.sep, '.'), fileList)
                 fileList = map(lambda x: "%s.%s" % (basicNamespace, x), fileList)
                 namespacesToImport.extend(fileList)
-
+        idRe = re.compile('^[\w]+$')
         spells = {}
+        provides = {}
         log.core.debug('Collected namespaces: %s' % str(namespacesToImport))
         log.core.info('Started spells enumerator...')
         for nsToImport in namespacesToImport:
@@ -79,6 +81,8 @@ class Enumerator(object):
                     for possibleSpell in possibleSpells:
                         instance = possibleSpell()
                         plid = instance.spellId()
+                        if not idRe.match(plid):
+                            raise Exception("Incorrect spell Id: %s" % plid)
                         log.core.info("Importing spell: %s; base=%s" % (plid, nsToImport))
 
                         if not spells.has_key(plid):
@@ -91,6 +95,12 @@ class Enumerator(object):
                                 fileName = ns.__file__.replace(spellsDir + os.path.sep, '')
                             )
                             spells[plid] = instance
+                            prov = instance.provides()
+                            if prov:
+                                for provId in prov:
+                                    if not provId in provides:
+                                        provides[provId] = []
+                                    provides[provId].append(plid)
                             #log.core.info("Successfully imported: %s; %s; %s" % (ns, nsName, nsToImport))
                         else:
                             log.core.critical("POSSIBLE CONFLICT: Spell with id '%s' already imported!" % plid)
@@ -98,7 +108,14 @@ class Enumerator(object):
                     log.core.info('Not a spellspace: %s' % nsToImport)
             else:
                 log.core.warning('Namespace ignored due app settings: %s' % nsToImport)
-
+                
+        for provId in provides:
+            deps = provides[provId]
+            log.core.debug("Functionality '%s' provided by %s" % (provId, deps))            
+            newId = "[%s]" % provId
+            spells[newId] = AbstractSpell(newId, {'info' : 'Dependencies helper for %s' % provId,
+                                                  'deps' : tuple(deps)
+                                                 })
         log.core.info("IMPORT STAGE COMPLETED. Imported %d spells:" % len(spells))
         for spell in spells.values():
             log.core.info("* %s, %s, %s" % (spell.spellId(), spell.namespaceName(), spell.fileName()))

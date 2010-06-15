@@ -10,7 +10,8 @@ from agatsuma.interfaces.abstract_spell import AbstractSpell
 class SettingsSpell(AbstractSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Settings Spell',
-                  'deps' : ()
+                  'deps' : (),
+                  'requires' : ('settings_backend', ),
                  }
         AbstractSpell.__init__(self, 'agatsuma_settings', config)
         
@@ -18,7 +19,7 @@ class SettingsSpell(AbstractSpell):
         core.registerOption("!core.settings_storage_uri", unicode, "Settings storage URI")
         core.registerOption("!core.recovery", bool, "Recovery mode")
         
-    def prePoolInit(self, core):
+    def postConfigure(self, core):
         Settings.save = self.save
         print Settings.save
         storageUri = Settings.core.settings_storage_uri

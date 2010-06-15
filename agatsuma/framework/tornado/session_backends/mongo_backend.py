@@ -5,18 +5,15 @@ import time
 import datetime
 
 from agatsuma.log import log
-from agatsuma.settings import Settings
 from agatsuma.core import Core
 from agatsuma.interfaces import AbstractSpell
 from agatsuma.framework.tornado import SessionBackendSpell
 from agatsuma.framework.tornado import BaseSessionManager
 
-
 """
 Used code from
 http://github.com/milancermak/tornado/blob/master/tornado/session.py
 """
-
 
 """
 class AutoReconnect(object):
@@ -89,7 +86,8 @@ class MongoSessionManager(BaseSessionManager):
 class MongoSessionSpell(AbstractSpell, SessionBackendSpell):
     def __init__(self):
         config = {'info' : 'MongoDB session storage',
-                  'deps' : ('agatsuma_mongodb', 'agatsuma_session', )
+                  'deps' : ('agatsuma_mongodb', ),
+                  'provides' : ('session_backend', )
                  }
         AbstractSpell.__init__(self, 'tornado_session_backend_mongo', config)
         

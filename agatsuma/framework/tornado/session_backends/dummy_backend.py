@@ -26,7 +26,8 @@ class DummySessionManager(BaseSessionManager):
 class DummySessionSpell(AbstractSpell, SessionBackendSpell):
     def __init__(self):
         config = {'info' : 'Dict-based debug session storage',
-                  'deps' : ()
+                  'deps' : (),
+                  'provides' : ('session_backend', )
                  }
         AbstractSpell.__init__(self, 'tornado_session_backend_dummy', config)
         

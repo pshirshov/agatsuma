@@ -3,13 +3,13 @@ import re
 
 from agatsuma.log import log
 from agatsuma.settings import Settings
-from agatsuma.core import Core
 from agatsuma.interfaces import AbstractSpell
 
 class MongoDBSpell(AbstractSpell):
     def __init__(self):
         config = {'info' : 'MongoDB support',
-                  'deps' : ()
+                  'deps' : (),
+                  'provides': ('storage_driver', ),
                  }
         AbstractSpell.__init__(self, 'agatsuma_mongodb', config)
         

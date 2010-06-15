@@ -10,11 +10,12 @@ from agatsuma.settings import Settings
 from agatsuma.core import Core
 
 from agatsuma.interfaces import AbstractSpell, ModelSpell
-        
+
 class SQLASpell(AbstractSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma SQLAlchemy Spell',
-                  'deps' : ('agatsuma_core', )
+                  'deps' : ('agatsuma_core', ),
+                  'provides' : ('storage_driver', ),
                  }
         AbstractSpell.__init__(self, 'agatsuma_sqla', config)
         SQLASpell.protoMeta = sa.MetaData() 
