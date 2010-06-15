@@ -25,7 +25,7 @@ class TornadoCore(Core, tornado.web.Application):
         tornadoSettings = {'debug': Settings.core.debug, # autoreload
                            'cookie_secret' : str(Settings.tornado.cookie_secret),
                           }
-        tornadoSettings.update(Settings.tornado.parameters)
+        tornadoSettings.update(Settings.tornado.app_parameters)
         tornado.web.Application.__init__(self, self.URIMap, **tornadoSettings)
         
     def _prePoolInit(self):
@@ -69,7 +69,11 @@ class TornadoCore(Core, tornado.web.Application):
 
         #self.logger.setMPHandler(self.ioloop)
         self.__updateLogger()
-        self.HTTPServer = tornado.httpserver.HTTPServer(self)
+        self.HTTPServer = tornado.httpserver.HTTPServer(self,
+                                                        xheaders=Settings.tornado.xheaders,
+                                                        # For future Tornado versions
+                                                        #ssl_options=Settings.tornado.ssl_parameters
+                                                       )
         self.HTTPServer.listen(port)
         """
         # Preforking is only available in Tornado GIT

@@ -12,11 +12,15 @@
 "tornado" :
     {
         "port": 8888,
+        "xheaders" : false,
         "message_pump_timeout" : 50,
         "logger_pump_timeout" : 500,
         "cookie_secret" : "NYANYANYANYANYA",
-        "parameters" : 
+        "app_parameters" : 
             { 
+            },
+        "ssl_parameters" :
+            {
             }
     },
 "sessions" : {

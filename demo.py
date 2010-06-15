@@ -33,21 +33,23 @@ else:
     core.runEntryPoint(entryPointName, sys.argv)
 
 # TODO: session backends: memcache, database
-# TODO: settings checks/fixes
-# TODO: version hook
 # TODO: settings backends: database
 
 # TODO: url building
-# TODO: x-headers
 # TODO: Unit tests
 # TODO: Sphinx documentation
+# TODO: "requires" and "provides" options for spells
 
 # TODO: template engine
 # TODO: caching decorator
-# TODO: applyFilters    
+# TODO: applyFilters
 
+# TODO: type conversion for settings (unicode->str), convert read-only lists to tuples
 # TODO: customized errors handling (Tornado patching needed)
 # TODO: Tornado forking support (when new Tornado will be released)
 # TODO: update options via HTTP from master server (or propagate to set of slaves)
 # TODO: py3k (when Tornado will be ported)
 # TODO: multiple sessions backends
+# TODO: list of session backends instead of one
+
+
