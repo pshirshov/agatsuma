@@ -38,7 +38,6 @@ else:
 # TODO: url building
 # TODO: Unit tests
 # TODO: Sphinx documentation
-# TODO: "requires" and "provides" options for spells
 
 # TODO: template engine
 # TODO: caching decorator
