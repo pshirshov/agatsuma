@@ -16,10 +16,14 @@ class Enumerator(object):
         #def appBaseName(self):
         #  return self.__module__.split('.')[0]
 
-    def registerSpell(self, spell):
+    def __registerSpell(self, spell):
         self.core.spells.append(spell)
         self.core.spellsDict[spell.spellId()] = spell
 
+    def __unregisterSpell(self, spell):
+        self.core.spells.remove(spell)
+        del self.core.spellsDict[spell.spellId()]
+        
     def enumerateSpells(self, essentialSpellSpaces, additionalSpellPaths):
         if not self.core.appName:
             self.core.appName = self.appDir[0].capitalize() + self.appDir[1:]
@@ -108,14 +112,18 @@ class Enumerator(object):
                     log.core.info('Not a spellspace: %s' % nsToImport)
             else:
                 log.core.warning('Namespace ignored due app settings: %s' % nsToImport)
-                
+
+        toRemove = []
         for provId in provides:
             deps = provides[provId]
             log.core.debug("Functionality '%s' provided by %s" % (provId, deps))            
             newId = "[%s]" % provId
-            spells[newId] = AbstractSpell(newId, {'info' : 'Dependencies helper for %s' % provId,
+            falseSpell = AbstractSpell(newId, {'info' : 'Dependencies helper for %s' % provId,
                                                   'deps' : tuple(deps)
                                                  })
+            spells[newId] = falseSpell
+            toRemove.append(falseSpell)
+            
         log.core.info("IMPORT STAGE COMPLETED. Imported %d spells:" % len(spells))
         for spell in spells.values():
             log.core.info("* %s, %s, %s" % (spell.spellId(), spell.namespaceName(), spell.fileName()))
@@ -152,7 +160,7 @@ class Enumerator(object):
                     #    log.core.info('No dependencies for "%s"; adding as %d' % (id, len(self.spells)))
                     #else:
                     #    log.core.info('Already resolved dependencies for "%s"; adding as %d' % (id, len(self.spells)))
-                    self.registerSpell(spells[id])
+                    self.__registerSpell(spells[id])
                     resolved.append(id)
                     del spells[id]
                     needIteration = True
@@ -162,8 +170,13 @@ class Enumerator(object):
         cyclicDeps = sorted(spells.values(), lambda a, b: cmp(len(a.deps()), len(b.deps())))
         for spell in cyclicDeps:
             log.core.warning('[WARNING] Adding loop-dependant spell "%s" (deps: %s)' % (spell.spellId(), str(spell.deps())))
-            self.registerSpell(spell)
+            self.__registerSpell(spell)
 
+        spellsNames = map(lambda p: p.spellId(), self.core.spells)
+        log.core.debug("Connected %d spells: %s. False spells will be removed now" % (len(spellsNames), str(spellsNames)))
+        for spell in toRemove:
+            self.__unregisterSpell(spell)
+            
         spellsNames = map(lambda p: p.spellId(), self.core.spells)
         log.core.info("RESOLVING STAGE COMPLETED. Connected %d spells: %s" % (len(spellsNames), str(spellsNames)))
         log.core.info('SPELLS ENUMERATING COMPLETED')     
