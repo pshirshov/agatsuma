@@ -13,6 +13,15 @@ from agatsuma.enumerator import Enumerator
 from agatsuma.log import log
 from agatsuma.settings import Settings
 
+majorVersion = 0
+minorVersion = 1
+try:
+    from agatsuma.version import commitsCount, branchId, commitId
+except:
+    commitsCount = 0
+    branchId = "branch"
+    commitId = "commit"
+
 """
 Warning: common core is only able to propagate settings update to process 
          pool. 
@@ -50,11 +59,14 @@ class Core(object):
     def __init__(self, appDir, appConfig, **kwargs):
         assert Core.instance is None
         Core.instance = self
-       
+        
+        self.versionString = "%d.%d.%d.%s.%s" % (majorVersion, minorVersion, commitsCount, branchId, commitId)
+        
         self.logger = log()
         self.logger.initiateLoggers()
         log.newLogger("core", logging.DEBUG)
         log.core.info("Initializing Agatsuma")
+        log.core.info("Version: %s" % self.versionString)
         
         self.URIMap = []
         self.appName = kwargs.get("appName", None)
