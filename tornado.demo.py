@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+import re
 import sys
 from agatsuma.framework.tornado import TornadoCore
 
@@ -10,7 +10,7 @@ appRoot = 'demo-tornado'
 appConfig = "settings.json"
 
 core = TornadoCore(appRoot, appConfig, 
-            appName = "Agatsuma Demo Application",
+            appName = "TornadoDemoApp",
             #appSpells = ["namespace.module"], # namespaces to load as spells
             #prohibitedSpells = ["spellspace.py", "demoapp.demo.multiprocessing_handlers"] # file names or namespaces
             )
@@ -39,6 +39,7 @@ else:
 # TODO: Unit tests
 # TODO: Sphinx documentation
 
+# TODO: more cores 
 # TODO: template engine
 # TODO: caching decorator
 # TODO: applyFilters
@@ -50,5 +51,3 @@ else:
 # TODO: py3k (when Tornado will be ported)
 # TODO: multiple sessions backends
 # TODO: list of session backends instead of one
-
-

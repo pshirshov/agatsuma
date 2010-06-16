@@ -2,11 +2,11 @@
 
 import json
 
-import re
 import datetime
 import multiprocessing
 
-from agatsuma.log import log
+from agatsuma import log
+from agatsuma.interfaces import AbstractSpell
 
 class DictAccessProxy(object):
     def __init__(self, groupName, sourceDict, roList, types, comments):
@@ -148,7 +148,7 @@ class Settings(object):
         Settings.setConfigData(newsettings)
 
     @staticmethod
-    def setConfigData(settings, updateShared = True):
+    def setConfigData(settings, **kwargs):
         from agatsuma.core import Core
         process = multiprocessing.current_process()
         log.core.info("Installing new config data in process '%s' with PID %d" % (str(process.name), process.pid))
@@ -159,9 +159,9 @@ class Settings(object):
         Settings.configData = {"data": settings,
                                "update" : timestamp,
                               }
-        if updateShared:
-            log.core.info("Propagating new config data to another processes")
-            Core.sharedConfigData.update(Settings.configData)
+        spells = Core.instance._implementationsOf(AbstractSpell)
+        for spell in spells:
+            spell.postConfigUpdate(**kwargs)
 
     def load(self, settings):
         """

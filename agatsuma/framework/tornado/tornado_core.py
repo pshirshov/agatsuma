@@ -7,11 +7,12 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 
-from agatsuma.core import Core, updateSettings
-from agatsuma.settings import Settings
-from agatsuma.log import log, MPQueueHandler
+from agatsuma.core import MPCore
+from agatsuma.core.mp_core import updateSettings
+from agatsuma import Settings
+from agatsuma import log, MPLogHandler
 
-class TornadoCore(Core, tornado.web.Application):   
+class TornadoCore(MPCore, tornado.web.Application):   
     mqueue = None
    
     def __init__(self, appDir, appConfig, **kwargs):
@@ -21,7 +22,7 @@ class TornadoCore(Core, tornado.web.Application):
                             ])
         spellsDirs.extend(kwargs.get('spellsDirs', []))
         kwargs['spellsDirs'] = spellsDirs
-        Core.__init__(self, appDir, appConfig, **kwargs)
+        MPCore.__init__(self, appDir, appConfig, **kwargs)
         tornadoSettings = {'debug': Settings.core.debug, # autoreload
                            'cookie_secret' : str(Settings.tornado.cookie_secret),
                           }
@@ -58,7 +59,7 @@ class TornadoCore(Core, tornado.web.Application):
         self.logger.logPump = tornado.ioloop.PeriodicCallback(self.processLog, 
                                                               pumpTimeout, 
                                                               io_loop=self.ioloop)
-        log.rootHandler = MPQueueHandler(self.logger.logQueue, log.rootHandler)
+        log.rootHandler = MPLogHandler(self.logger.logQueue, log.rootHandler)
         self.logger.logPump.start()
     
     def start(self):
@@ -82,7 +83,7 @@ class TornadoCore(Core, tornado.web.Application):
             self.HTTPServer.start()
         """
         pid = multiprocessing.current_process().pid
-        Core.pids.append(pid)
+        MPCore.rememberPid(pid)
         self.writePid(pid)
         log.core.debug("Main process' PID: %d" % pid)
         configChecker = tornado.ioloop.PeriodicCallback(updateSettings, 

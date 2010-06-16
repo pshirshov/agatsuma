@@ -4,14 +4,11 @@ import re
 import logging
 import signal
 
-import threading
-import multiprocessing
-from multiprocessing import Pool, Manager
 from weakref import WeakValueDictionary
 
-from agatsuma.enumerator import Enumerator
-from agatsuma.log import log
-from agatsuma.settings import Settings
+from agatsuma import Enumerator
+from agatsuma import log
+from agatsuma import Settings
 
 majorVersion = 0
 minorVersion = 1
@@ -22,38 +19,7 @@ except:
     branchId = "branch"
     commitId = "commit"
 
-"""
-Warning: common core is only able to propagate settings update to process 
-         pool. 
-         Updating settings in main thread is subclass' problem
-"""
-
-def updateSettings():
-    # Settings in current thread is in old state
-    # If we detect, that shared object has updated config we replace it
-    prevUpdate = Settings.configData['update']
-    lastUpdate = Core.sharedConfigData['update']
-    if (prevUpdate < lastUpdate):
-        process = multiprocessing.current_process()
-        log.core.info("Process '%s' with PID %s received new config, updating..." % (str(process.name), process.pid))
-        #Core.settings.parseSettings(Core.sharedConfigData['data'], Settings.descriptors)
-        Settings.setConfigData(Core.sharedConfigData['data'], False)
-
-def updateSettingsByTimer(timeout):
-    threading.Timer(timeout, updateSettingsByTimer, (timeout, )).start()    
-    updateSettings()
-    
-def workerInitializer(timeout):
-    process = multiprocessing.current_process()
-    Core.instance.writePid(process.pid)
-    Core.pids.append(process.pid)    
-    log.core.debug("Initializing worker process '%s' with PID %d. Starting config update checker with %ds timeout" % (str(process.name), process.pid, timeout))
-    updateSettingsByTimer(timeout)
-
 class Core(object):
-    configUpdateManager = Manager()
-    sharedConfigData = configUpdateManager.dict()
-    pids = configUpdateManager.list()
     instance = None
     
     def __init__(self, appDir, appConfig, **kwargs):
@@ -104,32 +70,15 @@ class Core(object):
         log.core.info("Spells initialization completed")    
         
         self.removePid()
-        log.core.info("Calling pre-pool-init routines...")
-        self._prePoolInit()
-        for spell in self._implementationsOf(AbstractSpell):
-            spell.prePoolInit(self)
-
-        self.pool = None
-        workers = Settings.core.workers
-        if workers >= 0:
-            log.core.debug("Starting %d workers..." % workers)
-            self.pool = Pool(processes=workers, 
-                             initializer = workerInitializer, 
-                             initargs = (Settings.core.settings_update_timeout, ))
-        else:
-            log.core.info("Pool initiation skipped due negative workers count")
-            
-        log.core.info("Calling post-pool-init routines...")
-        for spell in self._implementationsOf(AbstractSpell):
-            spell.postPoolInit(self)
+        self._postConfigure()
 
         log.core.info("Initialization completed")
         signal.signal(signal.SIGTERM, self.sigHandler)
 
-    def _prePoolInit(self):
+    def _stop(self):
         pass
     
-    def _stop(self):
+    def _postConfigure(self):
         pass
 
     def writePid(self, pid):

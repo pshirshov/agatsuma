@@ -8,6 +8,7 @@ from session_handler import SessionHandler
 from session import Session
 from settings_backend_spell import SettingsBackendSpell
 from settings_backend import SettingsBackend
+from pool_event_spell import PoolEventSpell
 
 __all__ = ["AbstractSpell", 
            "HandlingSpell", 
@@ -18,4 +19,5 @@ __all__ = ["AbstractSpell",
            "SessionHandler",
            "SettingsBackendSpell",
            "SettingsBackend",
+           "PoolEventSpell",
           ]

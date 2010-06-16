@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class AbstractSpell(object):
     def __init__(self, spellId, spellConfig = False):
         self.__pId = spellId
@@ -48,9 +47,7 @@ class AbstractSpell(object):
 
     def postConfigure(self, core):
         pass
-    
-    def prePoolInit(self, core):
+
+    def postConfigUpdate(self, **kwargs):
         pass
-    
-    def postPoolInit(self, core):
-        pass
+
