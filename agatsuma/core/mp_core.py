@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import threading
 import multiprocessing
 from multiprocessing import Pool, Manager
@@ -31,7 +32,7 @@ def updateSettingsByTimer(timeout):
     
 def workerInitializer(timeout):
     process = multiprocessing.current_process()
-    Core.instance.writePid(process.pid)
+    MPCore.writePid(process.pid)
     MPCore.rememberPid(process.pid)
     log.core.debug("Initializing worker process '%s' with PID %d. Starting config update checker with %ds timeout" % (str(process.name), process.pid, timeout))
     updateSettingsByTimer(timeout)
@@ -52,6 +53,7 @@ class MPCore(Core):
         Core.__init__(self, appDir, appConfig, **kwargs)
     
     def _postConfigure(self):
+        MPCore.removePidFile()
         log.core.info("Calling pre-pool-init routines...")
         self._prePoolInit()
         for spell in self._implementationsOf(PoolEventSpell):
@@ -74,7 +76,28 @@ class MPCore(Core):
     def _prePoolInit(self):
         pass
 
+    def _stop(self):
+        self.removePidFile()
+    
     @staticmethod
     def rememberPid(pid):
         assert type(pid) is int
         MPCore.pids.append(pid)
+
+    @staticmethod
+    def writePid(pid):
+        log.core.debug("Writing PID %d" % pid)
+        mode = "a+"
+        pidfile = Settings.core.pidfile
+        if not os.path.exists(pidfile):
+            mode = "w+"            
+        f = open(pidfile, mode)
+        f.write("%d\n" % pid)
+        f.close()
+
+    @staticmethod
+    def removePidFile():
+        log.core.debug("Removing pidfile...")
+        pidfile = Settings.core.pidfile
+        if os.path.exists(pidfile):
+            os.remove(pidfile)

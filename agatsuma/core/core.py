@@ -69,7 +69,6 @@ class Core(object):
             spell.postConfigure(self)
         log.core.info("Spells initialization completed")    
         
-        self.removePid()
         self._postConfigure()
 
         log.core.info("Initialization completed")
@@ -80,20 +79,6 @@ class Core(object):
     
     def _postConfigure(self):
         pass
-
-    def writePid(self, pid):
-        mode = "a+"
-        pidfile = Settings.core.pidfile
-        if not os.path.exists(pidfile):
-            mode = "w+"            
-        f = open(pidfile, mode)
-        f.write("%d\n" % pid)
-        f.close()
-        
-    def removePid(self):
-        pidfile = Settings.core.pidfile
-        if os.path.exists(pidfile):
-            os.remove(pidfile)
 
     def runEntryPoint(self, name, argv):
         self.entryPoints[name](argv)
@@ -107,7 +92,6 @@ class Core(object):
         if self.pool:
             self.pool.close()
         self._stop()
-        self.removePid()
     
     def _implementationsOf(self, InterfaceClass):
         return filter(lambda spell: issubclass(type(spell), InterfaceClass), self.spells)

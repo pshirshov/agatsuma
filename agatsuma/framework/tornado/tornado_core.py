@@ -43,7 +43,8 @@ class TornadoCore(MPCore, tornado.web.Application):
     def _stop(self):
         #self.HTTPServer.stop()
         self.ioloop.stop()
-
+        MPCore._stop(self)
+        
     def processLog(self):
         while not log.instance.logQueue.empty():
             try:
@@ -85,7 +86,7 @@ class TornadoCore(MPCore, tornado.web.Application):
         """
         pid = multiprocessing.current_process().pid
         MPCore.rememberPid(pid)
-        self.writePid(pid)
+        MPCore.writePid(pid)
         log.core.debug("Main process' PID: %d" % pid)
         configChecker = tornado.ioloop.PeriodicCallback(updateSettings, 
                                                         1000 * Settings.core.settings_update_timeout, 
