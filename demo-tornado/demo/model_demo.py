@@ -13,7 +13,7 @@ from agatsuma.settings import Settings
 from agatsuma.log import log
 
 from agatsuma.interfaces import AbstractSpell, HandlingSpell, ModelSpell
-from agatsuma.framework.tornado import AgatsumaHandler, FidelityWorker
+from agatsuma.framework.tornado import AgatsumaHandler, FidelityWorker, Url
 
 class Post(object):
     def __init__(self, message):
@@ -78,6 +78,7 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
     def initRoutes(self, map):
         map.extend([(r"/test/model/test", ModelTestHandler),
                     (r"/test/model/mptest", ModelMPTestHandler),
+                    Url('testurl', '/test/%(param1)s/%(param2)s', ModelMPTestHandler),
                    ])                   
        
     def performDeployment(self, core):

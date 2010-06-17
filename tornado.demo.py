@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import re
+
 import sys
 from agatsuma.framework.tornado import TornadoCore
 
