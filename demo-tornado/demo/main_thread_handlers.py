@@ -8,7 +8,7 @@ from agatsuma import Settings
 from agatsuma import log
 
 from agatsuma.interfaces import AbstractSpell, HandlingSpell
-from agatsuma.framework.tornado import Url, UrlFor
+from agatsuma.framework.tornado import Url, UrlFor, AgatsumaHandler
 
 class MTDemoSpell(AbstractSpell, HandlingSpell):
     def __init__(self):
@@ -25,12 +25,14 @@ class MTDemoSpell(AbstractSpell, HandlingSpell):
                         MTUrlTestHandler),
                 ])
     
-class MTUrlTestHandler(tornado.web.RequestHandler):
+class MTUrlTestHandler(AgatsumaHandler):
     def get(self, param1, param2):
-        self.write("param1: %s, param2: %d<br/>" % (param1, int(param2)))
-        self.write("UrlFor: %s" % UrlFor('testurl',
+        items = []
+        items.append("param1: %s, param2: %d" % (param1, int(param2)))
+        items.append("UrlFor: %s" % UrlFor('testurl',
                                          param1 = 'testparam',
                                          param2 = 10))
+        self.render("template.html", items = items)
 
 class MTSyncHandler(tornado.web.RequestHandler):
     """

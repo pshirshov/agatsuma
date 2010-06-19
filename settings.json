@@ -1,12 +1,12 @@
 {
 "core" :
     {
-	"recovery" : false,
+        "recovery" : false,
         "debug": true,
         "debug_level" : 1,
         "workers" : 1,
         "settings_update_timeout" : 15,
-	"settings_storage_uri" : "mongo+mongotable://agatsuma_data/settings",
+        "settings_storage_uri" : "mongo+mongotable://agatsuma_data/settings",
         "pidfile" : "pidfile~"
     },
 "tornado" :
@@ -16,8 +16,9 @@
         "message_pump_timeout" : 50,
         "logger_pump_timeout" : 500,
         "cookie_secret" : "NYANYANYANYANYA",
-        "app_parameters" : 
-            { 
+        "app_parameters" :
+            {
+                "template_path" : "demo-tornado/templates"
             },
         "ssl_parameters" :
             {
@@ -27,16 +28,16 @@
         "storage_uri" : "mongo+mongotable://agatsuma_data/sessions",
         "expiration_interval" : 20
     },
-"sqla" : 
-    { 
+"sqla" :
+    {
         "uri" : "postgresql+psycopg2://agatsuma:agatsuma@dbhost:5432/agatsuma",
-        "parameters" : 
-            { 
+        "parameters" :
+            {
                 "encoding" : "utf-8",
                 "echo" : false
             }
     },
-"mongo" : 
+"mongo" :
     {
 	"uri" : "mongodb://dbhost:27017",
 	"db_collections" : ["agatsuma_data"]

@@ -5,6 +5,7 @@ import logging
 from tornado_core import TornadoCore
 from agatsuma.interfaces import RequestSpell
 from agatsuma.errors import EAbstractFunctionCall
+from url import UrlFor
 
 class AgatsumaHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, transforms=None):
@@ -18,7 +19,12 @@ class AgatsumaHandler(tornado.web.RequestHandler):
     def async(self, method, args, callback):
         self.application.pool.apply_async(method, 
                                           (id(self), ) + args, 
-                                          callback=self.async_callback(callback)) 
+                                          callback=self.async_callback(callback))
+
+    def render(self, *args, **kwargs):
+        nkwargs = {'UrlFor' : UrlFor}
+        nkwargs.update(kwargs)
+        return tornado.web.RequestHandler.render(self, *args, **nkwargs)
         
 class MsgPumpHandler(AgatsumaHandler):
     def __init__(self, application, request):
