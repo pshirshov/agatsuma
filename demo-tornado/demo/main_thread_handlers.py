@@ -4,10 +4,11 @@ import tornado.web
 import tornado.ioloop
 import time
 from agatsuma.core import Core
-from agatsuma.settings import Settings
-from agatsuma.log import log
+from agatsuma import Settings
+from agatsuma import log
 
 from agatsuma.interfaces import AbstractSpell, HandlingSpell
+from agatsuma.framework.tornado import Url, UrlFor
 
 class MTDemoSpell(AbstractSpell, HandlingSpell):
     def __init__(self):
@@ -20,8 +21,16 @@ class MTDemoSpell(AbstractSpell, HandlingSpell):
         map.extend([(r"/test/mt/sync",       MTSyncHandler),
                     (r"/test/mt/async_null", MTAsyncNullHandler),
                     (r"/test/mt/async",      MTAsyncHandler),
+                    Url('testurl', '/test/%(param1)s/%(param2)d',
+                        MTUrlTestHandler),
                 ])
     
+class MTUrlTestHandler(tornado.web.RequestHandler):
+    def get(self, param1, param2):
+        self.write("param1: %s, param2: %d<br/>" % (param1, int(param2)))
+        self.write("UrlFor: %s" % UrlFor('testurl',
+                                         param1 = 'testparam',
+                                         param2 = 10))
 
 class MTSyncHandler(tornado.web.RequestHandler):
     """
