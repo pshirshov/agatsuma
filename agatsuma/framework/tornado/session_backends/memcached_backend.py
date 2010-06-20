@@ -24,7 +24,7 @@ class MemcachedSessionManager(BaseSessionManager):
     def initConnection(self):
         log.sessions.info("Initializing Memcached session backend "\
                           "using URI '%s'" % self.uri)
-        self.keyprefix = _parseMemcachedPrefixUri(self.uri)
+        self.keyprefix = self._parseMemcachedPrefixUri(self.uri)
         memcachedSpell = Core.instance.spellsDict["agatsuma_memcached"]
         self.connection = memcachedSpell.connection
 
@@ -66,7 +66,7 @@ class MemcachedSessionManager(BaseSessionManager):
 class MemcachedSessionSpell(AbstractSpell, SessionBackendSpell):
     def __init__(self):
         config = {'info' : 'Memcached session storage',
-                  'deps' : ('agatsuma_memecached', ),
+                  'deps' : ('agatsuma_memcached', ),
                   'provides' : ('session_backend', )
                  }
         AbstractSpell.__init__(self, 'tornado_session_backend_memcached',

@@ -9,10 +9,10 @@ from agatsuma.interfaces import AbstractSpell
 class MemcachedSpell(AbstractSpell):
     def __init__(self):
         config = {'info' : 'Memcached support',
-                  'deps' : ()
+                  'deps' : (),
                   'provides': ('storage_driver', ),
                  }
-        AbstractSpell.__init__(self, 'agatsuma_memecached', config)
+        AbstractSpell.__init__(self, 'agatsuma_memcached', config)
 
     def preConfigure(self, core):
         core.registerOption("!memcached.uri", unicode, "Memcached host URI")
@@ -26,12 +26,13 @@ class MemcachedSpell(AbstractSpell):
         log.core.info("Initializing Memecache connections on URI '%s'" % \
                       Settings.memcached.uri)
         connData = self._parseMemcachedUri(Settings.memcached.uri)
-        self._connection = pylibmc.Client(":".join(connData))
+        print connData
+        self._connection = pylibmc.Client([":".join(connData)])
         self._connection.behaviors = Settings.memcached.behaviors
         self._pool = pylibmc.ThreadMappedPool(self._connection)
 
     @property
-    def connection():
+    def connection(self):
         with self._pool.reserve() as mc:
             return mc
 
