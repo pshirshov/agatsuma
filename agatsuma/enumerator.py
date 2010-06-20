@@ -137,6 +137,8 @@ class Enumerator(object):
                     for dep in deps:
                         if not dep in spells:
                             log.core.warning('[WARNING] Disconnected: "%s"; non-existent dependence: "%s"' % (id, dep))
+                            for falseSpell in toRemove:
+                                falseSpell._removeDep(id)
                             del spells[id]
                             needCheck = True
                             break
