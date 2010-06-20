@@ -31,10 +31,8 @@ class MemcachedSpell(AbstractSpell):
         self._connection.behaviors = Settings.memcached.behaviors
         self._pool = pylibmc.ThreadMappedPool(self._connection)
 
-    @property
-    def connection(self):
-        with self._pool.reserve() as mc:
-            return mc
+    def getConnectionPool(self):
+        return self._pool
 
     @staticmethod
     def _parseMemcachedUri(uri):

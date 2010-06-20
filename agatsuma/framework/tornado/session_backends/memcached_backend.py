@@ -26,12 +26,17 @@ class MemcachedSessionManager(BaseSessionManager):
                           "using URI '%s'" % self.uri)
         self.keyprefix = self._parseMemcachedPrefixUri(self.uri)
         memcachedSpell = Core.instance.spellsDict["agatsuma_memcached"]
-        self.connection = memcachedSpell.connection
+        self.pool = memcachedSpell.getConnectionPool()
 
-    def _getPrefixedKey(key):
-        if self.key:
-            return "%s_%s" % (self.key, session_id)
-        return session_id
+    @property
+    def connection(self):
+        with self.pool.reserve() as mc:
+            return mc
+
+    def _getPrefixedKey(self, sessionId):
+        if self.keyprefix:
+            return str("%s_%s" % (self.keyprefix, sessionId))
+        return sessionId
 
     @staticmethod
     def _parseMemcachedPrefixUri(details):
@@ -46,22 +51,22 @@ class MemcachedSessionManager(BaseSessionManager):
         care of cleaning out the garbage."""
         pass
 
-    def destroyData(self, session_id):
-        if not self.connection.remove(self._getPrefixedKey(session_id)):
+    def destroyData(self, sessionId):
+        if not self.connection.remove(self._getPrefixedKey(sessionId)):
             log.sessions.info("Deleting seesion %s failed. It was probably "\
-                              "not set or expired" % session_id)
+                              "not set or expired" % sessionId)
 
-    def loadData(self, session_id):
-        data = self.connection.get(self._getPrefixedKey(session_id))
+    def loadData(self, sessionId):
+        data = self.connection.get(self._getPrefixedKey(sessionId))
         if data:
             return pickle.loads(data)
 
-    def saveData(self, session_id, data):
+    def saveData(self, sessionId, data):
         expTime = int(time.mktime(
           self._sessionDoomsday(datetime.datetime.now()).timetuple()))
-        if not self.connection.set(self._getPrefixedKey(session_id),
+        if not self.connection.set(self._getPrefixedKey(sessionId),
                                    pickle.dumps(data), time=expTime):
-            log.sessions.critical("Saving %s session failed" % session_id)
+            log.sessions.critical("Saving %s session failed" % sessionId)
 
 class MemcachedSessionSpell(AbstractSpell, SessionBackendSpell):
     def __init__(self):
