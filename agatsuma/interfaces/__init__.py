@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Here is the interfaces description
+"""
 from abstract_spell import AbstractSpell
 from handling_spell import HandlingSpell
 from request_spell import RequestSpell

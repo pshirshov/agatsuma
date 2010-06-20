@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+.. module:: core
+   :synopsis: Basic core
+
+.. .. autoclass:: agatsuma.core.Core
+"""
 import os
 import re
 import logging
@@ -20,7 +26,12 @@ except:
     commitId = "commit"
 
 class Core(object):
-    """ Ololo
+    """ Base core which provides basic services, such as settings
+    and also able to enumerate spells.
+
+    Arguments:
+        - `appDir` : path to directory containing application spells
+        - `appConfig` : path to JSON file with application settings
     """
     instance = None
     
@@ -74,7 +85,7 @@ class Core(object):
         self._postConfigure()
 
         log.core.info("Initialization completed")
-        signal.signal(signal.SIGTERM, self.sigHandler)
+        signal.signal(signal.SIGTERM, self._sigHandler)
 
     def _stop(self):
         pass
@@ -82,23 +93,29 @@ class Core(object):
     def _postConfigure(self):
         pass
 
-    def runEntryPoint(self, name, argv):
-        self.entryPoints[name](argv)
-
-    def sigHandler(self, signum, frame):
+    def _sigHandler(self, signum, frame):
         log.core.debug("Received signal %d" % signum)
         self.stop()
-    
+
     def stop(self):
         log.core.info("Stopping Agatsuma...")
         if self.pool:
             self.pool.close()
         self._stop()
-    
+
+    def implementationsOf(self, InterfaceClass):
+        #TODO: caching (maybe caching decorator?)
+        """ The most important function for Agatsuma-based application.
+        It returns all the spells implementing interface `InterfaceClass`.
+        """
+        return self._implementationsOf(InterfaceClass)
+
     def _implementationsOf(self, InterfaceClass):
         return filter(lambda spell: issubclass(type(spell), InterfaceClass), self.spells)
 
     def registerOption(self, settingName, settingType, settingComment):
+        """ This function must be called from :meth:`agatsuma.interfaces.abstract_spell.AbstractSpell.preConfigure`
+        """
         if not getattr(self, "settingRe", None):
             self.settingRe = re.compile(r"^(!{0,1})((\w+)\.{0,1}(\w+))$")
         match = self.settingRe.match(settingName)
@@ -115,10 +132,13 @@ class Core(object):
             self.registeredSettings[fqn] = settingDescr
         else:
             raise Exception("Bad setting name: '%s' (%s)" % (settingName, settingComment))
-        
+
     def registerEntryPoint(self, entryPointId, epFn):
+        """ Test """
         if not entryPointId in self.entryPoints:
             self.entryPoints[entryPointId] = epFn
         else:
             raise Exception("Entry point with name '%s' is already registered" % entryPointId)
 
+    def runEntryPoint(self, name, argv):
+        self.entryPoints[name](argv)
