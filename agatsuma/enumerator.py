@@ -93,7 +93,7 @@ class Enumerator(object):
                             #nsName = basicNamespace + mod.__name__
                             nsName = mod.__name__
                             ns = __import__(nsName, {}, {}, '*', -1)
-                            instance.setDetails(
+                            instance._setDetails(
                                 namespace = ns,
                                 namespaceName = nsName,
                                 fileName = ns.__file__.replace(spellsDir + os.path.sep, '')
@@ -123,7 +123,7 @@ class Enumerator(object):
                                                  })
             spells[newId] = falseSpell
             toRemove.append(falseSpell)
-            
+
         log.core.info("IMPORT STAGE COMPLETED. Imported %d spells:" % len(spells))
         for spell in spells.values():
             log.core.info("* %s, %s, %s" % (spell.spellId(), spell.namespaceName(), spell.fileName()))
