@@ -1,4 +1,4 @@
-import pymongoz
+import pymongo
 import re
 
 from agatsuma.log import log
