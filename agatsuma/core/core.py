@@ -20,6 +20,8 @@ except:
     commitId = "commit"
 
 class Core(object):
+    """ Ololo
+    """
     instance = None
     
     def __init__(self, appDir, appConfig, **kwargs):

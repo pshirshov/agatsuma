@@ -36,8 +36,11 @@ class SessionSpell(AbstractSpell, RequestSpell):
             managerId = match.group(1)
             uri = match.group(2)
             spellName = "tornado_session_backend_%s" % managerId
-            spell = Core.instance.spellsDict[spellName]
-            self.sessman = spell.instantiateBackend(uri)
+            spell = Core.instance.spellsDict.get(spellName, None)
+            if spell:
+                self.sessman = spell.instantiateBackend(uri)
+            else:
+                raise Exception("Session backend improperly configured, spell '%s' not found" % spellName)
         else:
             raise Exception("Incorrect session storage URI")
         

@@ -34,8 +34,11 @@ class SettingsSpell(AbstractSpell):
                 uri = match.group(2)
                 spellName = "tornado_settings_backend_%s" % backendId
                 from agatsuma.core import Core
-                spell = Core.instance.spellsDict[spellName]
-                self.backend = spell.instantiateBackend(uri)
+                spell = Core.instance.spellsDict.get(spellName, None)
+                if spell:
+                    self.backend = spell.instantiateBackend(uri)
+                else:
+                    raise Exception("Settings backend improperly configured: spell '%s' not found" % spellName)
             else:
                 raise Exception("Incorrect settings storage URI")
         else:
@@ -52,7 +55,6 @@ class SettingsSpell(AbstractSpell):
                     if not setting in Settings.roSettings[groupName]:
                         curVal = group[setting]
                         newVal = self.backend.get("%s.%s" % (groupName, setting), curVal)
-                        print curVal, "<>", newVal
                         if newVal != curVal:
                             newGroup[setting] = newVal
                             updated += 1

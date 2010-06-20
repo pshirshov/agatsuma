@@ -6,10 +6,10 @@ from agatsuma.framework.tornado import TornadoCore
 
 # Very important: app root path should also be namespace name
 # So if we replace all '.' to '/' in appRoot we should get importable namespace
-appRoot = 'demo-tornado' 
+appRoot = 'demo-tornado'
 appConfig = "settings.json"
 
-core = TornadoCore(appRoot, appConfig, 
+core = TornadoCore(appRoot, appConfig,
             appName = "TornadoDemoApp",
             #appSpells = ["namespace.module"], # namespaces to load as spells
             #prohibitedSpells = ["spellspace.py", "demoapp.demo.multiprocessing_handlers"] # file names or namespaces
@@ -23,7 +23,7 @@ To init database without dropping tables run:
 To test entry points run:
     ./demo.py demoPoint
 """
-if len(sys.argv) < 2:            
+if len(sys.argv) < 2:
     try:
         core.start()
     except (KeyboardInterrupt, SystemExit):
@@ -35,17 +35,17 @@ else:
 # TODO: session backends: memcache, database
 # TODO: settings backends: database
 
-# TODO: url building
 # TODO: Unit tests
 # TODO: Sphinx documentation
 
 # TODO: more cores 
-# TODO: template engine
+# TODO: customized errors handling (Tornado patching needed)
 # TODO: caching decorator
 # TODO: applyFilters
 
+# TODO: more powerful url builder
 # TODO: type conversion for settings (unicode->str), convert read-only lists to tuples
-# TODO: customized errors handling (Tornado patching needed)
+# TODO: another template engine
 # TODO: Tornado forking support (when new Tornado will be released)
 # TODO: update options via HTTP from master server (or propagate to set of slaves)
 # TODO: py3k (when Tornado will be ported)
