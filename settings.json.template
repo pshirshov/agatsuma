@@ -44,7 +44,7 @@
     },
 "memcached" :
     {
-        "uri" : "memcached://localhost:11211",
+        "uri" : "memcached://memcachehost:11211",
         "behaviors" :
             {
               "tcp_nodelay": true,
