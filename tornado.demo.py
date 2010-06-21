@@ -35,6 +35,7 @@ else:
 # TODO: session backends: memcache, database
 # TODO: settings backends: database
 
+# TODO: improve loggers' abilities, add more loggers for core classes
 # TODO: Unit tests
 # TODO: Sphinx documentation
 

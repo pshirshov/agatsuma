@@ -16,7 +16,7 @@ import sys, os
 def up(p):
     return os.path.split(p)[0]
 libRoot = up(up(up(os.path.realpath(os.path.dirname(__file__)))))
-print libRoot
+print "Agatsuma's root:", libRoot
 sys.path.append(libRoot)
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -129,7 +129,7 @@ html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-#html_last_updated_fmt = '%b %d, %Y'
+html_last_updated_fmt = '%H:%M:%S %b %d, %Y'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
