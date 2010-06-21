@@ -9,9 +9,9 @@ from agatsuma.log import log
 from agatsuma.settings import Settings
 from agatsuma.core import Core
 
-from agatsuma.interfaces import AbstractSpell, ModelSpell
+from agatsuma.interfaces import AbstractSpell, StorageSpell, ModelSpell
 
-class SQLASpell(AbstractSpell):
+class SQLASpell(AbstractSpell, StorageSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma SQLAlchemy Spell',
                   'deps' : ('agatsuma_core', ),

@@ -3,23 +3,23 @@ import re
 
 from agatsuma.log import log
 from agatsuma.settings import Settings
-from agatsuma.interfaces import AbstractSpell
+from agatsuma.interfaces import AbstractSpell, StorageSpell
 
-class MongoDBSpell(AbstractSpell):
+class MongoDBSpell(AbstractSpell, StorageSpell):
     def __init__(self):
         config = {'info' : 'MongoDB support',
                   'deps' : (),
                   'provides': ('storage_driver', ),
                  }
         AbstractSpell.__init__(self, 'agatsuma_mongodb', config)
-        
+
     def preConfigure(self, core):
         core.registerOption("!mongo.uri", unicode, "MongoDB host URI")
         core.registerOption("!mongo.db_collections", list, "MongoDB databases to use")
 
     def postConfigure(self, core):
         self.initConnection()
-        
+
     def initConnection(self):
         log.core.info("Initializing MongoDB connections on URI '%s'" % Settings.mongo.uri)
         connData = MongoDBSpell._parseMongoUri(Settings.mongo.uri)
@@ -27,7 +27,7 @@ class MongoDBSpell(AbstractSpell):
         for dbCollectionName in Settings.mongo.db_collections:
             assert type(dbCollectionName) is unicode
             setattr(self, dbCollectionName, self.connection[dbCollectionName])
-        
+
     @staticmethod
     def _parseMongoUri(uri):
         # mongodb://host:port

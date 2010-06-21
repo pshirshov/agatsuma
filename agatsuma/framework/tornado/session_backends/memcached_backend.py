@@ -12,7 +12,7 @@ from agatsuma.log import log
 from agatsuma.settings import Settings
 from agatsuma.core import Core
 from agatsuma.interfaces import AbstractSpell
-from agatsuma.framework.tornado import SessionBackendSpell
+from agatsuma.framework.tornado.interfaces import SessionBackendSpell
 from agatsuma.framework.tornado import BaseSessionManager
 
 class MemcachedSessionManager(BaseSessionManager):

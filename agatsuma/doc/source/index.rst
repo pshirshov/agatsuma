@@ -42,6 +42,7 @@ Contents
 
    core
    base_services
+   tornado
 
 Indices and tables
 ==================

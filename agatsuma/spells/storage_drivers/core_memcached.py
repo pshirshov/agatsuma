@@ -4,9 +4,9 @@ import re
 
 from agatsuma.log import log
 from agatsuma.settings import Settings
-from agatsuma.interfaces import AbstractSpell
+from agatsuma.interfaces import AbstractSpell, StorageSpell
 
-class MemcachedSpell(AbstractSpell):
+class MemcachedSpell(AbstractSpell, StorageSpell):
     def __init__(self):
         config = {'info' : 'Memcached support',
                   'deps' : (),

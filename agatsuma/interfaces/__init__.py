@@ -12,6 +12,7 @@ from session import Session
 from settings_backend_spell import SettingsBackendSpell
 from settings_backend import SettingsBackend
 from pool_event_spell import PoolEventSpell
+from storage_spell import StorageSpell
 
 __all__ = ["AbstractSpell", 
            "HandlingSpell", 
@@ -23,4 +24,5 @@ __all__ = ["AbstractSpell",
            "SettingsBackendSpell",
            "SettingsBackend",
            "PoolEventSpell",
+           "StorageSpell"
           ]

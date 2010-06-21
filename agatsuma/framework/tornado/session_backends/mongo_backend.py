@@ -7,7 +7,7 @@ import datetime
 from agatsuma.log import log
 from agatsuma.core import Core
 from agatsuma.interfaces import AbstractSpell
-from agatsuma.framework.tornado import SessionBackendSpell
+from agatsuma.framework.tornado.interfaces import SessionBackendSpell
 from agatsuma.framework.tornado import BaseSessionManager
 
 """
