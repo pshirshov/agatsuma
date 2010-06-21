@@ -12,6 +12,9 @@ from agatsuma.core import Core
 from agatsuma.interfaces import AbstractSpell, StorageSpell, ModelSpell
 
 class SQLASpell(AbstractSpell, StorageSpell):
+    """.. _sqla-driver:
+    
+    """
     def __init__(self):
         config = {'info' : 'Agatsuma SQLAlchemy Spell',
                   'deps' : ('agatsuma_core', ),
@@ -20,11 +23,11 @@ class SQLASpell(AbstractSpell, StorageSpell):
         AbstractSpell.__init__(self, 'agatsuma_sqla', config)
         SQLASpell.protoMeta = sa.MetaData() 
 
-    def deploy(self, argv):
+    def deploy(self, *args, **kwargs):
         spells = Core.instance._implementationsOf(ModelSpell)
         log.core.info("Initializing Database...")
         if spells:
-            if "recreate" in argv:
+            if "recreate" in args:
                 log.core.info("Recreating schema...")
                 self.meta.drop_all()
                 self.meta.create_all()

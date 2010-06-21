@@ -34,6 +34,7 @@ Every spell can dramatically change all the aspects of application behavior,
 every functionality may be turned on or off and application will 
 change without any modifications of source code.
 
+
 Contents
 ========
 
@@ -42,7 +43,11 @@ Contents
 
    core
    base_services
+   interfaces
    tornado
+
+Quick start: setting up application
+===================================
 
 Indices and tables
 ==================

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-.. module:: core
+.. module:: base_core
    :synopsis: Basic core
-
-.. .. autoclass:: agatsuma.core.Core
 """
 import os
 import re
@@ -26,20 +24,35 @@ except:
     commitId = "commit"
 
 class Core(object):
-    """ Base core which provides basic services, such as settings
-    and also able to enumerate spells.
+    """Base core which provides basic services, such as settings
+and also able to enumerate spells.
 
-    Arguments:
-        - `appDir` : path to directory containing application spells
-        - `appConfig` : path to JSON file with application settings
+:param appDir: path to directory containing application spells
+:param appConfig: path to JSON file with application settings
+
+The following kwargs parameters are supported:
+
+    #. `appName` : Application name
+    #. `appSpells` : names of namespaces to search spells inside
+    #. `spellsDirs` : additional (to `appDir`) directories to search spells inside
+
+.. attribute:: instance
+
+   The core instance. Only one core may be instantiated during application
+   lifetime.
+
+.. attribute:: versionString
+
+   Full Agatsuma version including commit identifier and branch.
+   May be extracted from GIT repository with `getversion` script.
+   
     """
     instance = None
-    
+    versionString = "%d.%d.%d.%s.%s" % (majorVersion, minorVersion, commitsCount, branchId, commitId)
+        
     def __init__(self, appDir, appConfig, **kwargs):
         assert Core.instance is None
         Core.instance = self
-        
-        self.versionString = "%d.%d.%d.%s.%s" % (majorVersion, minorVersion, commitsCount, branchId, commitId)
         
         self.logger = log()
         self.logger.initiateLoggers()
@@ -88,6 +101,10 @@ class Core(object):
         signal.signal(signal.SIGTERM, self._sigHandler)
 
     def _stop(self):
+        """
+        Empty virtual function intended to be overriden in subclasses.
+        Runs before core shutdown.
+        """
         pass
     
     def _postConfigure(self):
@@ -98,9 +115,11 @@ class Core(object):
         self.stop()
 
     def stop(self):
+        """
+        This method is intended to stop core. Subclasses may override method
+        :meth:`agatsuma.core.Core._stop` to perform some cleanup actions here.
+        """
         log.core.info("Stopping Agatsuma...")
-        if self.pool:
-            self.pool.close()
         self._stop()
 
     def implementationsOf(self, InterfaceClass):
@@ -115,10 +134,16 @@ class Core(object):
 
     def registerOption(self, settingName, settingType, settingComment):
         """ This function must be called from
-        :meth:`agatsuma.interfaces.abstract_spell.AbstractSpell.preConfigure`
+:meth:`agatsuma.interfaces.AbstractSpell.preConfigure`
 
-        
-        """
+**TODO**
+
+:param settingName: String contains of two *group name* and *option name* separated with dot (``group.option`` for example). Option will be threated as read-only if the string begins with exclamation mark.
+:param settingType: type for option value. Allowed all types compatible with JSON.
+:param settingComment: string with human-readable description for option
+
+See also **TODO**
+"""
         if not getattr(self, "settingRe", None):
             self.settingRe = re.compile(r"^(!{0,1})((\w+)\.{0,1}(\w+))$")
         match = self.settingRe.match(settingName)
@@ -137,11 +162,28 @@ class Core(object):
             raise Exception("Bad setting name: '%s' (%s)" % (settingName, settingComment))
 
     def registerEntryPoint(self, entryPointId, epFn):
-        """ Test """
+        """ This method is intended to register *entry points*.
+        Entry point is arbitrary function which receives
+        arbitrary argumets list. Entry point may be called via
+        :meth:`agatsuma.core.Core.runEntryPoint`. Core and services are fully initialized when
+        entry point became available, so it may be used to perform
+        different tasks that requires fully initialized environment such
+        as database cleanup or something else.
+        """
         if not entryPointId in self.entryPoints:
             self.entryPoints[entryPointId] = epFn
         else:
             raise Exception("Entry point with name '%s' is already registered" % entryPointId)
 
-    def runEntryPoint(self, name, argv):
-        self.entryPoints[name](argv)
+    def runEntryPoint(self, name, *args, **kwargs):
+        """ This method runs registered entry point with given `name`
+        with arguments `*args` and `**kwargs`.
+
+        You should manually call this method from your application code when
+        you need to run entry point.
+
+        Basic Agatsuma's services provides several usable
+        :ref:`entry points<std-entry-points>`.
+        """
+        self.entryPoints[name](*args, **kwargs)
+        

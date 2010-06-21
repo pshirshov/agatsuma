@@ -35,10 +35,9 @@ class ModelSpell(object):
         pass
  
     def postORMSetup(self, core):
-        """Model spell calls this callback after setupORM calls
-        
-        Arguments:
-        - `core`: Core instance
+        """:ref:`SQLAlchemy driver<sqla-driver>` calls this callback after setupORM calls
+
+:param core: Core instance
         """
         pass
 

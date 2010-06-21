@@ -34,6 +34,8 @@ else:
 
 # TODO: session backends: memcache, database
 # TODO: settings backends: database
+# TODO: setup.py
+# TODO: wsgi frameworks support
 
 # TODO: improve loggers' abilities, add more loggers for core classes
 # TODO: Unit tests

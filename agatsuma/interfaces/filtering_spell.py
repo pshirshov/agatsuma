@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 class FilteringSpell(object):
-    """ This spell is intended to provide functions that
-    performs substrings replacements.
+    """ This mix-in interface is intended to provide functions that
+    performs substring replacements.
 
     All such functions are chained and you can use core method
-    TODO to call them. This may be suitable, for example, to
+    **TODO** to call them. This may be suitable, for example, to
     implement word-filter on website.
     """
     def __init__(self):

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+.. module:: mp_core
+   :synopsis: Multiprocessing core
+"""
+
 import os
 import threading
 import multiprocessing
@@ -8,12 +13,6 @@ from multiprocessing import Pool, Manager
 from agatsuma import Settings, log
 from agatsuma.core import Core
 from agatsuma.interfaces import PoolEventSpell
-
-"""
-Warning: common core is only able to propagate settings update to process 
-         pool. 
-         Updating settings in main thread is subclass' problem
-"""
 
 def updateSettings():
     # Settings in current thread is in old state
@@ -38,6 +37,11 @@ def workerInitializer(timeout):
     updateSettingsByTimer(timeout)
 
 class MPCore(Core):
+    """ Base core extension providing pool of worker processes and able to
+notify them about settings changes.
+
+.. warning:: common core is only able to propagate settings update to process pool. Updating settings in main thread is subclass' problem.
+    """
     configUpdateManager = Manager()
     sharedConfigData = configUpdateManager.dict()
     pids = configUpdateManager.list()
@@ -68,17 +72,19 @@ class MPCore(Core):
                              initargs = (Settings.core.settings_update_timeout, ))
         else:
             log.core.info("Pool initiation skipped due negative workers count")
-            
+
         log.core.info("Calling post-pool-init routines...")
         for spell in self._implementationsOf(PoolEventSpell):
             spell.postPoolInit(self)
-        
+
     def _prePoolInit(self):
         pass
 
     def _stop(self):
+        if self.pool:
+            self.pool.close()
         self.removePidFile()
-    
+
     @staticmethod
     def rememberPid(pid):
         assert type(pid) is int
@@ -90,7 +96,7 @@ class MPCore(Core):
         mode = "a+"
         pidfile = Settings.core.pidfile
         if not os.path.exists(pidfile):
-            mode = "w+"            
+            mode = "w+"
         f = open(pidfile, mode)
         f.write("%d\n" % pid)
         f.close()

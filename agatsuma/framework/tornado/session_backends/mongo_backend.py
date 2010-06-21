@@ -98,7 +98,7 @@ class MongoSessionSpell(AbstractSpell, SessionBackendSpell):
     def preConfigure(self, core):
         core.registerEntryPoint("mongodb:sessions:cleanup", self.entryPoint)
         
-    def entryPoint(self, argv):
+    def entryPoint(self, *args, **kwargs):
         log.core.info("Cleaning old sessions in MongoDB")
         self.managerInstance.cleanup()
 

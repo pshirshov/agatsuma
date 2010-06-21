@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 class AbstractSpell(object):
-    """ Base class for all the spells. It have some important methods and callbacks. When Core traversing directories it looks for implementations of this interface and threats them as spells.
+    """ Base class for all the spells. It have some important methods
+and callbacks. When Core traversing directories it looks for
+implementations of this interface and threats them as spells.
 
 :param spellId: unique identifier (name) of this spell.
     Should match the ``\w+`` regex.
@@ -88,7 +90,7 @@ The following spell parameters are supported now:
         """ Core calls this method before settings settings service
         initialization. All the options that are needed for spell
         to work should be registered in this method using core method
-        :meth:`agatsuma.core.core.Core.registerOption`
+        :meth:`agatsuma.core.Core.registerOption`
 
         *Should be overriden in subclasses*
         """

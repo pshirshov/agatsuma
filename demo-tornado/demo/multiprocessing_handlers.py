@@ -24,8 +24,8 @@ class NullSpell(AbstractSpell, FilteringSpell):
     def testFilter(self, inp):
         return inp.replace("Hello", "Oh hi")        
         
-    def entryPoint(self, argv):
-        log.core.info("Demo entry point called with argv %s" % argv)
+    def entryPoint(self, *args, **kwargs):
+        log.core.info("Demo entry point called with argv %s" % str(args))
         
     def preConfigure(self, core):
         core.registerOption("!test.rotest", unicode, "Test read-only setting")

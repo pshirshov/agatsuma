@@ -1,20 +1,10 @@
 Agatsuma base services
 ######################
 
-Interfaces
-***************
+.. _std-entry-points:
 
-.. automodule:: agatsuma.interfaces.storage_spell
-   :members:
-   :inherited-members:
-
-.. automodule:: agatsuma.interfaces.settings_backend
-   :members:
-   :inherited-members:
-
-.. automodule:: agatsuma.interfaces.model_spell
-   :members:
-   :inherited-members:
+Entry points
+******************
 
 Settings
 ******************
@@ -24,3 +14,5 @@ Logging
 
 Data storages
 ******************
+
+.. autoclass:: agatsuma.spells.storage_drivers.core_sqla.SQLASpell

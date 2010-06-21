@@ -65,7 +65,7 @@ class MongoSettingsSpell(AbstractSpell, SettingsBackendSpell):
     def preConfigure(self, core):
         core.registerEntryPoint("mongodb:settings:cleanup", self.entryPoint)
 
-    def entryPoint(self, argv):
+    def entryPoint(self, *args, **kwargs):
         log.core.info("Cleaning up settings in MongoDB")
         self.managerInstance.cleanup()
 
