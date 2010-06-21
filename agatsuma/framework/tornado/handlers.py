@@ -3,7 +3,7 @@
 import tornado.web
 import logging
 from tornado_core import TornadoCore
-from agatsuma.interfaces import RequestSpell
+from agatsuma.framework.tornado.interfaces import RequestSpell
 from agatsuma.errors import EAbstractFunctionCall
 from url import UrlFor
 

@@ -9,7 +9,7 @@ class StorageSpell(object):
     This interface doesn't contain any methods for now because
     all work may be done in
     :meth:`agatsuma.interfaces.abstract_spell.AbstractSpell.preConfigure`
-    :meth:agatsuma.interfaces.abstract_spell.AbstractSpell.postConfigure`
+    :meth:`agatsuma.interfaces.abstract_spell.AbstractSpell.postConfigure`
     methods. So this interface was introduced only for ordering
     purposes.
     """

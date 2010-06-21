@@ -11,7 +11,8 @@ import re
 from agatsuma.core import Core
 from agatsuma.settings import Settings
 from agatsuma.log import log
-from agatsuma.interfaces import AbstractSpell, RequestSpell
+from agatsuma.interfaces import AbstractSpell
+from agatsuma.framework.tornado.interfaces import RequestSpell
 from agatsuma.interfaces import SessionHandler
 
 class SessionSpell(AbstractSpell, RequestSpell):

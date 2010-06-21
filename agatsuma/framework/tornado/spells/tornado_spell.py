@@ -2,7 +2,8 @@
 
 from agatsuma.log import log
 
-from agatsuma.interfaces import AbstractSpell, HandlingSpell
+from agatsuma.interfaces import AbstractSpell
+from agatsuma.framework.tornado.interfaces import HandlingSpell
 from agatsuma.framework.tornado import Url
 
 class TornadoSpell(AbstractSpell):

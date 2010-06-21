@@ -12,8 +12,9 @@ from agatsuma.core import Core
 from agatsuma.settings import Settings
 from agatsuma.log import log
 
-from agatsuma.interfaces import AbstractSpell, HandlingSpell, ModelSpell
+from agatsuma.interfaces import AbstractSpell, ModelSpell
 from agatsuma.framework.tornado import AgatsumaHandler, FidelityWorker
+from agatsuma.framework.tornado.interfaces import  HandlingSpell
 
 class Post(object):
     def __init__(self, message):

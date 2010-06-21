@@ -116,6 +116,8 @@ class Core(object):
     def registerOption(self, settingName, settingType, settingComment):
         """ This function must be called from
         :meth:`agatsuma.interfaces.abstract_spell.AbstractSpell.preConfigure`
+
+        
         """
         if not getattr(self, "settingRe", None):
             self.settingRe = re.compile(r"^(!{0,1})((\w+)\.{0,1}(\w+))$")

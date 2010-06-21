@@ -7,8 +7,9 @@ from agatsuma.core import Core
 from agatsuma.settings import Settings
 from agatsuma.log import log
 
-from agatsuma.interfaces import AbstractSpell, HandlingSpell, FilteringSpell, RequestSpell, SessionHandler
+from agatsuma.interfaces import AbstractSpell, FilteringSpell, SessionHandler
 from agatsuma.framework.tornado import AgatsumaHandler, MsgPumpHandler, FidelityWorker
+from agatsuma.framework.tornado.interfaces import  HandlingSpell, RequestSpell
 
 class NullSpell(AbstractSpell, FilteringSpell):
     def __init__(self):

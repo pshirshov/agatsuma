@@ -7,7 +7,8 @@ from agatsuma.core import Core
 from agatsuma import Settings
 from agatsuma import log
 
-from agatsuma.interfaces import AbstractSpell, HandlingSpell
+from agatsuma.interfaces import AbstractSpell
+from agatsuma.framework.tornado.interfaces import  HandlingSpell
 from agatsuma.framework.tornado import Url, UrlFor, AgatsumaHandler
 
 class MTDemoSpell(AbstractSpell, HandlingSpell):
