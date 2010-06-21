@@ -1,3 +1,5 @@
 *.pyc
 *~
 agatsuma/version.py
+.metadata/
+settings.json

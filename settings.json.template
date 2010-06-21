@@ -25,13 +25,13 @@
             }
     },
 "sessions" : {
-        "storage_uri" : "mongo+mongotable://agatsuma_data/sessions",
+        "storage_uri" : "memcached+memprefix://prefix",
         "expiration_interval" : 20
     },
 "sqla" :
     {
         "uri" : "postgresql+psycopg2://agatsuma:agatsuma@dbhost:5432/agatsuma",
-        "parameters" :
+        "parameters" : 
             {
                 "encoding" : "utf-8",
                 "echo" : false
@@ -39,8 +39,18 @@
     },
 "mongo" :
     {
-	"uri" : "mongodb://dbhost:27017",
-	"db_collections" : ["agatsuma_data"]
+        "uri" : "mongodb://dbhost:27017",
+        "db_collections" : ["agatsuma_data"]
+    },
+"memcached" :
+    {
+        "uri" : "memcached://memcachehost:11211",
+        "behaviors" :
+            {
+              "tcp_nodelay": true,
+              "no block": true,
+              "ketama": true
+            }
     },
 "test" :
     {

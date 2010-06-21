@@ -18,7 +18,7 @@ class MongoSettingsBackend(SettingsBackend):
         self.connection = mongoSpell.connection
         self.dbCollection = getattr(mongoSpell, connData[0])
         self.db = getattr(self.dbCollection, connData[1])
-        
+
     @staticmethod
     def _parseMongoTableUri(details):
         # mongotable://collection/table
@@ -34,7 +34,7 @@ class MongoSettingsBackend(SettingsBackend):
         except pymongo.errors.AutoReconnect:
             log.core.critical("Mongo exception during loading %s" % name)
         except Exception, e:
-            log.core.critical("Unknown exception during loadingL: %s" % str(e))
+            log.core.critical("Unknown exception during loading: %s" % str(e))
             self.connection.end_request()
         return currentValue
 
@@ -49,7 +49,7 @@ class MongoSettingsBackend(SettingsBackend):
             self.connection.end_request()
         except pymongo.errors.AutoReconnect:
             log.core.critical("Mongo exception during saving %s=%s" % (name, str(value)))
-        
+
 class MongoSettingsSpell(AbstractSpell, SettingsBackendSpell):
     def __init__(self):
         config = {'info' : 'MongoDB settings storage',
@@ -57,14 +57,14 @@ class MongoSettingsSpell(AbstractSpell, SettingsBackendSpell):
                   'provides' : ('settings_backend', )
                  }
         AbstractSpell.__init__(self, 'tornado_settings_backend_mongo', config)
-        
+
     def instantiateBackend(self, uri):
         self.managerInstance = MongoSettingsBackend(uri)
         return self.managerInstance
 
     def preConfigure(self, core):
         core.registerEntryPoint("mongodb:settings:cleanup", self.entryPoint)
-        
+
     def entryPoint(self, argv):
         log.core.info("Cleaning up settings in MongoDB")
         self.managerInstance.cleanup()
