@@ -5,3 +5,4 @@ agatsuma/version.py
 settings.json
 .ropeproject/*
 build/*
+agatsuma/doc/build/*
