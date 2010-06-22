@@ -84,18 +84,20 @@ The following kwargs parameters are supported:
         self.spellsDirs.extend ([os.path.join('agatsuma', 'spells')]) #[os.path.join(libRoot, 'spells')])
         enumerator.enumerateSpells(self.appSpells, self.spellsDirs)
 
-        from agatsuma.interfaces.abstract_spell import AbstractSpell
-        log.core.info("Initializing spells...")
-        for spell in self._implementationsOf(AbstractSpell):
-            spell.preConfigure(self)
-        self.settings = Settings(appConfig, self.registeredSettings)
-        self.logger.updateLevels()
-        log.core.info("Calling post-configure routines...")
-        for spell in self._implementationsOf(AbstractSpell):
-            spell.postConfigure(self)
-        log.core.info("Spells initialization completed")    
-        
-        self._postConfigure()
+        if appConfig:
+            from agatsuma.interfaces.abstract_spell import AbstractSpell
+            log.core.info("Initializing spells...")
+            for spell in self._implementationsOf(AbstractSpell):
+                spell.preConfigure(self)
+            self.settings = Settings(appConfig, self.registeredSettings)
+            self.logger.updateLevels()
+            log.core.info("Calling post-configure routines...")
+            for spell in self._implementationsOf(AbstractSpell):
+                spell.postConfigure(self)
+            log.core.info("Spells initialization completed")
+            self._postConfigure()
+        else:
+            log.core.critical("Config path is None")
 
         log.core.info("Initialization completed")
         signal.signal(signal.SIGTERM, self._sigHandler)

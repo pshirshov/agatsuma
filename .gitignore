@@ -4,3 +4,4 @@ agatsuma/version.py
 .metadata/
 settings.json
 .ropeproject/*
+build/*

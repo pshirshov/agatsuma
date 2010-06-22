@@ -86,6 +86,12 @@ The following spell parameters are supported now:
         """
         return self.pnamespace
 
+    def requirements(self):
+        """ This method should return list of strings that
+        describe spell dependencies setuptools format (like
+        ``libfoo>=0.1.2``)
+        """
+        return []
     def preConfigure(self, core):
         """ Core calls this method before settings settings service
         initialization. All the options that are needed for spell

@@ -36,6 +36,7 @@ else:
 # TODO: settings backends: database
 # TODO: setup.py
 # TODO: wsgi frameworks support
+# TODO: webhelpers
 
 # TODO: improve loggers' abilities, add more loggers for core classes
 # TODO: Unit tests

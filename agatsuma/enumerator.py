@@ -25,14 +25,16 @@ class Enumerator(object):
         del self.core.spellsDict[spell.spellId()]
         
     def enumerateSpells(self, essentialSpellSpaces, additionalSpellPaths):
-        if not self.core.appName:
-            self.core.appName = self.appDir[0].capitalize() + self.appDir[1:]
-        spellsDirs = [self.appDir]
+        spellsDirs = []
+        if self.appDir:
+            spellsDirs.append(self.appDir)
+            if not self.core.appName:
+                self.core.appName = self.appDir[0].capitalize() + self.appDir[1:]
         spellsDirs.extend(additionalSpellPaths)
         
         log.core.debug("System paths:")
         for p in sys.path:
-            log.core.debug("* %s" % p)    
+            log.core.debug("* %s" % p)
         log.core.info("Collecting names of possible spells...")
         
         namespacesToImport = []
@@ -40,7 +42,7 @@ class Enumerator(object):
         
         for spellsDir in spellsDirs:
             #spellsDir =  #os.path.realpath(os.path.join(self.OPT.appPath, 'controllers'))
-            #sys.path.append(spellsDir)          
+            #sys.path.append(spellsDir)
 
             basicNamespace = spellsDir.replace(os.path.sep, '.') #os.path.basename(spellsDir)                
             log.core.info("Processing spells directory: %s" % spellsDir)
