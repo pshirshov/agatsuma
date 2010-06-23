@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-import pylibmc
+from agatsuma.core import Core
+if Core.internalState["mode"] != "setup":
+    import pylibmc
 import re
 
 from agatsuma.log import log
@@ -41,3 +43,7 @@ class MemcachedSpell(AbstractSpell, StorageSpell):
         if match and match.group(2):
             return  match.group(1), match.group(2) # host, port
         return  match.group(1)
+
+    def requirements(self):
+        return {"memcache" : "pylibmc>=1.1.1",
+               }

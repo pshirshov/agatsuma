@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import sys
 from setuptools import setup, find_packages
 from distribute_setup import use_setuptools
 
@@ -11,28 +12,37 @@ from agatsuma.interfaces import AbstractSpell
 
 use_setuptools()
 
+print sys.argv
+components = filter(lambda s: s.startswith('--with'), sys.argv)
+sys.argv = filter(lambda s: not s.startswith('--with'), sys.argv)
+
 core = Core(None, None, appMode = 'setup')
 log.newLogger("setup", logging.DEBUG)
 spells = core.implementationsOf(AbstractSpell)
 
-def depGroupEnabled(depdicts):
-    return True
+def depGroupEnabled(group):
+    return not ('--without-%s' % group) in components
 
 depGroups = []
 dependencies = []
+depGroupsContent = {}
 for spell in spells:
     depdict = spell.requirements()
     for group in depdict:
         depGroups.append(group)
+        if not depGroupsContent.get(group, None):
+            depGroupsContent[group] = []
+        deps = depdict[group]
+        depGroupsContent[group].append(deps)
         if depGroupEnabled(group):
-            dependencies.append(depdict[group])
+            dependencies.append(deps)
 
 log.setup.info("The following dependencies classes are present")
 for group in depGroups:
-    formatString = " %s "
-    if depGroupEnabled:
-        formatString = "[%s]" 
-    log.setup.info(formatString % group)
+    formatString = "[ ] %s: %s "
+    if depGroupEnabled(group):
+        formatString = "[*] %s: %s" 
+    log.setup.info(formatString % (group, str(depGroupsContent[group])))
 
 log.setup.info("The following dependencies list will be used: %s" % str(dependencies))
 

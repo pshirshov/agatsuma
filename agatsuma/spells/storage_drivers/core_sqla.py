@@ -2,8 +2,13 @@
 
 import copy
 
-import sqlalchemy as sa
-import sqlalchemy.orm as orm
+from agatsuma.core import Core
+
+if Core.internalState["mode"] != "setup":
+    import sqlalchemy as sa
+    import sqlalchemy.orm as orm
+else:
+    sa = None
 
 from agatsuma.log import log
 from agatsuma.settings import Settings
@@ -21,7 +26,12 @@ class SQLASpell(AbstractSpell, StorageSpell):
                   'provides' : ('storage_driver', ),
                  }
         AbstractSpell.__init__(self, 'agatsuma_sqla', config)
-        SQLASpell.protoMeta = sa.MetaData() 
+        if sa:
+            SQLASpell.protoMeta = sa.MetaData()
+            
+    def requirements(self):
+        return {"sqla" : "sqlalchemy>=0.6.1",
+               }
 
     def deploy(self, *args, **kwargs):
         spells = Core.instance._implementationsOf(ModelSpell)

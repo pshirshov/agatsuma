@@ -1,4 +1,7 @@
-import pymongo
+from agatsuma.core import Core
+if Core.internalState["mode"] != "setup":
+    import pymongo
+
 import re
 
 from agatsuma.log import log
@@ -35,3 +38,7 @@ class MongoDBSpell(AbstractSpell, StorageSpell):
         if match.group(2):
             return  match.group(1), int(match.group(2)) # host, port
         return  match.group(1), None
+
+    def requirements(self):
+        return {"mongo" : "pymongo>=0.6",
+               }

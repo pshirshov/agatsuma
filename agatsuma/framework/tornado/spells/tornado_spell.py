@@ -9,7 +9,8 @@ from agatsuma.framework.tornado import Url
 class TornadoSpell(AbstractSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Tornado Spell',
-                  'deps' : ()
+                  'deps' : (),
+                  'eager_unload' : True,
                  }
         AbstractSpell.__init__(self, 'agatsuma_tornado', config)
         
@@ -50,3 +51,7 @@ class TornadoSpell(AbstractSpell):
                 log.core.debug("* %s" % str(p))  
         else:
             raise Exception("Handling spells not found!")
+
+    def requirements(self):
+        return {"tornado" : "tornado>=0.2",
+               }

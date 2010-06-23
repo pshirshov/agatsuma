@@ -32,12 +32,11 @@ else:
     entryPointName = sys.argv[1]
     core.runEntryPoint(entryPointName, sys.argv)
 
+# TODO: directories, namespaces, setup.py
 # TODO: session backends: memcache, database
 # TODO: settings backends: database
-# TODO: setup.py: configuration flags == dep groups, set all the dependencies
 # TODO: wsgi frameworks support
 # TODO: webhelpers
-# TODO: eager unloads for modules
 
 # TODO: improve loggers' abilities, add more loggers for core classes
 # TODO: Unit tests

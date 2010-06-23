@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 import datetime
-try:
-    import cPickle as pickle
-except:
-    import pickle
-
-import base64
 import re
 
 from agatsuma.core import Core
@@ -18,7 +12,7 @@ from agatsuma.interfaces import SessionHandler
 class SessionSpell(AbstractSpell, RequestSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Session Spell',
-                  'deps' : (),
+                  'deps' : ('agatsuma_tornado', ),
                   'requires' : ('session_backend', ),
                  }
         AbstractSpell.__init__(self, 'agatsuma_session', config)
