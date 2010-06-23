@@ -3,6 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. highlight:: python
+   :linenothreshold: 5
+
 Agatsuma: a bit of graceful magic
 ====================================
 
@@ -12,8 +15,9 @@ Agatsuma is a simple but powerful library providing the following functionality:
    different modules 
 #. Useful services such as settings, logging, SQLAlchemy and MongoDB support, 
    pool of worker processes and more
-#. Many usable extensions for Tornado Web Framework such as URL building, 
-   sessions and more
+#. Many usable extensions for 
+   `Tornado Web Framework <http://www.tornadoweb.org/>`_ 
+   such as URL building, sessions and more
 
 Support for another frameworks is planned. 
 

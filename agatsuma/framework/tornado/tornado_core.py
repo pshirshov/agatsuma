@@ -18,9 +18,11 @@ class TornadoCore(MPCore, tornado.web.Application):
    
     def __init__(self, appDir, appConfig, **kwargs):
         spellsDirs = []
-        spellsDirs.extend ([os.path.join('agatsuma', 'framework', 'tornado', 'spells'),
-                            os.path.join('agatsuma', 'framework', 'tornado', 'session_backends'),
+        basePath = os.path.join('agatsuma', 'framework', 'tornado')
+        spellsDirs.extend ([os.path.join(basePath, 'spells'),
+                            os.path.join(basePath, 'session_backends'),
                             ])
+        self.URIMap = []
         spellsDirs.extend(kwargs.get('spellsDirs', []))
         kwargs['spellsDirs'] = spellsDirs
         MPCore.__init__(self, appDir, appConfig, **kwargs)

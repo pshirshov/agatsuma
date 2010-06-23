@@ -72,7 +72,7 @@ class Enumerator(object):
                 #log.core.info('trying %s...' % nsToImport)
                 mod = None
                 try:
-                    mod = __import__(nsToImport, fromlist = '*')
+                    mod = __import__(nsToImport, {}, {}, '*', -1)
                 except Exception, e:
                     log.core.warning('Exception while importing %s: %s' % (nsToImport, str(e)))
                     mod = None
@@ -82,19 +82,16 @@ class Enumerator(object):
                 possibleSpells = inspect.getmembers(mod, plPredicate)
                 if possibleSpells:
                     possibleSpells = map(lambda x: x[1], possibleSpells)
-
-                if possibleSpells:
                     for possibleSpell in possibleSpells:
                         instance = possibleSpell()
                         plid = instance.spellId()
                         if not idRe.match(plid):
                             raise Exception("Incorrect spell Id: %s" % plid)
-                        log.core.info("Importing spell: %s; base=%s" % (plid, nsToImport))
+                        log.core.info("Spell found: %s; base=%s" % (plid, nsToImport))
 
                         if not spells.has_key(plid):
-                            #nsName = basicNamespace + mod.__name__
                             nsName = mod.__name__
-                            ns = __import__(nsName, {}, {}, '*', -1)
+                            ns = mod #__import__(nsName, stateVars, {}, '*', -1)
                             instance._setDetails(
                                 namespace = ns,
                                 namespaceName = nsName,
@@ -115,20 +112,19 @@ class Enumerator(object):
             else:
                 log.core.warning('Namespace ignored due app settings: %s' % nsToImport)
 
-        toRemove = []
+        falseSpells = []
         for provId in provides:
             deps = provides[provId]
             log.core.debug("Functionality '%s' provided by %s" % (provId, deps))            
             newId = "[%s]" % provId
             falseSpell = AbstractSpell(newId, {'info' : 'Dependencies helper for %s' % provId,
-                                                  'deps' : tuple(deps)
-                                                 })
+                                               'deps' : tuple(deps),
+                                              })
             spells[newId] = falseSpell
-            toRemove.append(falseSpell)
+            falseSpells.append(falseSpell)
 
         log.core.info("IMPORT STAGE COMPLETED. Imported %d spells:" % len(spells))
-        for spell in spells.values():
-            log.core.info("* %s, %s, %s" % (spell.spellId(), spell.namespaceName(), spell.fileName()))
+        self.printSpellsList(spells.values())
         log.core.info('RESOLVING DEPENDENCIES...')
         needCheck = True
         while needCheck:
@@ -139,7 +135,7 @@ class Enumerator(object):
                     for dep in deps:
                         if not dep in spells:
                             log.core.warning('[WARNING] Disconnected: "%s"; non-existent dependence: "%s"' % (id, dep))
-                            for falseSpell in toRemove:
+                            for falseSpell in falseSpells:
                                 falseSpell._removeDep(id)
                             del spells[id]
                             needCheck = True
@@ -178,9 +174,22 @@ class Enumerator(object):
 
         spellsNames = map(lambda p: p.spellId(), self.core.spells)
         log.core.debug("Connected %d spells: %s. False spells will be removed now" % (len(spellsNames), str(spellsNames)))
-        for spell in toRemove:
+        
+        for spell in falseSpells:
             self.__unregisterSpell(spell)
-            
+        
         spellsNames = map(lambda p: p.spellId(), self.core.spells)
         log.core.info("RESOLVING STAGE COMPLETED. Connected %d spells: %s" % (len(spellsNames), str(spellsNames)))
         log.core.info('SPELLS ENUMERATING COMPLETED')     
+
+    def eagerUnload(self):
+        log.core.debug("Performing eager unload...")
+        toUnload = filter(lambda spell: spell.config.get('eager_unload', None),
+                          self.core.spells)
+        for spell in toUnload:
+            log.core.debug('Eager unloading "%s"' % spell.spellId())
+            self.__unregisterSpell(spell)
+
+    def printSpellsList(self, spells):
+        for spell in spells:
+            log.core.info("* %s, %s, %s" % (spell.spellId(), spell.namespaceName(), spell.fileName()))

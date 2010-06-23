@@ -34,16 +34,17 @@ else:
 
 # TODO: session backends: memcache, database
 # TODO: settings backends: database
-# TODO: setup.py
+# TODO: setup.py: configuration flags == dep groups, set all the dependencies
 # TODO: wsgi frameworks support
 # TODO: webhelpers
+# TODO: eager unloads for modules
 
 # TODO: improve loggers' abilities, add more loggers for core classes
 # TODO: Unit tests
 # TODO: Sphinx documentation
 
 # TODO: more cores 
-# TODO: customized errors handling (Tornado patching needed)
+# TODO: customized errors handling (Tornado patching needed), email reports
 # TODO: caching decorator
 # TODO: applyFilters
 

@@ -11,15 +11,30 @@ from agatsuma.interfaces import AbstractSpell
 
 use_setuptools()
 
-core = Core(None, None)
+core = Core(None, None, appMode = 'setup')
 log.newLogger("setup", logging.DEBUG)
 spells = core.implementationsOf(AbstractSpell)
 
+def depGroupEnabled(depdicts):
+    return True
+
+depGroups = []
 dependencies = []
 for spell in spells:
-    dependencies.extend(spell.requirements())
-log.setup.info("The following dependencies are found: %s" % str(dependencies))
+    depdict = spell.requirements()
+    for group in depdict:
+        depGroups.append(group)
+        if depGroupEnabled(group):
+            dependencies.append(depdict[group])
 
+log.setup.info("The following dependencies classes are present")
+for group in depGroups:
+    formatString = " %s "
+    if depGroupEnabled:
+        formatString = "[%s]" 
+    log.setup.info(formatString % group)
+
+log.setup.info("The following dependencies list will be used: %s" % str(dependencies))
 
 setup(
     name = "Agatsuma",

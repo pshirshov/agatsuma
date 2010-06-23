@@ -45,11 +45,16 @@ The following kwargs parameters are supported:
 
    Full Agatsuma version including commit identifier and branch.
    May be extracted from GIT repository with `getversion` script.
-   
+
+.. attribute:: internalState
+
+   Dict. For now contains only the key ``mode`` with value ``setup`` when core
+   was started from setup.py and ``normal`` otherwise.
     """
     instance = None
     versionString = "%d.%d.%d.%s.%s" % (majorVersion, minorVersion, commitsCount, branchId, commitId)
-        
+    internalState = {}
+    
     def __init__(self, appDir, appConfig, **kwargs):
         assert Core.instance is None
         Core.instance = self
@@ -60,12 +65,10 @@ The following kwargs parameters are supported:
         log.core.info("Initializing Agatsuma")
         log.core.info("Version: %s" % self.versionString)
         
-        self.URIMap = []
         self.appName = kwargs.get("appName", None)
-        self.appSpells = []
-        self.appSpells.extend(kwargs.get("appSpells", [])) #"core_spells", "core_filters"])
-        self.spellsDirs = []
-        self.spellsDirs.extend(kwargs.get("spellsDirs", []))
+        self.appSpells = kwargs.get("appSpells", [])
+        self.spellsDirs = kwargs.get("spellsDirs", [])
+        Core.internalState["mode"] = kwargs.get("appMode", "normal")
         self.spells = []
         self.spellsDict = {}
         self.filterStack = []
@@ -95,6 +98,7 @@ The following kwargs parameters are supported:
             for spell in self._implementationsOf(AbstractSpell):
                 spell.postConfigure(self)
             log.core.info("Spells initialization completed")
+            enumerator.eagerUnload()
             self._postConfigure()
         else:
             log.core.critical("Config path is None")
