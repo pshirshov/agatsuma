@@ -3,14 +3,16 @@
 from agatsuma.core import Core
 if Core.internalState.get("mode", None) == "normal":
     import tornado.web
+    HandlerBaseClass = tornado.web.RequestHandler
+else:
+    HandlerBaseClass = object
 
-import logging
 from tornado_core import TornadoCore
 from agatsuma.framework.tornado.interfaces import RequestSpell
 from agatsuma.errors import EAbstractFunctionCall
 from url import UrlFor
 
-class AgatsumaHandler(tornado.web.RequestHandler):
+class AgatsumaHandler(HandlerBaseClass):
     def __init__(self, application, request, transforms=None):
         tornado.web.RequestHandler.__init__(self, application, request, transforms)
 

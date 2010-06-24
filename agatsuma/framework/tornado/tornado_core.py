@@ -9,14 +9,17 @@ if MPCore.internalState.get("mode", None) == "normal":
     import tornado.httpserver
     import tornado.ioloop
     import tornado.web
+    TornadoAppClass = tornado.web.Application
+else:
+    TornadoAppClass = object
 
 from agatsuma.core.mp_core import updateSettings
 from agatsuma import Settings
 from agatsuma import log, MPLogHandler
 
-class TornadoCore(MPCore, tornado.web.Application):   
+class TornadoCore(MPCore, TornadoAppClass):
     mqueue = None
-   
+
     def __init__(self, appDir, appConfig, **kwargs):
         spellsDirs = []
         basePath = os.path.join('agatsuma', 'framework', 'tornado')

@@ -7,8 +7,8 @@ Core key conceptions
 Spells
 ------
 
-:mod:`agatsuma.core` -- Standard universal cores
-************************************************
+:mod:`agatsuma.core` -- Common cores
+************************************
 
 .. automodule:: agatsuma.core
 

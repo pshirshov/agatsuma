@@ -15,9 +15,16 @@ import sys, os
 
 def up(p):
     return os.path.split(p)[0]
+
 libRoot = up(up(up(os.path.realpath(os.path.dirname(__file__)))))
+
 print "Agatsuma's root:", libRoot
 sys.path.append(libRoot)
+
+from agatsuma.core import Core
+#import agatsuma.framework.tornado.interfaces
+core = Core(None, None, appMode = 'doc')
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
