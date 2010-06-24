@@ -4,7 +4,7 @@ import copy
 
 from agatsuma.core import Core
 
-if Core.internalState("mode") != "setup":
+if Core.internalState.get("mode", None) != "setup":
     import sqlalchemy as sa
     import sqlalchemy.orm as orm
 else:

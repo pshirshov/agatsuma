@@ -1,5 +1,5 @@
 from agatsuma.core import Core
-if Core.internalState.get("mode") != "setup":
+if Core.internalState.get("mode", None) != "setup":
     import pymongo
 
 import re

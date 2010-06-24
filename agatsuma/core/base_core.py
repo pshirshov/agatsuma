@@ -28,9 +28,9 @@ class Core(object):
 and also able to enumerate spells.
 
 :param appDirs: list of paths to directories containing application spells.
-.. note: All the paths in ``appDirs`` list must define importable namespaces.
-    So if we replace all '/' with '.'
-    in such path we should get importable namespace
+
+.. note:: All the paths in ``appDirs`` list must define importable namespaces. So if we replace all '/' with '.'  in such path we should get importable namespace
+
 :param appConfig: path to JSON file with application settings
 
 The following kwargs parameters are supported:
