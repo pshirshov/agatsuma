@@ -30,9 +30,11 @@ class Core(object):
     """Base core which provides basic services, such as settings
 and also able to enumerate spells.
 
-:param appDirs: list of paths to directories containing application spells.
+:param appDirs: list of paths to directories containing application spells. 
 
 .. note:: All the paths in ``appDirs`` list must define importable namespaces. So if we replace all '/' with '.'  in such path we should get importable namespace
+
+.. note:: appDirs also may contain tuples with two values (``dir``, ``ns``) where ``ns`` is namespace corresponding to directory ``dir`` but it's not recommended to use this feature.
 
 :param appConfig: path to JSON file with application settings
 
@@ -66,11 +68,17 @@ The following kwargs parameters are supported:
     versionString = "%d.%d.%d.%s.%s" % (majorVersion, minorVersion, commitsCount, branchId, commitId)
     internalState = {"mode":"normal"}
     agatsumaBaseDir = up(up(os.path.realpath(os.path.dirname(__file__))))
-    
+
+    @staticmethod
+    def _internalSpellSpace(*fragments):
+        basePath = os.path.join(Core.agatsumaBaseDir, *fragments)
+        baseNS = '.'.join(fragments)
+        return (basePath, baseNS)
+
     def __init__(self, appDirs, appConfig, **kwargs):
         assert Core.instance is None
         Core.instance = self
-        
+
         self.logger = log()
         self.logger.initiateLoggers()
         log.newLogger("core", logging.DEBUG)
@@ -91,12 +99,8 @@ The following kwargs parameters are supported:
         self.mpHandlerInstances = WeakValueDictionary()
         prohibitedSpells = kwargs.get("prohibitedSpells", [])
         enumerator = Enumerator(self, appDirs, prohibitedSpells)
-        
-        #essentialSpellSpaces = self.appSpells
-        #essentialSpellSpaces = map(lambda s: "agatsuma.spells.%s" % s, essentialSpellSpaces)
-        
-        #libRoot = os.path.realpath(os.path.dirname(__file__))
-        self.spellsDirs.extend ([os.path.join('agatsuma', 'spells')]) #[os.path.join(libRoot, 'spells')])
+
+        self.spellsDirs.append(self._internalSpellSpace('agatsuma', 'spells'))
         enumerator.enumerateSpells(self.appSpells, self.spellsDirs)
 
         if appConfig:
@@ -124,7 +128,7 @@ The following kwargs parameters are supported:
         Runs before core shutdown.
         """
         pass
-    
+
     def _postConfigure(self):
         pass
 
@@ -166,9 +170,9 @@ See also **TODO**
             self.settingRe = re.compile(r"^(!{0,1})((\w+)\.{0,1}(\w+))$")
         match = self.settingRe.match(settingName)
         if match:
-            settingDescr = (match.group(3), 
+            settingDescr = (match.group(3),
                             match.group(4),
-                            bool(match.group(1)), 
+                            bool(match.group(1)),
                             settingType,
                             settingComment,
                            )
@@ -204,4 +208,4 @@ See also **TODO**
         :ref:`entry points<std-entry-points>`.
         """
         self.entryPoints[name](*args, **kwargs)
-        
+

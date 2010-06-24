@@ -23,7 +23,7 @@ class Enumerator(object):
     def __unregisterSpell(self, spell):
         self.core.spells.remove(spell)
         del self.core.spellsDict[spell.spellId()]
-        
+
     def enumerateSpells(self, essentialSpellSpaces, additionalSpellPaths):
         spellsDirs = []
         if self.appDirs:
@@ -31,20 +31,25 @@ class Enumerator(object):
             if not self.core.appName:
                 self.core.appName = self.appDirs[0][0].capitalize() + self.appDirs[0][1:]
         spellsDirs.extend(additionalSpellPaths)
-        
+
         log.core.debug("System paths:")
         for p in sys.path:
             log.core.debug("* %s" % p)
         log.core.info("Collecting names of possible spells...")
-        
+
         namespacesToImport = []
         namespacesToImport.extend(essentialSpellSpaces)
-        
+
         for spellsDir in spellsDirs:
             #spellsDir =  #os.path.realpath(os.path.join(self.OPT.appPath, 'controllers'))
             #sys.path.append(spellsDir)
 
-            basicNamespace = spellsDir.replace(os.path.sep, '.') #os.path.basename(spellsDir)                
+            if not type(spellsDir) is tuple:
+                basicNamespace = spellsDir.replace(os.path.sep, '.') #os.path.basename(spellsDir)
+            else:
+                basicNamespace = spellsDir[1]
+                spellsDir = spellsDir[0]
+
             log.core.info("Processing spells directory: %s" % spellsDir)
             log.core.info("Spells namespace: %s" % basicNamespace)
 
@@ -116,7 +121,7 @@ class Enumerator(object):
         falseSpells = []
         for provId in provides:
             deps = provides[provId]
-            log.core.debug("Functionality '%s' provided by %s" % (provId, deps))            
+            log.core.debug("Functionality '%s' provided by %s" % (provId, deps))
             newId = "[%s]" % provId
             falseSpell = AbstractSpell(newId, {'info' : 'Dependencies helper for %s' % provId,
                                                'deps' : tuple(deps),
@@ -148,7 +153,6 @@ class Enumerator(object):
         while needIteration:
             needIteration = False
             for id in spells.keys():
-                #log.core.info('testing: ' + id)
                 deps = spells[id].deps()
 
                 ok = True
@@ -175,13 +179,13 @@ class Enumerator(object):
 
         spellsNames = map(lambda p: p.spellId(), self.core.spells)
         log.core.debug("Connected %d spells: %s. False spells will be removed now" % (len(spellsNames), str(spellsNames)))
-        
+
         for spell in falseSpells:
             self.__unregisterSpell(spell)
-        
+
         spellsNames = map(lambda p: p.spellId(), self.core.spells)
         log.core.info("RESOLVING STAGE COMPLETED. Connected %d spells: %s" % (len(spellsNames), str(spellsNames)))
-        log.core.info('SPELLS ENUMERATING COMPLETED')     
+        log.core.info('SPELLS ENUMERATING COMPLETED')
 
     def eagerUnload(self):
         log.core.debug("Performing eager unload...")

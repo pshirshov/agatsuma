@@ -22,9 +22,8 @@ class TornadoCore(MPCore, TornadoAppClass):
 
     def __init__(self, appDir, appConfig, **kwargs):
         spellsDirs = []
-        basePath = os.path.join('agatsuma', 'framework', 'tornado')
-        spellsDirs.extend ([os.path.join(basePath, 'spells'),
-                            os.path.join(basePath, 'session_backends'),
+        nsFragments = ('agatsuma', 'framework', 'tornado', 'spells')
+        spellsDirs.extend ([self._internalSpellSpace(*nsFragments)
                             ])
         self.URIMap = []
         spellsDirs.extend(kwargs.get('spellsDirs', []))
@@ -35,7 +34,7 @@ class TornadoCore(MPCore, TornadoAppClass):
                           }
         tornadoSettings.update(Settings.tornado.app_parameters)
         tornado.web.Application.__init__(self, self.URIMap, **tornadoSettings)
-        
+
     def _prePoolInit(self):
         self.messagePumpNeeded = False
         from agatsuma.framework.tornado import MsgPumpHandler
@@ -44,13 +43,13 @@ class TornadoCore(MPCore, TornadoAppClass):
                 self.messagePumpNeeded = True
                 TornadoCore.mqueue = MPQueue()
                 self.waitingCallbacks = []
-                break      
+                break
 
     def _stop(self):
         #self.HTTPServer.stop()
         self.ioloop.stop()
         MPCore._stop(self)
-        
+
     def processLog(self):
         while not log.instance.logQueue.empty():
             try:
@@ -64,12 +63,12 @@ class TornadoCore(MPCore, TornadoAppClass):
         pumpTimeout = Settings.tornado.logger_pump_timeout
         self.logger.logQueue = MPQueue()
         log.instance = self.logger
-        self.logger.logPump = tornado.ioloop.PeriodicCallback(self.processLog, 
-                                                              pumpTimeout, 
+        self.logger.logPump = tornado.ioloop.PeriodicCallback(self.processLog,
+                                                              pumpTimeout,
                                                               io_loop=self.ioloop)
         log.rootHandler = MPLogHandler(self.logger.logQueue, log.rootHandler)
         self.logger.logPump.start()
-    
+
     def start(self):
         self.ioloop = tornado.ioloop.IOLoop.instance()
         pumpTimeout = Settings.tornado.message_pump_timeout
@@ -94,14 +93,14 @@ class TornadoCore(MPCore, TornadoAppClass):
         MPCore.rememberPid(pid)
         MPCore.writePid(pid)
         log.core.debug("Main process' PID: %d" % pid)
-        configChecker = tornado.ioloop.PeriodicCallback(updateSettings, 
-                                                        1000 * Settings.core.settings_update_timeout, 
-                                                        io_loop=self.ioloop)        
+        configChecker = tornado.ioloop.PeriodicCallback(updateSettings,
+                                                        1000 * Settings.core.settings_update_timeout,
+                                                        io_loop=self.ioloop)
         configChecker.start()
-        
+
         if self.messagePumpNeeded:
-            mpump = tornado.ioloop.PeriodicCallback(self.messagePump, 
-                                                    pumpTimeout, 
+            mpump = tornado.ioloop.PeriodicCallback(self.messagePump,
+                                                    pumpTimeout,
                                                     io_loop=self.ioloop)
             log.core.debug("Starting message pump...")
             mpump.start()
@@ -111,7 +110,7 @@ class TornadoCore(MPCore, TornadoAppClass):
         log.core.info("Starting %s/Agatsuma in server mode on port %d..." % (self.appName, port))
         log.core.info("=" * 60)
         self.ioloop.start()
-        
+
     def messagePump(self):
         while not self.mqueue.empty():
             try:
@@ -128,14 +127,14 @@ class TornadoCore(MPCore, TornadoAppClass):
                     log.core.debug("bad message: '%s'" % str(message))
             except Queue.Empty, e:
                 log.core.debug("message: raised Queue.Empty")
-                    
+
         if self.waitingCallbacks:
             try:
                 for callback in self.waitingCallbacks:
                     callback()
             finally:
                 self.waitingCallbacks = []
-            
+
     def handlerInitiated(self, handler):
         # references are weak, so handler will be correctly destroyed and removed from dict automatically
-        self.mpHandlerInstances[id(handler)] = handler        
+        self.mpHandlerInstances[id(handler)] = handler
