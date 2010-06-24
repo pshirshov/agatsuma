@@ -23,6 +23,9 @@ except:
     branchId = "branch"
     commitId = "commit"
 
+def up(p):
+    return os.path.split(p)[0]
+
 class Core(object):
     """Base core which provides basic services, such as settings
 and also able to enumerate spells.
@@ -53,10 +56,16 @@ The following kwargs parameters are supported:
 
    Dict. For now contains only the key ``mode`` with value ``setup`` when core
    was started from setup.py and ``normal`` otherwise.
+
+.. attribute:: agatsumaBaseDir
+
+   Path to directory which contains Agatsuma. This directory makes Agatsuma's
+   namespaces available when added into ``PYTHONPATH``.
     """
     instance = None
     versionString = "%d.%d.%d.%s.%s" % (majorVersion, minorVersion, commitsCount, branchId, commitId)
     internalState = {"mode":"normal"}
+    agatsumaBaseDir = up(up(os.path.realpath(os.path.dirname(__file__))))
     
     def __init__(self, appDirs, appConfig, **kwargs):
         assert Core.instance is None
@@ -67,7 +76,7 @@ The following kwargs parameters are supported:
         log.newLogger("core", logging.DEBUG)
         log.core.info("Initializing Agatsuma")
         log.core.info("Version: %s" % self.versionString)
-        
+        log.core.info("Agatsuma's base directory: %s" % self.agatsumaBaseDir)
         self.appName = kwargs.get("appName", None)
         self.appSpells = kwargs.get("appSpells", [])
         self.spellsDirs = kwargs.get("spellsDirs", [])
@@ -77,7 +86,7 @@ The following kwargs parameters are supported:
         self.filterStack = []
         self.registeredSettings = {}
         self.entryPoints = {}
-        
+
         #self.globalFilterStack = [] #TODO: templating and this
         self.mpHandlerInstances = WeakValueDictionary()
         prohibitedSpells = kwargs.get("prohibitedSpells", [])

@@ -65,6 +65,7 @@ class Enumerator(object):
         idRe = re.compile('^[\w]+$')
         spells = {}
         provides = {}
+        namespacesToImport = list(set(namespacesToImport))
         log.core.debug('Collected namespaces: %s' % str(namespacesToImport))
         log.core.info('Started spells enumerator...')
         for nsToImport in namespacesToImport:
