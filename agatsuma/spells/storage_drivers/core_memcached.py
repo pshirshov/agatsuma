@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from agatsuma.core import Core
-if Core.internalState["mode"] != "setup":
+if Core.internalState.get("mode", None) != "setup":
     import pylibmc
 import re
 
