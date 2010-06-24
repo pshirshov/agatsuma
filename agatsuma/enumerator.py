@@ -9,8 +9,8 @@ from agatsuma.log import log
 from agatsuma.interfaces import AbstractSpell
 
 class Enumerator(object):
-    def __init__(self, core, appDir, prohibitedSpells):
-        self.appDir = appDir
+    def __init__(self, core, appDirs, prohibitedSpells):
+        self.appDirs = appDirs
         self.prohibitedSpells = prohibitedSpells
         self.core = core
         #def appBaseName(self):
@@ -26,10 +26,10 @@ class Enumerator(object):
         
     def enumerateSpells(self, essentialSpellSpaces, additionalSpellPaths):
         spellsDirs = []
-        if self.appDir:
-            spellsDirs.append(self.appDir)
+        if self.appDirs:
+            spellsDirs.extend(self.appDirs)
             if not self.core.appName:
-                self.core.appName = self.appDir[0].capitalize() + self.appDir[1:]
+                self.core.appName = self.appDirs[0][0].capitalize() + self.appDirs[0][1:]
         spellsDirs.extend(additionalSpellPaths)
         
         log.core.debug("System paths:")

@@ -27,7 +27,10 @@ class Core(object):
     """Base core which provides basic services, such as settings
 and also able to enumerate spells.
 
-:param appDir: path to directory containing application spells
+:param appDirs: list of paths to directories containing application spells.
+.. note: All the paths in ``appDirs`` list must define importable namespaces.
+    So if we replace all '/' with '.'
+    in such path we should get importable namespace
 :param appConfig: path to JSON file with application settings
 
 The following kwargs parameters are supported:
@@ -55,7 +58,7 @@ The following kwargs parameters are supported:
     versionString = "%d.%d.%d.%s.%s" % (majorVersion, minorVersion, commitsCount, branchId, commitId)
     internalState = {}
     
-    def __init__(self, appDir, appConfig, **kwargs):
+    def __init__(self, appDirs, appConfig, **kwargs):
         assert Core.instance is None
         Core.instance = self
         
@@ -78,7 +81,7 @@ The following kwargs parameters are supported:
         #self.globalFilterStack = [] #TODO: templating and this
         self.mpHandlerInstances = WeakValueDictionary()
         prohibitedSpells = kwargs.get("prohibitedSpells", [])
-        enumerator = Enumerator(self, appDir, prohibitedSpells)
+        enumerator = Enumerator(self, appDirs, prohibitedSpells)
         
         #essentialSpellSpaces = self.appSpells
         #essentialSpellSpaces = map(lambda s: "agatsuma.spells.%s" % s, essentialSpellSpaces)

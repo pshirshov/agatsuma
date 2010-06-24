@@ -135,7 +135,7 @@ content::
            AbstractSpell.__init__(self, 'my_spell', config)
 
        def requirements(self):
-               return {'importantlibs' : 'SomeBigLibrary>=1.2.3',
+               return {'importantlibs' : []'SomeBigLibrary>=1.2.3'],
                        }
 
        def something(self):
@@ -172,7 +172,7 @@ content::
            AbstractSpell.__init__(self, 'my_spell_dephelper', config)
 
        def requirements(self):
-           return {'importantlibs' : 'SomeBigLibrary>=1.2.3',
+           return {'importantlibs' : ['SomeBigLibrary>=1.2.3'],
                   }
 
 **Solution 2** avoid of using global imports:
@@ -188,7 +188,7 @@ content::
            AbstractSpell.__init__(self, 'my_spell', config)
 
        def requirements(self):
-               return {'importantlibs' : 'SomeBigLibrary>=1.2.3',
+               return {'importantlibs' : ['SomeBigLibrary>=1.2.3'],
                        }
 
        def something(self):
@@ -212,7 +212,7 @@ content::
            AbstractSpell.__init__(self, 'my_spell', config)
 
        def requirements(self):
-               return {'importantlibs' : 'SomeBigLibrary>=1.2.3',
+               return {'importantlibs' : ['SomeBigLibrary>=1.2.3'],
                        }
 
        def something(self):
