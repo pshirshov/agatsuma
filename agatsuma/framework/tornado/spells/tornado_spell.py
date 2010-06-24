@@ -53,5 +53,5 @@ class TornadoSpell(AbstractSpell):
             raise Exception("Handling spells not found!")
 
     def requirements(self):
-        return {"tornado" : "tornado>=0.2",
+        return {"tornado" : ["tornado>=0.2"],
                }

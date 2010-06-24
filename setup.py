@@ -1,27 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
+#import logging
 import sys
-from setuptools import setup, find_packages
-from distribute_setup import use_setuptools
 
 from agatsuma.core import Core
-from agatsuma import log
+#from agatsuma import log
 from agatsuma.interfaces import AbstractSpell
 
-use_setuptools()
-
-print sys.argv
 components = filter(lambda s: s.startswith('--with'), sys.argv)
 sys.argv = filter(lambda s: not s.startswith('--with'), sys.argv)
 
+depsDisabled = "--disable-all" in sys.argv
+sys.argv = filter(lambda s: s != "--disable-all", sys.argv)
+
 core = Core(None, None, appMode = 'setup')
-log.newLogger("setup", logging.DEBUG)
+#log.newLogger("setup", logging.DEBUG)
 spells = core.implementationsOf(AbstractSpell)
 
 def depGroupEnabled(group):
-    return not ('--without-%s' % group) in components
+    depEnabled =(not (depsDisabled or ('--without-%s' % group) in components)
+                 or (depsDisabled and ('--with-%s' % group) in components))
+    return depEnabled
 
 depGroups = []
 dependencies = []
@@ -33,19 +33,32 @@ for spell in spells:
         if not depGroupsContent.get(group, None):
             depGroupsContent[group] = []
         deps = depdict[group]
-        depGroupsContent[group].append(deps)
+        depGroupsContent[group].extend(deps)
         if depGroupEnabled(group):
-            dependencies.append(deps)
+            dependencies.extend(deps)
+def out(s):
+    #log.setup.info
+    print s
 
-log.setup.info("The following dependencies classes are present")
+out("\nAgatsuma: Distribute mode\n")
+out("The following dependencies classes are present:")
+out("(User --disable-all to disable all the dependencies)")
 for group in depGroups:
     formatString = "[ ] %s: %s "
     if depGroupEnabled(group):
         formatString = "[*] %s: %s" 
-    log.setup.info(formatString % (group, str(depGroupsContent[group])))
+    out(formatString % (group, str(depGroupsContent[group])))
+    out("    Use --without-%s to disable" % group)
+    out("    Use --with-%s to enable" % group)
 
-log.setup.info("The following dependencies list will be used: %s" % str(dependencies))
+out("The following dependencies list will be used: %s" % str(dependencies))
 
+out("\nContinuing with Distribute...\n")
+
+from setuptools import setup, find_packages
+from distribute_setup import use_setuptools
+
+use_setuptools()
 setup(
     name = "Agatsuma",
     version = Core.versionString,

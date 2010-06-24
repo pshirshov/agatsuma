@@ -40,5 +40,5 @@ class MongoDBSpell(AbstractSpell, StorageSpell):
         return  match.group(1), None
 
     def requirements(self):
-        return {"mongo" : "pymongo>=0.6",
+        return {"mongo" : ["pymongo>=0.6"],
                }

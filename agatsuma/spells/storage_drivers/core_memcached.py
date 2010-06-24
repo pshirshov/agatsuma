@@ -45,5 +45,5 @@ class MemcachedSpell(AbstractSpell, StorageSpell):
         return  match.group(1)
 
     def requirements(self):
-        return {"memcache" : "pylibmc>=1.1.1",
+        return {"memcache" : ["pylibmc>=1.1.1", ],
                }

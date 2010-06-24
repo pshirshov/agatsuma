@@ -15,5 +15,5 @@ class CoreSpell(AbstractSpell):
         core.registerOption("!core.debug_level", int, "Debug level. Possible values: 0, 1 (debug message pump), 2 (debug threads)")
 
     def requirements(self):
-        return {"autodoc" : "Sphinx>=0.6.5",
+        return {"autodoc" : ["Sphinx>=0.6.5"],
                }

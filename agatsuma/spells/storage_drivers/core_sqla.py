@@ -30,7 +30,7 @@ class SQLASpell(AbstractSpell, StorageSpell):
             SQLASpell.protoMeta = sa.MetaData()
             
     def requirements(self):
-        return {"sqla" : "sqlalchemy>=0.6.1",
+        return {"sqla" : ["sqlalchemy>=0.6.1"],
                }
 
     def deploy(self, *args, **kwargs):
