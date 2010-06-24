@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import tornado.web
+from agatsuma.core import Core
+if Core.internalState.get("mode", None) != "setup":
+    import tornado.web
+
 import logging
 from tornado_core import TornadoCore
 from agatsuma.framework.tornado.interfaces import RequestSpell
