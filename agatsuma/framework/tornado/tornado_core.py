@@ -5,7 +5,7 @@ import multiprocessing
 from multiprocessing import Queue as MPQueue
 
 from agatsuma.core import MPCore
-if MPCore.internalState.get("mode", None) != "setup":
+if MPCore.internalState.get("mode", None) == "normal":
     import tornado.httpserver
     import tornado.ioloop
     import tornado.web

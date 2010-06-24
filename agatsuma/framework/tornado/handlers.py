@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from agatsuma.core import Core
-if Core.internalState.get("mode", None) != "setup":
+if Core.internalState.get("mode", None) == "normal":
     import tornado.web
 
 import logging

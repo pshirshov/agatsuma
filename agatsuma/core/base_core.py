@@ -56,7 +56,7 @@ The following kwargs parameters are supported:
     """
     instance = None
     versionString = "%d.%d.%d.%s.%s" % (majorVersion, minorVersion, commitsCount, branchId, commitId)
-    internalState = {}
+    internalState = {"mode":"normal"}
     
     def __init__(self, appDirs, appConfig, **kwargs):
         assert Core.instance is None

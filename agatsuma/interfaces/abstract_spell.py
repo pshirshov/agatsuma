@@ -200,7 +200,7 @@ content::
 ``foo.py``::
 
    from agatsuma.core import Core
-   if Core.internalState['mode'] != 'setup':
+   if Core.internalState.get('mode', None) == 'normal':
        import SomeBigLibrary
 
    from agatsuma.interfaces import AbstractSpell

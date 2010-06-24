@@ -42,7 +42,7 @@ def out(s):
 
 out("\nAgatsuma: Distribute mode\n")
 out("The following dependencies classes are present:")
-out("(User --disable-all to disable all the dependencies)")
+out("(Use --disable-all to disable all the dependencies)")
 for group in depGroups:
     formatString = "[ ] %s: %s "
     if depGroupEnabled(group):
