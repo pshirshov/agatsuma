@@ -32,7 +32,6 @@ else:
     entryPointName = sys.argv[1]
     core.runEntryPoint(entryPointName, sys.argv)
 
-# TODO: directories, namespaces, setup.py
 # TODO: session backends: memcache, database
 # TODO: settings backends: database
 # TODO: wsgi frameworks support
