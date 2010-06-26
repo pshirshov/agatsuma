@@ -17,21 +17,20 @@ class NullSpell(AbstractSpell, FilteringSpell):
                   'deps' : ()
                  }
         AbstractSpell.__init__(self, 'null_spell', config)
-        
+
     def filtersList(self):
         return (self.testFilter,)
 
     def testFilter(self, inp):
-        return inp.replace("Hello", "Oh hi")        
-        
+        return inp.replace("Hello", "Oh hi")
+
     def entryPoint(self, *args, **kwargs):
         log.core.info("Demo entry point called with argv %s" % str(args))
-        
+
     def preConfigure(self, core):
         core.registerOption("!test.rotest", unicode, "Test read-only setting")
         core.registerOption("test.test", unicode, "Test setting")
         core.registerEntryPoint("demoPoint", self.entryPoint)
-
 
 class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
     def __init__(self):
@@ -39,24 +38,24 @@ class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
                   'info' : ()
                  }
         AbstractSpell.__init__(self, 'mp_demo_spell', config)
-        
-    def preConfigure(self, core):        
+
+    def preConfigure(self, core):
         import logging
         log.newLogger("test", logging.DEBUG)
-        
+
     def beforeRequestCallback(self, handler):
         log.test.debug("beforeRequestCallback: %s" % str(handler))
         log.test.debug("request: %s" % str(handler.request))
-    
+
     def initRoutes(self, map):
-        map.extend([(r"/test/mp/worker", MPWorkerHandler),                   
+        map.extend([(r"/test/mp/worker", MPWorkerHandler),
                     (r"/test/mp/pump", MPPumpHandler),
                     (r"/test/mp/timer", MPWorkerTimerHandler),
                 ])
-    
+
 class MPWorkerHandler(AgatsumaHandler, SessionHandler):
     """
-    Handler with worker that perform operations in separate 
+    Handler with worker that perform operations in separate
     process. Useful for long-running operations that
     return some result as one value.
     """
@@ -72,7 +71,7 @@ class MPWorkerHandler(AgatsumaHandler, SessionHandler):
       import random
       Settings.test.test = unicode(random.randint(1000, 9999))
       Settings.save()
-      
+
     @FidelityWorker
     def test(handlerId, *args):
         for x in range(1, 3):
@@ -82,14 +81,14 @@ class MPWorkerHandler(AgatsumaHandler, SessionHandler):
 
     def onWorkerCompleted(self, ret):
         self.write(ret)
-        self.finish()         
+        self.finish()
 
 class MPPumpHandler(MsgPumpHandler):
     """
-    Handler with worker that perform operations in separate 
+    Handler with worker that perform operations in separate
     process which sends output via Agatsuma's message pump
     into main thread.
-    Useful for long-running operations which may return 
+    Useful for long-running operations which may return
     result as series of values.
     """
     @tornado.web.asynchronous
@@ -98,7 +97,7 @@ class MPPumpHandler(MsgPumpHandler):
       self.write(Settings.test.test)
       #Settings.test.test = u"Changing option, it will be propagated into all workers"
       self.write("<br/>")
-      self.async(self.test, (1, ), self.onWorkerCompleted)     
+      self.async(self.test, (1, ), self.onWorkerCompleted)
 
     @FidelityWorker
     def test(handlerId, *args):
@@ -112,27 +111,27 @@ class MPPumpHandler(MsgPumpHandler):
     def onWorkerCompleted(self, ret):
         self.storedValue = ret
         self.waitForQueue(self.complete)
-        
+
     def complete(self):
         ret = self.storedValue
         self.write("Worker returned: %s" % str(ret))
         self.finish()
-        
+
     def processMessage(self, message):
         self.write(str(message[1]))
-        self.flush()    
+        self.flush()
 
 # Warning: useless perversion
 import threading
 import multiprocessing
 class MPWorkerTimerHandler(MsgPumpHandler):
     """
-    As MPPumpHandler, this handler demonstrates long-running 
+    As MPPumpHandler, this handler demonstrates long-running
     operation in separate thread which uses message pump.
-    
+
     But in this example worker process doesn't blocks,
     because timer is used.
-    
+
     This may be useful for long-running operations which requires
     persistent connection, such as web-based chats with polling...
     """
@@ -146,7 +145,7 @@ class MPWorkerTimerHandler(MsgPumpHandler):
       self.async(self.test, (1, ), self.onWorkerCompleted)
       self.reallyCompleted = False
       self.ret = None
-      
+
     @FidelityWorker
     def test(handlerId, *args):
         print "Long-running worker started", args
@@ -158,12 +157,12 @@ class MPWorkerTimerHandler(MsgPumpHandler):
     def onTimer(handlerId):
         print "onTimer", multiprocessing.current_process()
         MsgPumpHandler.sendMessage(handlerId, "ololo<br/>")
-        
+
     def processMessage(self, message):
         self.write(str(message[1]))
         self.reallyCompleted = True
         self.flush()
-        
+
     def onWorkerCompleted(self, ret = None):
         if self.reallyCompleted:
             if not self.ret:
@@ -174,6 +173,6 @@ class MPWorkerTimerHandler(MsgPumpHandler):
         else:
             if not self.ret:
                 self.ret = ret
-            tornado.ioloop.IOLoop.instance().add_timeout( 
-              time.time() + 1, 
-              self.async_callback(self.onWorkerCompleted)) 
+            tornado.ioloop.IOLoop.instance().add_timeout(
+              time.time() + 1,
+              self.async_callback(self.onWorkerCompleted))

@@ -13,7 +13,6 @@ if MPCore.internalState.get("mode", None) == "normal":
 else:
     TornadoAppClass = object
 
-from agatsuma.core.mp_core import updateSettings
 from agatsuma import Settings
 from agatsuma import log, MPLogHandler
 
@@ -93,10 +92,8 @@ class TornadoCore(MPCore, TornadoAppClass):
         MPCore.rememberPid(pid)
         MPCore.writePid(pid)
         log.core.debug("Main process' PID: %d" % pid)
-        configChecker = tornado.ioloop.PeriodicCallback(updateSettings,
-                                                        1000 * Settings.core.settings_update_timeout,
-                                                        io_loop=self.ioloop)
-        configChecker.start()
+
+        self.startSettinsUpdater()
 
         if self.messagePumpNeeded:
             mpump = tornado.ioloop.PeriodicCallback(self.messagePump,
@@ -110,6 +107,12 @@ class TornadoCore(MPCore, TornadoAppClass):
         log.core.info("Starting %s/Agatsuma in server mode on port %d..." % (self.appName, port))
         log.core.info("=" * 60)
         self.ioloop.start()
+
+    def startSettinsUpdater(self):
+        configChecker = tornado.ioloop.PeriodicCallback(MPCore._updateSettings,
+                                                        1000 * Settings.core.settings_update_timeout,
+                                                        io_loop=self.ioloop)
+        configChecker.start()
 
     def messagePump(self):
         while not self.mqueue.empty():

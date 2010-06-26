@@ -4,6 +4,7 @@ import json
 
 import datetime
 import multiprocessing
+import threading
 
 from agatsuma import log
 from agatsuma.interfaces import AbstractSpell
@@ -151,7 +152,9 @@ class Settings(object):
     def setConfigData(settings, **kwargs):
         from agatsuma.core import Core
         process = multiprocessing.current_process()
-        log.core.info("Installing new config data in process '%s' with PID %d" % (str(process.name), process.pid))
+        thread = threading.currentThread()
+        log.core.info("Installing new config data in process '%s' with PID %d using thread '%s'" %
+                      (str(process.name), process.pid, thread.getName()))
         timestamp = datetime.datetime.now()
         Settings.settings.update(settings)
         if settings["core"]["debug_level"] > 0:
