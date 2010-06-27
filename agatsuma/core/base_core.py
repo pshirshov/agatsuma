@@ -100,7 +100,7 @@ The following kwargs parameters are supported:
         prohibitedSpells = kwargs.get("prohibitedSpells", [])
         enumerator = Enumerator(self, appDirs, prohibitedSpells)
 
-        self.spellsDirs.append(self._internalSpellSpace('agatsuma', 'spells'))
+        self.spellsDirs.append(self._internalSpellSpace('agatsuma', 'spells', 'common'))
         enumerator.enumerateSpells(self.appSpells, self.spellsDirs)
 
         if appConfig:

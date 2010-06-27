@@ -60,7 +60,7 @@ class MemcachedSettingsSpell(AbstractSpell, SettingsBackendSpell):
                   'deps' : ('agatsuma_memcached', ),
                   'provides' : ('settings_backend', )
                  }
-        AbstractSpell.__init__(self, 'tornado_settings_backend_memcached',
+        AbstractSpell.__init__(self, 'agatsuma_settings_backend_memcached',
                                config)
 
     def instantiateBackend(self, uri):

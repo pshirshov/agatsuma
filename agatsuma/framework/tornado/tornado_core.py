@@ -24,9 +24,9 @@ class TornadoCore(MPCore, TornadoAppClass):
         nsFragments = ('agatsuma', 'framework', 'tornado', 'spells')
         spellsDirs.extend ([self._internalSpellSpace(*nsFragments)
                             ])
-        self.URIMap = []
         spellsDirs.extend(kwargs.get('spellsDirs', []))
         kwargs['spellsDirs'] = spellsDirs
+        self.URIMap = []
         MPCore.__init__(self, appDir, appConfig, **kwargs)
         tornadoSettings = {'debug': Settings.core.debug, # autoreload
                            'cookie_secret' : str(Settings.tornado.cookie_secret),
@@ -110,7 +110,7 @@ class TornadoCore(MPCore, TornadoAppClass):
 
     def startSettinsUpdater(self):
         configChecker = tornado.ioloop.PeriodicCallback(MPCore._updateSettings,
-                                                        1000 * Settings.core.settings_update_timeout,
+                                                        1000 * Settings.mpcore.settings_update_timeout,
                                                         io_loop=self.ioloop)
         configChecker.start()
 

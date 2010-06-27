@@ -4,6 +4,7 @@ import sys
 import os
 import inspect
 import re
+#import traceback
 
 from agatsuma.log import log
 from agatsuma.interfaces import AbstractSpell
@@ -81,6 +82,7 @@ class Enumerator(object):
                     mod = __import__(nsToImport, {}, {}, '*', -1)
                 except Exception, e:
                     log.core.warning('Exception while importing %s: %s' % (nsToImport, str(e)))
+                    #traceback.print_exc()
                     mod = None
 
                 possibleSpells = []

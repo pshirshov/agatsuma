@@ -1,0 +1,19 @@
+{
+"core" :
+    {
+        "recovery" : false,
+        "debug": true,
+        "debug_level" : 1,
+        "settings_storage_uri" : "mongo+mongotable://agatsuma_data/settings"
+    },
+"mongo" :
+    {
+        "uri" : "mongodb://dbhost:27017",
+        "db_collections" : ["agatsuma_data"]
+    },
+"test" :
+    {
+        "test" : "dummy2",
+        "rotest" : "dummy"
+    }
+}

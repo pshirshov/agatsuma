@@ -41,9 +41,20 @@ TODO: startSettinsUpdater(self)
         - `appDir`:
         - `appConfig`:
         """
+        spellsDirs = []
+        nsFragments = ('agatsuma', 'spells', 'supplemental', 'mp')
+        spellsDirs.extend ([self._internalSpellSpace(*nsFragments)
+                            ])
+        spellsDirs.extend(kwargs.get('spellsDirs', []))
+        kwargs['spellsDirs'] = spellsDirs
         Core.__init__(self, appDir, appConfig, **kwargs)
     
     def _postConfigure(self):
+        spellsDirs = []
+        nsFragments = ('agatsuma', 'framework', 'tornado', 'spells')
+        spellsDirs.extend ([self._internalSpellSpace(*nsFragments)
+                            ])
+        
         MPCore.removePidFile()
         log.core.info("Calling pre-pool-init routines...")
         self._prePoolInit()
@@ -51,12 +62,12 @@ TODO: startSettinsUpdater(self)
             spell.prePoolInit(self)
 
         self.pool = None
-        workers = Settings.core.workers
+        workers = Settings.mpcore.workers
         if workers >= 0:
             log.core.debug("Starting %d workers..." % workers)
             self.pool = Pool(processes=workers, 
                              initializer = _workerInitializer, 
-                             initargs = (Settings.core.settings_update_timeout, ))
+                             initargs = (Settings.mpcore.settings_update_timeout, ))
         else:
             log.core.info("Pool initiation skipped due negative workers count")
 
@@ -81,7 +92,7 @@ TODO: startSettinsUpdater(self)
     def writePid(pid):
         log.core.debug("Writing PID %d" % pid)
         mode = "a+"
-        pidfile = Settings.core.pidfile
+        pidfile = Settings.mpcore.pidfile
         if not os.path.exists(pidfile):
             mode = "w+"
         f = open(pidfile, mode)
@@ -91,7 +102,7 @@ TODO: startSettinsUpdater(self)
     @staticmethod
     def removePidFile():
         log.core.debug("Removing pidfile...")
-        pidfile = Settings.core.pidfile
+        pidfile = Settings.mpcore.pidfile
         if os.path.exists(pidfile):
             os.remove(pidfile)
 

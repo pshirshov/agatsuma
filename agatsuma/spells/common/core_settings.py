@@ -21,7 +21,7 @@ class SettingsSpell(AbstractSpell):
         
     def postConfigure(self, core):
         Settings.save = self.save
-        print Settings.save
+        log.core.debug('Settings.save method overriden')
         storageUri = Settings.core.settings_storage_uri
         recovery = Settings.recovery or Settings.core.recovery
         self.backend = None
@@ -32,7 +32,7 @@ class SettingsSpell(AbstractSpell):
             if match:
                 backendId = match.group(1)
                 uri = match.group(2)
-                spellName = "tornado_settings_backend_%s" % backendId
+                spellName = "agatsuma_settings_backend_%s" % backendId
                 from agatsuma.core import Core
                 spell = Core.instance.spellsDict.get(spellName, None)
                 if spell:
@@ -45,7 +45,7 @@ class SettingsSpell(AbstractSpell):
             log.core.warning("Running in recovery mode, settings in storage are ignored")
 
         if self.backend:
-            log.core.info("Updating writable settings from storage...")
+            log.core.info("Updating writable settings from storage '%s'..." % self.backend.__class__.__name__)
             updated = 0
             for groupName in Settings.settings:
                 group = Settings.settings[groupName]
@@ -66,7 +66,7 @@ class SettingsSpell(AbstractSpell):
             log.core.info("Settings updated from storage: %d" % updated)
 
     def save(self):
-        log.core.info("Writing settings into storage...")
+        log.core.info("Writing settings into storage '%s'..." % self.backend.__class__.__name__)
         written = 0
         for groupName in Settings.settings:
             group = Settings.settings[groupName]

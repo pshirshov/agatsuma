@@ -56,7 +56,7 @@ class MongoSettingsSpell(AbstractSpell, SettingsBackendSpell):
                   'deps' : ('agatsuma_mongodb', ),
                   'provides' : ('settings_backend', )
                  }
-        AbstractSpell.__init__(self, 'tornado_settings_backend_mongo', config)
+        AbstractSpell.__init__(self, 'agatsuma_settings_backend_mongo', config)
 
     def instantiateBackend(self, uri):
         self.managerInstance = MongoSettingsBackend(uri)
