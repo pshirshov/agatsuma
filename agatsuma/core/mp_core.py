@@ -27,7 +27,7 @@ notify them about settings changes.
 
 .. warning:: If you want to change settings from worker threads you should call :meth:`agatsuma.core.MPCore.startSettingsUpdater` recently after core initialization.
 
-``MPCore`` uses timer for updating settings in main thread. It may be not really
+``MPCore`` uses timer for updating settings in main process. It may be not really
 good if you using Agatsuma with another library which provides periodic
 callbacks. If so you should override method :meth:`agatsuma.core.MPCore.startSettingsUpdater`
 in core subclass and don't spawn unwanted thread.
