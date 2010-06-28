@@ -13,8 +13,10 @@ class TornadoSpell(AbstractSpell):
                   'eager_unload' : True,
                  }
         AbstractSpell.__init__(self, 'agatsuma_tornado', config)
-        
+
     def preConfigure(self, core):
+        import logging
+        log.newLogger("tcore", logging.DEBUG)
         core.registerOption("!tornado.port", int, "Web server port")
         core.registerOption("!tornado.cookie_secret", unicode, "cookie secret")
         core.registerOption("!tornado.app_parameters", dict, "Kwarg parameters for tornado application")
@@ -30,9 +32,9 @@ class TornadoSpell(AbstractSpell):
             core.URITemplates[url.name] = url.template
             return (url.regex, url.handler)
         raise Exception("Incorrect URL data^ %s" % str(url))
-    
+
     def postConfigure(self, core):
-        log.core.info("Initializing URI map..")
+        log.tcore.info("Initializing URI map..")
         spells = core._implementationsOf(HandlingSpell)
         if spells:
             urimap = []
@@ -44,11 +46,11 @@ class TornadoSpell(AbstractSpell):
             core.URITemplates = {}
             for url in urimap:
                 core.URIMap.append(self.__processURL(core, url))
-            log.core.info("URI map initialized")    
-            #log.core.debug("URI map:\n%s" % '\n'.join(map(lambda x: str(x), self.core.URIMap)))
-            log.core.debug("URI map:")  
+            log.tcore.info("URI map initialized")
+            #log.tcore.debug("URI map:\n%s" % '\n'.join(map(lambda x: str(x), self.core.URIMap)))
+            log.tcore.debug("URI map:")
             for p in core.URIMap:
-                log.core.debug("* %s" % str(p))  
+                log.tcore.debug("* %s" % str(p))
         else:
             raise Exception("Handling spells not found!")
 

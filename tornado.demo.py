@@ -36,10 +36,11 @@ else:
 # TODO: settings backends: database
 # TODO: wsgi frameworks support
 # TODO: webhelpers
+
 # TODO: thread safety for settings, thread-based updates
 # TODO: MP core demo
-
 # TODO: improve loggers' abilities, add more loggers for core classes, customizing levels from config
+
 # TODO: Unit tests
 # TODO: Sphinx documentation
 

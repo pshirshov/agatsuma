@@ -6,7 +6,7 @@ import copy
 from agatsuma.log import log
 from agatsuma.settings import Settings
 from agatsuma.interfaces.abstract_spell import AbstractSpell
-        
+
 class SettingsSpell(AbstractSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Settings Spell',
@@ -14,11 +14,13 @@ class SettingsSpell(AbstractSpell):
                   'requires' : ('settings_backend', ),
                  }
         AbstractSpell.__init__(self, 'agatsuma_settings', config)
-        
+
     def preConfigure(self, core):
+        import logging
+        log.newLogger("settings", logging.DEBUG)
         core.registerOption("!core.settings_storage_uri", unicode, "Settings storage URI")
         core.registerOption("!core.recovery", bool, "Recovery mode")
-        
+
     def postConfigure(self, core):
         Settings.save = self.save
         log.core.debug('Settings.save method overriden')
@@ -26,7 +28,7 @@ class SettingsSpell(AbstractSpell):
         recovery = Settings.recovery or Settings.core.recovery
         self.backend = None
         if not recovery:
-            log.core.info("Initializing Settings Storage..")
+            log.settings.info("Initializing Settings Storage..")
             rex = re.compile(r"^(\w+)\+(.*)$")
             match = rex.match(storageUri)
             if match:
@@ -42,10 +44,10 @@ class SettingsSpell(AbstractSpell):
             else:
                 raise Exception("Incorrect settings storage URI")
         else:
-            log.core.warning("Running in recovery mode, settings in storage are ignored")
+            log.settings.warning("Running in recovery mode, settings in storage are ignored")
 
         if self.backend:
-            log.core.info("Updating writable settings from storage '%s'..." % self.backend.__class__.__name__)
+            log.settings.info("Updating writable settings from storage '%s'..." % self.backend.__class__.__name__)
             updated = 0
             for groupName in Settings.settings:
                 group = Settings.settings[groupName]
@@ -63,10 +65,10 @@ class SettingsSpell(AbstractSpell):
                         Settings.settings[groupName] = newGroup
             if updated:
                 Settings.setConfigData(Settings.settings)
-            log.core.info("Settings updated from storage: %d" % updated)
+            log.settings.info("Settings updated from storage: %d" % updated)
 
     def save(self):
-        log.core.info("Writing settings into storage '%s'..." % self.backend.__class__.__name__)
+        log.settings.info("Writing settings into storage '%s'..." % self.backend.__class__.__name__)
         written = 0
         for groupName in Settings.settings:
             group = Settings.settings[groupName]
@@ -74,4 +76,4 @@ class SettingsSpell(AbstractSpell):
                 if not setting in Settings.roSettings[groupName]:
                     self.backend.save("%s.%s" % (groupName, setting), group[setting])
                     written += 1
-        log.core.info("Settings written into storage: %d" % written)
+        log.settings.info("Settings written into storage: %d" % written)

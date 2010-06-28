@@ -18,7 +18,7 @@ def _workerInitializer(timeout):
     process = multiprocessing.current_process()
     MPCore.writePid(process.pid)
     MPCore.rememberPid(process.pid)
-    log.core.debug("Initializing worker process '%s' with PID %d. Starting config update checker with %ds timeout" % (str(process.name), process.pid, timeout))
+    log.mpcore.debug("Initializing worker process '%s' with PID %d. Starting config update checker with %ds timeout" % (str(process.name), process.pid, timeout))
     MPCore._updateSettingsByTimer(timeout)
 
 class MPCore(Core):
@@ -56,7 +56,7 @@ TODO: startSettinsUpdater(self)
                             ])
         
         MPCore.removePidFile()
-        log.core.info("Calling pre-pool-init routines...")
+        log.mpcore.info("Calling pre-pool-init routines...")
         self._prePoolInit()
         for spell in self._implementationsOf(PoolEventSpell):
             spell.prePoolInit(self)
@@ -64,14 +64,14 @@ TODO: startSettinsUpdater(self)
         self.pool = None
         workers = Settings.mpcore.workers
         if workers >= 0:
-            log.core.debug("Starting %d workers..." % workers)
+            log.mpcore.debug("Starting %d workers..." % workers)
             self.pool = Pool(processes=workers, 
                              initializer = _workerInitializer, 
                              initargs = (Settings.mpcore.settings_update_timeout, ))
         else:
-            log.core.info("Pool initiation skipped due negative workers count")
+            log.mpcore.info("Pool initiation skipped due negative workers count")
 
-        log.core.info("Calling post-pool-init routines...")
+        log.mpcore.info("Calling post-pool-init routines...")
         for spell in self._implementationsOf(PoolEventSpell):
             spell.postPoolInit(self)
 
@@ -90,7 +90,7 @@ TODO: startSettinsUpdater(self)
 
     @staticmethod
     def writePid(pid):
-        log.core.debug("Writing PID %d" % pid)
+        log.mpcore.debug("Writing PID %d" % pid)
         mode = "a+"
         pidfile = Settings.mpcore.pidfile
         if not os.path.exists(pidfile):
@@ -101,7 +101,7 @@ TODO: startSettinsUpdater(self)
 
     @staticmethod
     def removePidFile():
-        log.core.debug("Removing pidfile...")
+        log.mpcore.debug("Removing pidfile...")
         pidfile = Settings.mpcore.pidfile
         if os.path.exists(pidfile):
             os.remove(pidfile)
@@ -118,7 +118,7 @@ TODO: startSettinsUpdater(self)
         if (prevUpdate < lastUpdate):
             process = multiprocessing.current_process()
             thread = threading.currentThread()
-            log.core.info("Process '%s' with PID %s received new config, updating using thread '%s'..."
+            log.mpcore.info("Process '%s' with PID %s received new config, updating using thread '%s'..."
                           % (str(process.name), process.pid, thread.getName()))
             #Core.settings.parseSettings(Core.sharedConfigData['data'], Settings.descriptors)
             Settings.setConfigData(MPCore.sharedConfigData['data'], updateShared = False)

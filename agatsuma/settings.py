@@ -29,10 +29,10 @@ class DictAccessProxy(object):
             if name in self.__roList:
                 raise Exception("Option '%s.%s' is read-only" % (self.__groupName, name))
             elif type(value) != self.__types[name]:
-                raise Exception("Option '%s.%s' must have type %s, but %s tried to assign" % 
-                                (self.__groupName, 
-                                 name, 
-                                 self.__types[name], 
+                raise Exception("Option '%s.%s' must have type %s, but %s tried to assign" %
+                                (self.__groupName,
+                                 name,
+                                 self.__types[name],
                                  type(value),
                                 )
                                )
@@ -56,8 +56,8 @@ class SettingsMeta(type):
         settings = type.__getattribute__(stype, "settings")
         if name in settings:
             return DictAccessProxy(name, # group
-                                   settings[name], 
-                                   Settings.roSettings[name], 
+                                   settings[name],
+                                   Settings.roSettings[name],
                                    Settings.types[name],
                                    Settings.comments[name])
         else:
@@ -69,7 +69,7 @@ class Settings(object):
     roSettings = []
     types = {}
     recovery = False
-    
+
     def __setattr__(self, name, value):
         if name in type.__getattribute__(Settings, "settings"):
             raise Exception("It's now allowed to overwrite settings group")
@@ -80,22 +80,22 @@ class Settings(object):
         settings = type.__getattribute__(Settings, "settings")
         if name in settings:
             return DictAccessProxy(name, # group
-                                   settings[name], 
-                                   Settings.roSettings[name], 
+                                   settings[name],
+                                   Settings.roSettings[name],
                                    Settings.types[name],
                                    Settings.comments[name])
         else:
             return object.__getattribute__(self, name)
-    
+
     def __init__(self, config, descriptors, **kwargs):
         conf = open(config, 'r')
         settings = conf.read()
         Settings.recovery = kwargs.get('recovery', False)
         conf.close()
-        log.core.info("Loading config '%s'" % config)
+        log.settings.info("Loading config '%s'" % config)
         self.parseSettings(settings, descriptors)
-        log.core.info('Config loaded')
-    
+        log.settings.info('Config loaded')
+
     def parseSettings(self, settings, descriptors):
         settings = self.load(settings)
         problems = []
@@ -107,12 +107,12 @@ class Settings(object):
         rocount = 0
         for group, name, ro, stype, comment in descriptors.values():
             if not group in settings:
-                problems.append("Group '%s' (%s) not found in settings" % 
+                problems.append("Group '%s' (%s) not found in settings" %
                                 (group, comment))
                 continue
             groupDict = settings[group]
             if not name in groupDict:
-                problems.append("Setting '%s' (%s) not found in group '%s'" % 
+                problems.append("Setting '%s' (%s) not found in group '%s'" %
                                 (name, comment, group))
                 continue
             value = groupDict[name]
@@ -122,10 +122,10 @@ class Settings(object):
             #    value = str(value)
             fullname = '%s.%s' % (group, name)
             if rstype != stype:
-                problems.append("Setting '%s' (%s) has incorrect type '%s' instead of '%s'" % 
+                problems.append("Setting '%s' (%s) has incorrect type '%s' instead of '%s'" %
                                 (fullname, comment, str(rstype), str(stype)))
                 continue
-            
+
             if not group in newsettings:
                 newsettings[group] = {}
                 types[group] = {}
@@ -139,9 +139,9 @@ class Settings(object):
                 rocount += 1
             actual += 1
         if problems:
-            log.core.error('\n'.join(problems))
+            log.settings.error('\n'.join(problems))
             raise Exception("Can't load settings")
-        log.core.info('%d settings found in config, %d are actual (%d read-only)' % (len(descriptors), actual, rocount))
+        log.settings.info('%d settings found in config, %d are actual (%d read-only)' % (len(descriptors), actual, rocount))
         Settings.roSettings = rosettings
         Settings.types = types
         Settings.comments = comments
@@ -153,12 +153,12 @@ class Settings(object):
         from agatsuma.core import Core
         process = multiprocessing.current_process()
         thread = threading.currentThread()
-        log.core.info("Installing new config data in process '%s' with PID %d using thread '%s'" %
+        log.settings.info("Installing new config data in process '%s' with PID %d using thread '%s'" %
                       (str(process.name), process.pid, thread.getName()))
         timestamp = datetime.datetime.now()
         Settings.settings.update(settings)
         if settings["core"]["debug_level"] > 0:
-            log.core.debug("Updated config: %s" % str(Settings.settings))
+            log.settings.debug("Updated config: %s" % str(Settings.settings))
         Settings.configData = {"data": settings,
                                "update" : timestamp,
                               }
@@ -171,6 +171,6 @@ class Settings(object):
         Should return json-like dictionary of settings
         """
         return json.loads(settings)
-    
+
     def dump(self):
         return json.dumps(Settings.settings)

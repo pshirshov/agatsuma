@@ -91,7 +91,7 @@ class TornadoCore(MPCore, TornadoAppClass):
         pid = multiprocessing.current_process().pid
         MPCore.rememberPid(pid)
         MPCore.writePid(pid)
-        log.core.debug("Main process' PID: %d" % pid)
+        log.tcore.debug("Main process' PID: %d" % pid)
 
         self.startSettinsUpdater()
 
@@ -99,13 +99,13 @@ class TornadoCore(MPCore, TornadoAppClass):
             mpump = tornado.ioloop.PeriodicCallback(self.messagePump,
                                                     pumpTimeout,
                                                     io_loop=self.ioloop)
-            log.core.debug("Starting message pump...")
+            log.tcore.debug("Starting message pump...")
             mpump.start()
         else:
-            log.core.debug("Message pump initiation skipped, it isn't required for any spell")
-        log.core.info("=" * 60)
-        log.core.info("Starting %s/Agatsuma in server mode on port %d..." % (self.appName, port))
-        log.core.info("=" * 60)
+            log.tcore.debug("Message pump initiation skipped, it isn't required for any spell")
+        log.tcore.info("=" * 60)
+        log.tcore.info("Starting %s/Agatsuma in server mode on port %d..." % (self.appName, port))
+        log.tcore.info("=" * 60)
         self.ioloop.start()
 
     def startSettinsUpdater(self):
@@ -119,17 +119,17 @@ class TornadoCore(MPCore, TornadoAppClass):
             try:
                 message = self.mqueue.get_nowait()
                 if Settings.core.debug_level > 0:
-                    log.core.debug("message: '%s'" % str(message))
+                    log.tcore.debug("message: '%s'" % str(message))
                 if message and type(message) is tuple:
                     handlerId = message[0]
                     if handlerId in self.mpHandlerInstances:
                         self.mpHandlerInstances[handlerId].processMessage(message)
                     else:
-                        log.core.warning("unknown message recepient: '%s'" % str(message))
+                        log.tcore.warning("unknown message recepient: '%s'" % str(message))
                 else:
-                    log.core.debug("bad message: '%s'" % str(message))
+                    log.tcore.debug("bad message: '%s'" % str(message))
             except Queue.Empty, e:
-                log.core.debug("message: raised Queue.Empty")
+                log.tcore.debug("message: raised Queue.Empty")
 
         if self.waitingCallbacks:
             try:
