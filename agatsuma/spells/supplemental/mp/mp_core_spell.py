@@ -21,6 +21,6 @@ class MPCoreSpell(AbstractSpell):
 
     def postConfigUpdate(self, **kwargs):
         if kwargs.get('updateShared', True):
-            log.core.info("Propagating new config data to another processes")
+            log.mpcore.info("Propagating new config data to another processes")
             MPCore.sharedConfigData.update(Settings.configData)
 

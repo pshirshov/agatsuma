@@ -25,7 +25,7 @@ class MemcachedSpell(AbstractSpell, StorageSpell):
         self.initConnection()
 
     def initConnection(self):
-        log.core.info("Initializing Memecache connections on URI '%s'" % \
+        log.storage.info("Initializing Memcached connections on URI '%s'" % \
                       Settings.memcached.uri)
         connData = self._parseMemcachedUri(Settings.memcached.uri)
         print connData

@@ -82,6 +82,7 @@ The following kwargs parameters are supported:
         self.logger = log()
         self.logger.initiateLoggers()
         log.newLogger("core", logging.DEBUG)
+        log.newLogger("storage", logging.DEBUG)
         log.core.info("Initializing Agatsuma")
         log.core.info("Version: %s" % self.versionString)
         log.core.info("Agatsuma's base directory: %s" % self.agatsumaBaseDir)

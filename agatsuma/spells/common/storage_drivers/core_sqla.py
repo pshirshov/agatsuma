@@ -18,7 +18,7 @@ from agatsuma.interfaces import AbstractSpell, StorageSpell, ModelSpell
 
 class SQLASpell(AbstractSpell, StorageSpell):
     """.. _sqla-driver:
-    
+
     """
     def __init__(self):
         config = {'info' : 'Agatsuma SQLAlchemy Spell',
@@ -28,24 +28,24 @@ class SQLASpell(AbstractSpell, StorageSpell):
         AbstractSpell.__init__(self, 'agatsuma_sqla', config)
         if sa:
             SQLASpell.protoMeta = sa.MetaData()
-            
+
     def requirements(self):
         return {"sqla" : ["sqlalchemy>=0.6.1"],
                }
 
     def deploy(self, *args, **kwargs):
         spells = Core.instance._implementationsOf(ModelSpell)
-        log.core.info("Initializing Database...")
+        log.storage.info("Initializing Database...")
         if spells:
             if "recreate" in args:
-                log.core.info("Recreating schema...")
+                log.storage.info("Recreating schema...")
                 self.meta.drop_all()
                 self.meta.create_all()
             for spell in spells:
                 spell.performDeployment(Core.instance)
-            log.core.info("Deployment completed")
+            log.storage.info("Deployment completed")
         else:
-            log.core.info("Model spells not found")
+            log.storage.info("Model spells not found")
 
     def preConfigure(self, core):
         core.registerOption("!sqla.uri", unicode, "SQLAlchemy engine URI")
@@ -55,27 +55,27 @@ class SQLASpell(AbstractSpell, StorageSpell):
     def postConfigure(self, core):
         spells = core._implementationsOf(ModelSpell)
         if spells:
-            log.core.info("Initializing SQLAlchemy engine and session...")
+            log.storage.info("Initializing SQLAlchemy engine and session...")
             self.SqlaEngine = sa.create_engine(Settings.sqla.uri, **Settings.sqla.parameters)
             SessionFactory = orm.sessionmaker()
             self.Session = orm.scoped_session(SessionFactory)
             self.Session.configure(bind=self.SqlaEngine)
-            
-            log.core.info("Initializing SQLAlchemy data model..")
+
+            log.storage.info("Initializing SQLAlchemy data model..")
             for spell in spells:
                 spell.initMetadata(SQLASpell.protoMeta)
             SQLASpell.meta = SQLASpell.metaCopy()
             SQLASpell.meta.bind = self.SqlaEngine
-            log.core.info("Setting up ORM...")
+            log.storage.info("Setting up ORM...")
             for spell in spells:
                 spell.setupORM(core)
-            log.core.info("Model initialized")
+            log.storage.info("Model initialized")
 
             self.sqlaDefaultSess = self.makeSession()
             for spell in spells:
                 spell.postORMSetup(core)
         else:
-            log.core.info("Model spells not found")
+            log.storage.info("Model spells not found")
 
     def makeSession(self):
         """
@@ -89,4 +89,4 @@ class SQLASpell(AbstractSpell, StorageSpell):
         # little bugfix
         meta.ddl_listeners = sa.util.defaultdict(list)
         return meta
-       
+

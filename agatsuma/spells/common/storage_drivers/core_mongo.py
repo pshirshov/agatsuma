@@ -24,7 +24,7 @@ class MongoDBSpell(AbstractSpell, StorageSpell):
         self.initConnection()
 
     def initConnection(self):
-        log.core.info("Initializing MongoDB connections on URI '%s'" % Settings.mongo.uri)
+        log.storage.info("Initializing MongoDB connections on URI '%s'" % Settings.mongo.uri)
         connData = MongoDBSpell._parseMongoUri(Settings.mongo.uri)
         self.connection = pymongo.Connection(connData[0], connData[1])
         for dbCollectionName in Settings.mongo.db_collections:

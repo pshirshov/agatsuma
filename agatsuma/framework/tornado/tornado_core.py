@@ -128,7 +128,7 @@ class TornadoCore(MPCore, TornadoAppClass):
                         log.tcore.warning("unknown message recepient: '%s'" % str(message))
                 else:
                     log.tcore.debug("bad message: '%s'" % str(message))
-            except Queue.Empty, e:
+            except Queue.Empty:
                 log.tcore.debug("message: raised Queue.Empty")
 
         if self.waitingCallbacks:

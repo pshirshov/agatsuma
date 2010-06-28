@@ -21,7 +21,7 @@ class MemcachedSettingsBackend(SettingsBackend):
         self.initConnection()
 
     def initConnection(self):
-        log.sessions.info("Initializing Memcached settings backend "\
+        log.settings.info("Initializing Memcached settings backend "\
                           "using URI '%s'" % self.uri)
         self.keyprefix = self._parseMemcachedPrefixUri(self.uri)
         memcachedSpell = Core.instance.spellsDict["agatsuma_memcached"]
@@ -52,7 +52,7 @@ class MemcachedSettingsBackend(SettingsBackend):
     def save(self, name, value):
         if not self.connection.set(self._getPrefixedKey(name),
                                    pickle.dumps(value)):
-            log.sessions.critical("Saving setting '%s' failed" % name)
+            log.settings.critical("Saving setting '%s' failed" % name)
 
 class MemcachedSettingsSpell(AbstractSpell, SettingsBackendSpell):
     def __init__(self):

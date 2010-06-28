@@ -12,7 +12,7 @@ class MongoSettingsBackend(SettingsBackend):
         self.initConnection()
 
     def initConnection(self):
-        log.core.info("Initializing MongoDB settings backend using URI '%s'" % self.uri)
+        log.settings.info("Initializing MongoDB settings backend using URI '%s'" % self.uri)
         connData = MongoSettingsBackend._parseMongoTableUri(self.uri)
         mongoSpell = Core.instance.spellsDict["agatsuma_mongodb"]
         self.connection = mongoSpell.connection
@@ -32,9 +32,9 @@ class MongoSettingsBackend(SettingsBackend):
             if data:
                 return data["value"]
         except pymongo.errors.AutoReconnect:
-            log.core.critical("Mongo exception during loading %s" % name)
+            log.settings.critical("Mongo exception during loading %s" % name)
         except Exception, e:
-            log.core.critical("Unknown exception during loading: %s" % str(e))
+            log.settings.critical("Unknown exception during loading: %s" % str(e))
             self.connection.end_request()
         return currentValue
 
@@ -48,7 +48,7 @@ class MongoSettingsBackend(SettingsBackend):
                 upsert=True)
             self.connection.end_request()
         except pymongo.errors.AutoReconnect:
-            log.core.critical("Mongo exception during saving %s=%s" % (name, str(value)))
+            log.settings.critical("Mongo exception during saving %s=%s" % (name, str(value)))
 
 class MongoSettingsSpell(AbstractSpell, SettingsBackendSpell):
     def __init__(self):
@@ -66,6 +66,6 @@ class MongoSettingsSpell(AbstractSpell, SettingsBackendSpell):
         core.registerEntryPoint("mongodb:settings:cleanup", self.entryPoint)
 
     def entryPoint(self, *args, **kwargs):
-        log.core.info("Cleaning up settings in MongoDB")
+        log.settings.info("Cleaning up settings in MongoDB")
         self.managerInstance.cleanup()
 
