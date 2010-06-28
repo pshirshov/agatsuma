@@ -16,10 +16,10 @@ class SessionSpell(AbstractSpell, RequestSpell):
                   'requires' : ('session_backend', ),
                  }
         AbstractSpell.__init__(self, 'agatsuma_session', config)
-        
+
     def preConfigure(self, core):
         import logging
-        log.newLogger("sessions", logging.DEBUG)
+        log.newLogger("sessions")
         core.registerOption("!sessions.storage_uri", unicode, "Storage URI")
         core.registerOption("!sessions.expiration_interval", int, "Default session length in seconds")
 
@@ -38,7 +38,7 @@ class SessionSpell(AbstractSpell, RequestSpell):
                 raise Exception("Session backend improperly configured, spell '%s' not found" % spellName)
         else:
             raise Exception("Incorrect session storage URI")
-        
+
     def beforeRequestCallback(self, handler):
         if isinstance(handler, SessionHandler):
             cookie = handler.get_secure_cookie("AgatsumaSessId")
@@ -50,17 +50,17 @@ class SessionSpell(AbstractSpell, RequestSpell):
                     session.handler = handler
                     # Update timestamp if left time < than elapsed time
                     timestamp = session["timestamp"]
-                    now = datetime.datetime.now() 
+                    now = datetime.datetime.now()
                     elapsed = now - timestamp
                     left = (self.sessman._sessionDoomsday(timestamp)- now)
                     if elapsed >= left:
                         log.sessions.debug("Updating timestamp for session %s (E: %s, L: %s)" % (cookie, str(elapsed), str(left)))
                         self.sessman.save(session)
             if not session:
-                session = self.sessman.new(handler.request.remote_ip, 
+                session = self.sessman.new(handler.request.remote_ip,
                                            handler.request.headers["User-Agent"])
                 session.handler = handler
                 self.sessman.save(session)
             handler.session = session
             session.sessman = self.sessman
-                    
+

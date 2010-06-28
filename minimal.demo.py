@@ -16,7 +16,7 @@ core = Core([appRoot], appConfig,
                                 ] 
             )
 
-log.newLogger("demo", logging.DEBUG)
+log.newLogger("demo")
 
 log.demo.info("*" * 50)
 log.demo.info("Trivial application initiated")

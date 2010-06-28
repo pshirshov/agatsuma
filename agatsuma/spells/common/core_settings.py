@@ -17,7 +17,7 @@ class SettingsSpell(AbstractSpell):
 
     def preConfigure(self, core):
         import logging
-        log.newLogger("settings", logging.DEBUG)
+        log.newLogger("settings")
         core.registerOption("!core.settings_storage_uri", unicode, "Settings storage URI")
         core.registerOption("!core.recovery", bool, "Recovery mode")
 

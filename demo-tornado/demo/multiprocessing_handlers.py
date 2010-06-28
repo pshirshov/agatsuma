@@ -41,7 +41,7 @@ class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
 
     def preConfigure(self, core):
         import logging
-        log.newLogger("test", logging.DEBUG)
+        log.newLogger("test")
 
     def beforeRequestCallback(self, handler):
         log.test.debug("beforeRequestCallback: %s" % str(handler))

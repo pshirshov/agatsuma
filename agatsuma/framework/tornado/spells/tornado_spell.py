@@ -16,7 +16,7 @@ class TornadoSpell(AbstractSpell):
 
     def preConfigure(self, core):
         import logging
-        log.newLogger("tcore", logging.DEBUG)
+        log.newLogger("tcore")
         core.registerOption("!tornado.port", int, "Web server port")
         core.registerOption("!tornado.cookie_secret", unicode, "cookie secret")
         core.registerOption("!tornado.app_parameters", dict, "Kwarg parameters for tornado application")

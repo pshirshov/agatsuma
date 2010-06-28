@@ -14,7 +14,7 @@ class MPCoreSpell(AbstractSpell):
 
     def preConfigure(self, core):
         import logging
-        log.newLogger("mpcore", logging.DEBUG)
+        log.newLogger("mpcore")
         core.registerOption("!mpcore.workers", int, "Size of working processes pool. Negative to disable")
         core.registerOption("!mpcore.settings_update_timeout", int, "Update timeout for workers (sec)")
         core.registerOption("!mpcore.pidfile", unicode, "File with PIDs of all Agatsuma's processes")

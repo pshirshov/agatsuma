@@ -6,6 +6,15 @@
         "debug_level" : 1,
         "settings_storage_uri" : "mongo+mongotable://agatsuma_data/settings"
     },
+"logging" :
+    {
+        "root_level" : "debug",
+        "default_level" : "debug",
+        "levels" : 
+        {
+            "storage" : "debug"
+        }
+    },
 "mongo" :
     {
         "uri" : "mongodb://dbhost:27017",
