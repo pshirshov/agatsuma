@@ -111,7 +111,7 @@ in core subclass and don't spawn unwanted thread.
         if os.path.exists(pidfile):
             os.remove(pidfile)
 
-    def startSettinsUpdater(self):
+    def startSettingsUpdater(self):
         """ Initiates periodic checking for config updates. May be overriden in
         subclasses """
         MPCore._updateSettingsByTimer(Settings.mpcore.settings_update_timeout)

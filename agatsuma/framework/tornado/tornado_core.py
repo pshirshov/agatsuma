@@ -93,7 +93,7 @@ class TornadoCore(MPCore, TornadoAppClass):
         MPCore.writePid(pid)
         log.tcore.debug("Main process' PID: %d" % pid)
 
-        self.startSettinsUpdater()
+        self.startSettingsUpdater()
 
         if self.messagePumpNeeded:
             mpump = tornado.ioloop.PeriodicCallback(self.messagePump,
@@ -108,7 +108,7 @@ class TornadoCore(MPCore, TornadoAppClass):
         log.tcore.info("=" * 60)
         self.ioloop.start()
 
-    def startSettinsUpdater(self):
+    def startSettingsUpdater(self):
         configChecker = tornado.ioloop.PeriodicCallback(MPCore._updateSettings,
                                                         1000 * Settings.mpcore.settings_update_timeout,
                                                         io_loop=self.ioloop)

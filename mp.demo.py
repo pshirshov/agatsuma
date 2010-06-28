@@ -15,7 +15,7 @@ core = MPCore([appRoot], appConfig,
             prohibitedSpells = ["agatsuma.spells.common.storage_drivers.core_sqla", # SQLAlchemy is not interesting for this demo
                                 ] 
             )
-core.startSettinsUpdater()
+core.startSettingsUpdater()
 
 log.newLogger("demo")
 
