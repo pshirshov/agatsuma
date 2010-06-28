@@ -69,6 +69,7 @@ class Settings(object):
     roSettings = []
     types = {}
     recovery = False
+    configLock = threading.Lock()
 
     def __setattr__(self, name, value):
         if name in type.__getattribute__(Settings, "settings"):
@@ -156,7 +157,11 @@ class Settings(object):
         log.settings.info("Installing new config data in process '%s' with PID %d using thread '%s'" %
                       (str(process.name), process.pid, thread.getName()))
         timestamp = datetime.datetime.now()
-        Settings.settings.update(settings)
+        try:
+            Settings.configLock.acquire()
+            Settings.settings.update(settings)
+        finally:
+            Settings.configLock.release()
         if settings["core"]["debug_level"] > 0:
             log.settings.debug("Updated config: %s" % str(Settings.settings))
         Settings.configData = {"data": settings,

@@ -25,9 +25,14 @@ class MPCore(Core):
     """ Base core extension providing pool of worker processes and able to
 notify them about settings changes.
 
-TODO: startSettinsUpdater(self)
+.. warning:: If you want to change settings from worker threads you should call :meth:`agatsuma.core.MPCore.startSettingsUpdater` recently after core initialization.
 
-.. warning:: common core is only able to propagate settings update to process pool. Updating settings in main thread is subclass' problem.
+``MPCore`` uses timer for updating settings in main thread. It may be not really
+good if you using Agatsuma with another library which provides periodic
+callbacks. If so you should override method :meth:`agatsuma.core.MPCore.startSettingsUpdater`
+in core subclass and don't spawn unwanted thread.
+
+.. note:: The only way to shutdown multiprocessing application correctly from another application is sending of ``SIGTERM`` signal to main process.
     """
     configUpdateManager = Manager()
     sharedConfigData = configUpdateManager.dict()
@@ -107,12 +112,19 @@ TODO: startSettinsUpdater(self)
             os.remove(pidfile)
 
     def startSettinsUpdater(self):
-        MPCore._updateSettingsByTimer()
+        """ Initiates periodic checking for config updates. May be overriden in
+        subclasses """
+        MPCore._updateSettingsByTimer(Settings.mpcore.settings_update_timeout)
 
     @staticmethod
     def _updateSettings():
         # Settings in current thread are in old state
         # If we detect, that shared object has updated config we replace it
+        process = multiprocessing.current_process()
+        thread = threading.currentThread()
+        log.mpcore.info("Checking for config updates in process '%s' with PID %s using thread '%s'..."
+                          % (str(process.name), process.pid, thread.getName()))
+
         prevUpdate = Settings.configData['update']
         lastUpdate = MPCore.sharedConfigData['update']
         if (prevUpdate < lastUpdate):

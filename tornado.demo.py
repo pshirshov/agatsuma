@@ -37,7 +37,7 @@ else:
 # TODO: wsgi frameworks support
 # TODO: webhelpers
 
-# TODO: thread safety for settings, thread-based updates
+# TODO: thread-based updates
 # TODO: MP core demo
 
 # TODO: Unit tests

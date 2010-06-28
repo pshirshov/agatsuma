@@ -1,0 +1,34 @@
+{
+"core" :
+    {
+        "recovery" : false,
+        "debug": true,
+        "debug_level" : 1,
+        "settings_storage_uri" : "mongo+mongotable://agatsuma_data/settings"
+    },
+"mpcore" : 
+    {
+        "workers" : 2,
+        "settings_update_timeout" : 15,
+        "pidfile" : "pidfile~"
+    },
+"logging" :
+    {
+        "root_level" : "debug",
+        "default_level" : "debug",
+        "levels" : 
+        {
+            "storage" : "debug"
+        }
+    },
+"mongo" :
+    {
+        "uri" : "mongodb://dbhost:27017",
+        "db_collections" : ["agatsuma_data"]
+    },
+"test" :
+    {
+        "test" : "dummy2",
+        "rotest" : "dummy"
+    }
+}

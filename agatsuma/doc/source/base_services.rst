@@ -15,7 +15,7 @@ Logging
 Data storages
 ******************
 
-.. autoclass:: agatsuma.spells.storage_drivers.core_sqla.SQLASpell
+.. autoclass:: agatsuma.spells.common.storage_drivers.core_sqla.SQLASpell
 
 Improved Library Setup
 **********************
