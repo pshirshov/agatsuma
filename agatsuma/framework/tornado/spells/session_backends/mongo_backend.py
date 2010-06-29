@@ -4,8 +4,9 @@ import re
 import time
 import datetime
 
-from agatsuma.log import log
-from agatsuma.core import Core
+import pymongo
+
+from agatsuma import log, Spell
 from agatsuma.interfaces import AbstractSpell
 from agatsuma.framework.tornado.interfaces import SessionBackendSpell
 from agatsuma.framework.tornado import BaseSessionManager
@@ -22,7 +23,7 @@ class AutoReconnect(object):
         self.method = method
 
     def __call__(self, *args, **kwargs):
-"""    
+"""
 
 class MongoSessionManager(BaseSessionManager):
     def __init__(self, uri):
@@ -33,14 +34,14 @@ class MongoSessionManager(BaseSessionManager):
     def initConnection(self):
         log.sessions.info("Initializing MongoDB session backend using URI '%s'" % self.uri)
         connData = MongoSessionManager._parseMongoTableUri(self.uri)
-        mongoSpell = Core.instance.spellsDict["agatsuma_mongodb"]
+        mongoSpell = Spell("agatsuma_mongodb")
         self.connection = mongoSpell.connection
         self.dbCollection = getattr(mongoSpell, connData[0])
         self.db = getattr(self.dbCollection, connData[1])
         #self.connection = pymongo.Connection(connData[0], int(connData[1]))
         #self.dbSet = self.connection[connData[2]]
         #self.db = self.dbSet.sessions
-        
+
     @staticmethod
     def _parseMongoTableUri(details):
         # mongotable://collection/table
@@ -82,7 +83,7 @@ class MongoSessionManager(BaseSessionManager):
             self.connection.end_request()
         except pymongo.errors.AutoReconnect:
             log.sessions.critical("Mongo exception during saving %s with data %s" % (session_id, str(data)))
-            
+
 class MongoSessionSpell(AbstractSpell, SessionBackendSpell):
     def __init__(self):
         config = {'info' : 'MongoDB session storage',
@@ -90,14 +91,14 @@ class MongoSessionSpell(AbstractSpell, SessionBackendSpell):
                   'provides' : ('session_backend', )
                  }
         AbstractSpell.__init__(self, 'tornado_session_backend_mongo', config)
-        
+
     def instantiateBackend(self, uri):
         self.managerInstance = MongoSessionManager(uri)
         return self.managerInstance
 
     def preConfigure(self, core):
         core.registerEntryPoint("mongodb:sessions:cleanup", self.entryPoint)
-        
+
     def entryPoint(self, *args, **kwargs):
         log.core.info("Cleaning old sessions in MongoDB")
         self.managerInstance.cleanup()

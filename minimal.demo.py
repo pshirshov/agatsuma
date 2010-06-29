@@ -6,6 +6,7 @@ import logging
 from agatsuma.core import Core
 from agatsuma import log, Settings
 from agatsuma.interfaces import AbstractSpell
+from agatsuma import Implementations
 
 appRoot = 'demo-minimal'
 appConfig = "settings-minimal.json"
@@ -13,14 +14,14 @@ appConfig = "settings-minimal.json"
 core = Core([appRoot], appConfig,
             appName = "MinimalAgatsumaApp",
             prohibitedSpells = ["agatsuma.spells.common.storage_drivers.core_sqla", # SQLAlchemy is not interesting for this demo
-                                ] 
+                                ]
             )
 
 log.newLogger("demo")
 
 log.demo.info("*" * 50)
 log.demo.info("Trivial application initiated")
-allTheSpells = core.implementationsOf(AbstractSpell)
+allTheSpells = Implementations(AbstractSpell)
 log.demo.debug("Here is the all available spells: %s" % str(allTheSpells))
 
 log.demo.info("Option test.test has value: %s" % Settings.test.test)

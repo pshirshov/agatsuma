@@ -8,9 +8,10 @@ try:
 except ImportError:
     import pickle
 
-from agatsuma.log import log
-from agatsuma.settings import Settings
-from agatsuma.core import Core
+from agatsuma import log
+#from agatsuma.settings import Settings
+#from agatsuma import Core
+from agatsuma import Spell
 from agatsuma.interfaces import AbstractSpell
 from agatsuma.framework.tornado.interfaces import SessionBackendSpell
 from agatsuma.framework.tornado import BaseSessionManager
@@ -25,7 +26,7 @@ class MemcachedSessionManager(BaseSessionManager):
         log.sessions.info("Initializing Memcached session backend "\
                           "using URI '%s'" % self.uri)
         self.keyprefix = self._parseMemcachedPrefixUri(self.uri)
-        memcachedSpell = Core.instance.spellsDict["agatsuma_memcached"]
+        memcachedSpell = Spell("agatsuma_memcached")
         self.pool = memcachedSpell.getConnectionPool()
 
     @property

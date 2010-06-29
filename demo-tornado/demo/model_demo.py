@@ -9,8 +9,9 @@ import tornado.web
 import tornado.ioloop
 
 from agatsuma.core import Core
-from agatsuma.settings import Settings
-from agatsuma.log import log
+from agatsuma import Settings
+from agatsuma import log
+from agatsuma import Spell
 
 from agatsuma.interfaces import AbstractSpell, ModelSpell
 from agatsuma.framework.tornado import AgatsumaHandler, FidelityWorker
@@ -53,8 +54,8 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
         sa.Column('id', sa.types.Integer, primary_key=True),
         sa.Column("user_id" , sa.types.Integer, sa.ForeignKey('users.id')),
         sa.Column('message', sa.types.String),
-        )        
-        self.registerTable(posts_table, "postsTable") 
+        )
+        self.registerTable(posts_table, "postsTable")
         """
         self.registerTable({'tableName' : 'users', 'propertyName' : None},
                             sa.Column('id', sa.types.Integer, primary_key=True),
@@ -64,33 +65,33 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
         self.registerTable({'tableName' : 'posts', 'propertyName' : 'postsTable'})
         """
     def setupORM(self, core):
-        userProps = {'posts' : orm.relation(Post, 
+        userProps = {'posts' : orm.relation(Post,
                      cascade = "all, delete, delete-orphan",
                      order_by = [self.postsTable.c.id]),
                     }
         postProps = {'user' : orm.relation(User)}
         self.registerMapping(core, User, self.users, properties = userProps)
-        self.registerMapping(core, Post, self.postsTable, properties = postProps)   
-        
+        self.registerMapping(core, Post, self.postsTable, properties = postProps)
+
     def postORMSetup(self, core):
-        sqlaSpell = Core.instance.spellsDict["agatsuma_sqla"]
+        sqlaSpell = Spell("agatsuma_sqla")
         ModelDemoSpell.SqlaSess = sqlaSpell.sqlaDefaultSess
 
     def initRoutes(self, map):
         map.extend([(r"/test/model/test", ModelTestHandler),
                     (r"/test/model/mptest", ModelMPTestHandler),
 
-                   ])                   
-       
+                   ])
+
     def performDeployment(self, core):
         log.core.debug("Hello from the demo deployment callback. Now we can add objects into DB")
         session = ModelDemoSpell.SqlaSess
         userscount = session.query(User).count()
         newuser = User('user_%d' % (userscount + 1), 'qwerty')
         session.add(newuser)
-        session.commit() 
+        session.commit()
 
-        
+
 class ModelTestHandler(tornado.web.RequestHandler):
     def get(self):
         session = ModelDemoSpell.SqlaSess
@@ -99,7 +100,7 @@ class ModelTestHandler(tornado.web.RequestHandler):
         newuser = User('user_%d' % (userscount + 1), 'qwerty')
         session.add(newuser)
         newuser.posts.append(Post("Oh nyaa~!"))
-        session.commit() 
+        session.commit()
         self.write("One user added")
 
 class ModelMPTestHandler(AgatsumaHandler):
@@ -109,20 +110,20 @@ class ModelMPTestHandler(AgatsumaHandler):
       self.async(self.test, (1, ), self.onWorkerCompleted)
 
     @FidelityWorker
-    def test(handlerId, *args):       
+    def test(handlerId, *args):
         session=ModelDemoSpell.SqlaSess
         userscount = session.query(User).count()
         ret = "Hello from ModelMPTestHandler.<br/>Current users count is %d<br/>" % userscount
         newuser = User('user_%d' % (userscount + 1), 'qwerty')
         session.add(newuser)
         newuser.posts.append(Post("Oh nyaa~!"))
-        session.commit() 
+        session.commit()
         ret += "One user added"
         return ret
 
     def onWorkerCompleted(self, ret):
         self.write(ret)
-        self.finish()         
+        self.finish()
 
 import multiprocessing
 
@@ -133,7 +134,7 @@ class ModelMPStressTestHandler(AgatsumaHandler):
       self.async(self.test, (1, ), self.onWorkerCompleted)
 
     @FidelityWorker
-    def test(handlerId, *args):       
+    def test(handlerId, *args):
         session=ModelDemoSpell.SqlaSess
         ret = "Hello from ModelMPStressTestHandler!"
         for x in range(1,50000):
@@ -142,7 +143,7 @@ class ModelMPStressTestHandler(AgatsumaHandler):
             session.add(newuser)
             newuser.posts.append(Post("Oh nyaa~!"))
             if not x % 50:
-                session.commit() 
+                session.commit()
             if not x % 100:
                 log.core.info("%s: %d" % (str(multiprocessing.current_process().name), x))
             #ret += "One user added"
@@ -150,4 +151,4 @@ class ModelMPStressTestHandler(AgatsumaHandler):
 
     def onWorkerCompleted(self, ret):
         self.write(ret)
-        self.finish()         
+        self.finish()

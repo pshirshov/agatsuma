@@ -2,8 +2,10 @@
 
 import re
 
-from agatsuma.log import log
-from agatsuma.core import Core
+import pymongo
+
+from agatsuma import log
+from agatsuma import Spell
 from agatsuma.interfaces import AbstractSpell, SettingsBackendSpell, SettingsBackend
 
 class MongoSettingsBackend(SettingsBackend):
@@ -14,7 +16,7 @@ class MongoSettingsBackend(SettingsBackend):
     def initConnection(self):
         log.settings.info("Initializing MongoDB settings backend using URI '%s'" % self.uri)
         connData = MongoSettingsBackend._parseMongoTableUri(self.uri)
-        mongoSpell = Core.instance.spellsDict["agatsuma_mongodb"]
+        mongoSpell = Spell("agatsuma_mongodb")
         self.connection = mongoSpell.connection
         self.dbCollection = getattr(mongoSpell, connData[0])
         self.db = getattr(self.dbCollection, connData[1])

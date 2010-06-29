@@ -2,9 +2,9 @@
 import datetime
 import re
 
-from agatsuma.core import Core
-from agatsuma.settings import Settings
-from agatsuma.log import log
+from agatsuma import Spell
+from agatsuma import Settings
+from agatsuma import log
 from agatsuma.interfaces import AbstractSpell
 from agatsuma.framework.tornado.interfaces import RequestSpell
 from agatsuma.interfaces import SessionHandler
@@ -18,7 +18,6 @@ class SessionSpell(AbstractSpell, RequestSpell):
         AbstractSpell.__init__(self, 'agatsuma_session', config)
 
     def preConfigure(self, core):
-        import logging
         log.newLogger("sessions")
         core.registerOption("!sessions.storage_uri", unicode, "Storage URI")
         core.registerOption("!sessions.expiration_interval", int, "Default session length in seconds")
@@ -31,7 +30,7 @@ class SessionSpell(AbstractSpell, RequestSpell):
             managerId = match.group(1)
             uri = match.group(2)
             spellName = "tornado_session_backend_%s" % managerId
-            spell = Core.instance.spellsDict.get(spellName, None)
+            spell = Spell(spellName)
             if spell:
                 self.sessman = spell.instantiateBackend(uri)
             else:

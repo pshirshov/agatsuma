@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 import re
-import time
-import datetime
 
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
 
-from agatsuma.log import log
-from agatsuma.core import Core
+from agatsuma import log
+from agatsuma import Spell
 from agatsuma.interfaces import (AbstractSpell,
                                  SettingsBackendSpell,
                                  SettingsBackend)
@@ -24,7 +22,7 @@ class MemcachedSettingsBackend(SettingsBackend):
         log.settings.info("Initializing Memcached settings backend "\
                           "using URI '%s'" % self.uri)
         self.keyprefix = self._parseMemcachedPrefixUri(self.uri)
-        memcachedSpell = Core.instance.spellsDict["agatsuma_memcached"]
+        memcachedSpell = Spell("agatsuma_memcached")
         self.pool = memcachedSpell.getConnectionPool()
 
     @property

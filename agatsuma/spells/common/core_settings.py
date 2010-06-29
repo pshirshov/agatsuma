@@ -3,8 +3,9 @@
 import re
 import copy
 
-from agatsuma.log import log
-from agatsuma.settings import Settings
+from agatsuma import log
+from agatsuma import Settings
+from agatsuma import Spell
 from agatsuma.interfaces.abstract_spell import AbstractSpell
 
 class SettingsSpell(AbstractSpell):
@@ -16,7 +17,6 @@ class SettingsSpell(AbstractSpell):
         AbstractSpell.__init__(self, 'agatsuma_settings', config)
 
     def preConfigure(self, core):
-        import logging
         log.newLogger("settings")
         core.registerOption("!core.settings_storage_uri", unicode, "Settings storage URI")
         core.registerOption("!core.recovery", bool, "Recovery mode")
@@ -35,8 +35,7 @@ class SettingsSpell(AbstractSpell):
                 backendId = match.group(1)
                 uri = match.group(2)
                 spellName = "agatsuma_settings_backend_%s" % backendId
-                from agatsuma.core import Core
-                spell = Core.instance.spellsDict.get(spellName, None)
+                spell = Spell(spellName)
                 if spell:
                     self.backend = spell.instantiateBackend(uri)
                 else:
