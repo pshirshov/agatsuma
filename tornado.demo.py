@@ -32,26 +32,26 @@ else:
     entryPointName = sys.argv[1]
     core.runEntryPoint(entryPointName, sys.argv)
 
-# TODO: session backends: memcache, database
+# TODO: session backends: database
 # TODO: settings backends: database
+
 # TODO: wsgi frameworks support
 # TODO: webhelpers
-
-# TODO: thread-based updates
-# TODO: MP core demo
 
 # TODO: Unit tests
 # TODO: Sphinx documentation
 
-# TODO: customized errors handling (Tornado patching needed), email reports
 # TODO: caching decorator
 # TODO: applyFilters
 
-# TODO: more powerful url builder
 # TODO: type conversion for settings (unicode->str), convert read-only lists to tuples
-# TODO: another template engine
-# TODO: Tornado forking support (when new Tornado will be released)
 # TODO: update options via HTTP from master server (or propagate to set of slaves)
-# TODO: py3k (when Tornado will be ported)
 # TODO: multiple sessions backends
 # TODO: list of session backends instead of one
+
+# TODO: tornado: customized errors handling (Tornado patching needed), email reports
+# TODO: tornado: more powerful url builder
+# TODO: tornado: another template engine (?)
+# TODO: tornado: forking support (when new Tornado will be released)
+
+# TODO: py3k (when dependencies will be ported)
