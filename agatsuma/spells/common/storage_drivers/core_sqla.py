@@ -12,7 +12,6 @@ else:
 
 from agatsuma import log
 from agatsuma import Settings
-from agatsuma import Core
 from agatsuma import Implementations
 
 from agatsuma.interfaces import AbstractSpell, StorageSpell, ModelSpell

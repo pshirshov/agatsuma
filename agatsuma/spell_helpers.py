@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from agatsuma.core import Core
-
 def Spell(spellId):
     """Helper function which returns spell with given name
 
     Arguments:
     - `spellId`:
     """
+    from agatsuma.core import Core
     return Core.instance.spellsDict.get(spellId, None)
 
 def Implementations(interface):
@@ -16,6 +15,7 @@ def Implementations(interface):
     Arguments:
     - `interface`:
     """
+    from agatsuma.core import Core
     return Core.instance.implementationsOf(interface)
 
 '''

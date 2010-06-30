@@ -6,7 +6,7 @@ import datetime
 import multiprocessing
 import threading
 
-from agatsuma import log, Implementations
+from agatsuma import log, Spell, Implementations
 from agatsuma.interfaces import AbstractSpell
 
 class DictAccessProxy(object):
