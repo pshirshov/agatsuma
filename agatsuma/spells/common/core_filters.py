@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from agatsuma.log import log
+from agatsuma import log
+from agatsuma import Implementations
 
-from agatsuma.interfaces.abstract_spell import AbstractSpell
-from agatsuma.interfaces.filtering_spell import FilteringSpell
-        
+from agatsuma.interfaces import AbstractSpell
+from agatsuma.interfaces import FilteringSpell
+
 class TextFiltersSpell(AbstractSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Text Filtering Core Spell',
@@ -13,7 +14,7 @@ class TextFiltersSpell(AbstractSpell):
         AbstractSpell.__init__(self, 'agatsuma_text_filters', config)
 
     def postConfigure(self, core):
-        spells = core._implementationsOf(FilteringSpell)
+        spells = Implementations(FilteringSpell)
         if not spells:
             log.core.info("Filtering spells not found")
             return

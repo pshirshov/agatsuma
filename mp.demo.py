@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
-
 from agatsuma.core import MPCore
-from agatsuma import log, Settings
+from agatsuma import log, Settings, Implementations
 from agatsuma.interfaces import AbstractSpell
 
 appRoot = 'demo-minimal'
@@ -13,7 +11,7 @@ appConfig = "settings-mp.json"
 core = MPCore([appRoot], appConfig,
             appName = "MultiprocessingAgatsumaApp",
             prohibitedSpells = ["agatsuma.spells.common.storage_drivers.core_sqla", # SQLAlchemy is not interesting for this demo
-                                ] 
+                                ]
             )
 core.startSettingsUpdater()
 
@@ -21,7 +19,7 @@ log.newLogger("demo")
 
 log.demo.info("*" * 50)
 log.demo.info("Trivial MP application initiated")
-allTheSpells = core.implementationsOf(AbstractSpell)
+allTheSpells = Implementations(AbstractSpell)
 log.demo.debug("Here is the all available spells: %s" % str(allTheSpells))
 
 log.demo.info("Option test.test has value: %s" % Settings.test.test)
@@ -32,7 +30,6 @@ def randomizeSettings():
     Settings.test.test = val
     Settings.save()
 
-import threading
 import time
 ticks = 0
 maxticks = 100

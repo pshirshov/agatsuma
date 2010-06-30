@@ -10,9 +10,10 @@ if Core.internalState.get("mode", None) == "normal":
 else:
     sa = None
 
-from agatsuma.log import log
-from agatsuma.settings import Settings
-from agatsuma.core import Core
+from agatsuma import log
+from agatsuma import Settings
+from agatsuma import Core
+from agatsuma import Implementations
 
 from agatsuma.interfaces import AbstractSpell, StorageSpell, ModelSpell
 
@@ -34,7 +35,7 @@ class SQLASpell(AbstractSpell, StorageSpell):
                }
 
     def deploy(self, *args, **kwargs):
-        spells = Core.instance._implementationsOf(ModelSpell)
+        spells = Implementations(ModelSpell)
         log.storage.info("Initializing Database...")
         if spells:
             if "recreate" in args:
@@ -53,7 +54,7 @@ class SQLASpell(AbstractSpell, StorageSpell):
         core.registerEntryPoint("agatsuma:sqla_init", self.deploy)
 
     def postConfigure(self, core):
-        spells = core._implementationsOf(ModelSpell)
+        spells = Implementations(ModelSpell)
         if spells:
             log.storage.info("Initializing SQLAlchemy engine and session...")
             self.SqlaEngine = sa.create_engine(Settings.sqla.uri, **Settings.sqla.parameters)

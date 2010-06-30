@@ -4,7 +4,7 @@
 #import logging
 import sys
 
-from agatsuma.core import Core
+from agatsuma.core import Core, Implementations
 #from agatsuma import log
 from agatsuma.interfaces import AbstractSpell
 
@@ -16,7 +16,7 @@ sys.argv = filter(lambda s: s != "--disable-all", sys.argv)
 
 core = Core(None, None, appMode = 'setup')
 #log.newLogger("setup", logging.DEBUG)
-spells = core.implementationsOf(AbstractSpell)
+spells = Implementations(AbstractSpell)
 
 def depGroupEnabled(group):
     depEnabled =(not (depsDisabled or ('--without-%s' % group) in components)
@@ -46,7 +46,7 @@ out("(Use --disable-all to disable all the dependencies)")
 for group in depGroups:
     formatString = "[ ] %s: %s "
     if depGroupEnabled(group):
-        formatString = "[*] %s: %s" 
+        formatString = "[*] %s: %s"
     out(formatString % (group, str(depGroupsContent[group])))
     out("    Use --without-%s to disable" % group)
     out("    Use --with-%s to enable" % group)
