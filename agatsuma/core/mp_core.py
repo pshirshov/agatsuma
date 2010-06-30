@@ -13,7 +13,7 @@ from multiprocessing import Pool, Manager
 from agatsuma import Settings, log
 from agatsuma.core import Core
 from agatsuma.interfaces import PoolEventSpell
- 
+
 def _workerInitializer(timeout):
     process = multiprocessing.current_process()
     MPCore.writePid(process.pid)
@@ -37,10 +37,10 @@ in core subclass and don't spawn unwanted thread.
     configUpdateManager = Manager()
     sharedConfigData = configUpdateManager.dict()
     pids = configUpdateManager.list()
-    
+
     def __init__(self, appDir, appConfig, **kwargs):
         """
-        
+
         Arguments:
         - `self`:
         - `appDir`:
@@ -53,31 +53,31 @@ in core subclass and don't spawn unwanted thread.
         spellsDirs.extend(kwargs.get('spellsDirs', []))
         kwargs['spellsDirs'] = spellsDirs
         Core.__init__(self, appDir, appConfig, **kwargs)
-    
+
     def _postConfigure(self):
         spellsDirs = []
         nsFragments = ('agatsuma', 'framework', 'tornado', 'spells')
         spellsDirs.extend ([self._internalSpellSpace(*nsFragments)
                             ])
-        
+
         MPCore.removePidFile()
         log.mpcore.info("Calling pre-pool-init routines...")
         self._prePoolInit()
-        for spell in self._implementationsOf(PoolEventSpell):
+        for spell in self.implementationsOf(PoolEventSpell):
             spell.prePoolInit(self)
 
         self.pool = None
         workers = Settings.mpcore.workers
         if workers >= 0:
             log.mpcore.debug("Starting %d workers..." % workers)
-            self.pool = Pool(processes=workers, 
-                             initializer = _workerInitializer, 
+            self.pool = Pool(processes=workers,
+                             initializer = _workerInitializer,
                              initargs = (Settings.mpcore.settings_update_timeout, ))
         else:
             log.mpcore.info("Pool initiation skipped due negative workers count")
 
         log.mpcore.info("Calling post-pool-init routines...")
-        for spell in self._implementationsOf(PoolEventSpell):
+        for spell in self.implementationsOf(PoolEventSpell):
             spell.postPoolInit(self)
 
     def _prePoolInit(self):
@@ -137,5 +137,5 @@ in core subclass and don't spawn unwanted thread.
 
     @staticmethod
     def _updateSettingsByTimer(timeout):
-        threading.Timer(timeout, MPCore._updateSettingsByTimer, (timeout, )).start()    
+        threading.Timer(timeout, MPCore._updateSettingsByTimer, (timeout, )).start()
         MPCore._updateSettings()

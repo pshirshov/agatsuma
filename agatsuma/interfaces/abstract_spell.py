@@ -29,7 +29,7 @@ The following spell parameters are supported now:
        and data preparation. Also it may be suitable for
        :ref:`dependencies helpers<dependencies-helpers>`.
     """
-    
+
     def __init__(self, spellId, spellConfig = {}):
         self.__pId = spellId
         self.config = spellConfig
@@ -220,7 +220,7 @@ content::
 
         """
         return {}
-    
+
     def preConfigure(self, core):
         """ Core calls this method before settings settings service
         initialization. All the options that are needed for spell

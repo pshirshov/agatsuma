@@ -17,7 +17,7 @@ class MTDemoSpell(AbstractSpell, HandlingSpell):
                   'info' : ()
                  }
         AbstractSpell.__init__(self, 'mt_demo_spell', config)
-        
+
     def initRoutes(self, map):
         map.extend([(r"/test/mt/sync",       MTSyncHandler),
                     (r"/test/mt/async_null", MTAsyncNullHandler),
@@ -25,7 +25,7 @@ class MTDemoSpell(AbstractSpell, HandlingSpell):
                     Url('testurl', '/test/%(param1)s/%(param2)d',
                         MTUrlTestHandler),
                 ])
-    
+
 class MTUrlTestHandler(AgatsumaHandler):
     def get(self, param1, param2):
         items = []
@@ -49,20 +49,20 @@ class MTAsyncNullHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self):
         self.write("Hello from MTAsyncNullHandler")
-        self.finish()       
-       
+        self.finish()
+
 class MTAsyncHandler(tornado.web.RequestHandler):
     """
     Async handler. Work performed in main thread.
-    """    
+    """
     @tornado.web.asynchronous
     def get(self):
         self.write("Hello from MTAsyncHandler<br/>")
         self.count = 0
-        tornado.ioloop.IOLoop.instance().add_timeout( 
-              time.time() + 1, 
-              self.async_callback(self.async_send)) 
-        
+        tornado.ioloop.IOLoop.instance().add_timeout(
+              time.time() + 1,
+              self.async_callback(self.async_send))
+
     def async_send(self):
         self.write("Iteration %d completed<br/>" % self.count)
         self.flush()
@@ -70,6 +70,6 @@ class MTAsyncHandler(tornado.web.RequestHandler):
             self.finish()
         else:
             self.count += 1
-            tornado.ioloop.IOLoop.instance().add_timeout( 
-              time.time() + 1, 
-              self.async_callback(self.async_send)) 
+            tornado.ioloop.IOLoop.instance().add_timeout(
+              time.time() + 1,
+              self.async_callback(self.async_send))

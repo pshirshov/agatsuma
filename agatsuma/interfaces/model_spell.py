@@ -17,7 +17,7 @@ class ModelSpell(object):
 
     def registerMapping(self, core, ClassToMap, tableToMap, **kwargs):
         properties = kwargs.get("properties", {})
-        spells = core._implementationsOf(ModelSpell)
+        spells = core.implementationsOf(ModelSpell)
         for spell in spells:
             properties = spell.updateTableProperties(self, properties, tableToMap, ClassToMap)
         orm.mapper(ClassToMap, tableToMap, properties)

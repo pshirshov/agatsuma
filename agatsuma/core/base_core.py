@@ -5,7 +5,6 @@
 """
 import os
 import re
-import logging
 import signal
 
 from weakref import WeakValueDictionary
@@ -30,7 +29,7 @@ class Core(object):
     """Base core which provides basic services, such as settings
 and also able to enumerate spells.
 
-:param appDirs: list of paths to directories containing application spells. 
+:param appDirs: list of paths to directories containing application spells.
 
 .. note:: All the paths in ``appDirs`` list must define importable namespaces. So if we replace all '/' with '.'  in such path we should get importable namespace
 
@@ -81,8 +80,8 @@ The following kwargs parameters are supported:
 
         self.logger = log()
         self.logger.initiateLoggers()
-        log.newLogger("core") 
-        log.newLogger("storage") 
+        log.newLogger("core")
+        log.newLogger("storage")
         log.core.info("Initializing Agatsuma")
         log.core.info("Version: %s" % self.versionString)
         log.core.info("Agatsuma's base directory: %s" % self.agatsumaBaseDir)
@@ -92,7 +91,6 @@ The following kwargs parameters are supported:
         Core.internalState["mode"] = kwargs.get("appMode", "normal")
         self.spells = []
         self.spellsDict = {}
-        self.filterStack = []
         self.registeredSettings = {}
         self.entryPoints = {}
 
@@ -107,12 +105,12 @@ The following kwargs parameters are supported:
         if appConfig:
             from agatsuma.interfaces.abstract_spell import AbstractSpell
             log.core.info("Initializing spells...")
-            for spell in self._implementationsOf(AbstractSpell):
+            for spell in self.implementationsOf(AbstractSpell):
                 spell.preConfigure(self)
             self.settings = Settings(appConfig, self.registeredSettings)
             self.logger.updateLevels()
             log.core.info("Calling post-configure routines...")
-            for spell in self._implementationsOf(AbstractSpell):
+            for spell in self.implementationsOf(AbstractSpell):
                 spell.postConfigure(self)
             log.core.info("Spells initialization completed")
             enumerator.eagerUnload()
@@ -146,13 +144,9 @@ The following kwargs parameters are supported:
         self._stop()
 
     def implementationsOf(self, InterfaceClass):
-        #TODO: caching (maybe caching decorator?)
         """ The most important function for Agatsuma-based application.
         It returns all the spells implementing interface `InterfaceClass`.
         """
-        return self._implementationsOf(InterfaceClass)
-
-    def _implementationsOf(self, InterfaceClass):
         return filter(lambda spell: issubclass(type(spell), InterfaceClass), self.spells)
 
     def registerOption(self, settingName, settingType, settingComment):

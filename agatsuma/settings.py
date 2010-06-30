@@ -6,7 +6,8 @@ import datetime
 import multiprocessing
 import threading
 
-from agatsuma import log, Spell, Implementations
+#from agatsuma import log, Spell, Implementations
+from agatsuma import log
 from agatsuma.interfaces import AbstractSpell
 
 class DictAccessProxy(object):
@@ -167,7 +168,7 @@ class Settings(object):
         Settings.configData = {"data": settings,
                                "update" : timestamp,
                               }
-        spells = Implementations(AbstractSpell)
+        spells = Core.instance.implementationsOf(AbstractSpell) #Implementations(AbstractSpell)
         for spell in spells:
             spell.postConfigUpdate(**kwargs)
 

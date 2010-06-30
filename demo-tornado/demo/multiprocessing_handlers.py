@@ -4,8 +4,9 @@ import tornado.web
 import tornado.ioloop
 import time
 from agatsuma.core import Core
-from agatsuma.settings import Settings
-from agatsuma.log import log
+from agatsuma import Settings
+from agatsuma import log
+from agatsuma import Spell
 
 from agatsuma.interfaces import AbstractSpell, FilteringSpell, SessionHandler
 from agatsuma.framework.tornado import AgatsumaHandler, MsgPumpHandler, FidelityWorker
@@ -66,7 +67,10 @@ class MPWorkerHandler(AgatsumaHandler, SessionHandler):
       print "GET2>", self.session.get("sesskey", None)
       self.session.save()
       #self.sessman.delete(self.session)
-      self.write("Hello from MPWorkerHandler!<br>")
+      out=Spell("agatsuma_text_filters").apply("Hello from MPWorkerHandler!<br>")
+      # The following is equivalent but requires appropriate import:
+      # out = Implementation(TextFilterSpell)[0].apply("Hello.jpg")
+      self.write(out)
       self.async(self.test, (1, ), self.onWorkerCompleted)
       import random
       Settings.test.test = unicode(random.randint(1000, 9999))

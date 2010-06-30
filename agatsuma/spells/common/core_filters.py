@@ -12,6 +12,10 @@ class TextFiltersSpell(AbstractSpell):
                   'deps' : ("agatsuma_core", )
                  }
         AbstractSpell.__init__(self, 'agatsuma_text_filters', config)
+        self.filterStack = []
+
+    #def preConfigure(self, core):
+    #    core.filterStack = []
 
     def postConfigure(self, core):
         spells = Implementations(FilteringSpell)
@@ -23,7 +27,7 @@ class TextFiltersSpell(AbstractSpell):
             filters = spell.filtersList()
             if filters:
                 for tfilter in filters:
-                    core.filterStack.append(tfilter)
+                    self.filterStack.append(tfilter)
                     log.core.info('Added text filter %s from %s' % (str(tfilter), spell.spellId()))
             #TODO: templating and this
             """
@@ -34,3 +38,9 @@ class TextFiltersSpell(AbstractSpell):
                     log.core.info('Added global text filter %s from %s' % (str(tfilter), spell.spellId()))
             """
         log.core.info("Text filters are set up")
+
+    def apply(self, s):
+        ret = s
+        for flt in self.filterStack:
+            ret = flt(ret)
+        return ret

@@ -12,6 +12,6 @@ class FidelityWorker(object):
     def __call__(self, *args, **kwargs):
         try:
             return FidelityWorker.functions[self.workerId](*args, **kwargs)
-        except Exception, e:
+        except Exception:
             logging.error("Exception in MP worker", exc_info=True)
-        
+

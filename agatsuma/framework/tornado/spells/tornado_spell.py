@@ -35,7 +35,7 @@ class TornadoSpell(AbstractSpell):
 
     def postConfigure(self, core):
         log.tcore.info("Initializing URI map..")
-        spells = core._implementationsOf(HandlingSpell)
+        spells = core.implementationsOf(HandlingSpell)
         if spells:
             urimap = []
             for spell in spells:

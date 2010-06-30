@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
+import datetime
+import random
 
 from agatsuma.core import Core
 from agatsuma import log, Settings
@@ -21,12 +22,29 @@ log.newLogger("demo")
 
 log.demo.info("*" * 50)
 log.demo.info("Trivial application initiated")
-allTheSpells = Implementations(AbstractSpell)
+log.demo.info("*" * 50)
+
+log.demo.info("Testing interface getters...")
+time1 = datetime.datetime.now()
+for x in range(0, 100000):
+    allTheSpells = Implementations(AbstractSpell)
+time2 = datetime.datetime.now()
+log.demo.info("Implementations() [cached]        test completed in %s" % str(time2 - time1))
+
+time1 = datetime.datetime.now()
+for x in range(0, 100000):
+    allTheSpells = Core.instance.implementationsOf(AbstractSpell)
+time2 = datetime.datetime.now()
+log.demo.info("Core.instance.implementationsOf() test completed in %s" % str(time2 - time1))
+log.demo.info("*" * 50)
+
 log.demo.debug("Here is the all available spells: %s" % str(allTheSpells))
+log.demo.info("*" * 50)
 
 log.demo.info("Option test.test has value: %s" % Settings.test.test)
-import random
+
 val = u"random_value_%s" % random.randint(0, 9999)
 log.demo.info("Changing value to %s" % val)
 Settings.test.test = val
 Settings.save()
+log.demo.info("*" * 50)
