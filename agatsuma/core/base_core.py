@@ -7,8 +7,6 @@ import os
 import re
 import signal
 
-from weakref import WeakValueDictionary
-
 from agatsuma import Enumerator
 from agatsuma import log
 from agatsuma import Settings
@@ -95,7 +93,6 @@ The following kwargs parameters are supported:
         self.entryPoints = {}
 
         #self.globalFilterStack = [] #TODO: templating and this
-        self.mpHandlerInstances = WeakValueDictionary()
         prohibitedSpells = kwargs.get("prohibitedSpells", [])
         enumerator = Enumerator(self, appDirs, prohibitedSpells)
 

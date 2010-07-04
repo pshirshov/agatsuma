@@ -3,6 +3,7 @@ import os
 import Queue
 import multiprocessing
 from multiprocessing import Queue as MPQueue
+from weakref import WeakValueDictionary
 
 from agatsuma.core import MPCore
 if MPCore.internalState.get("mode", None) == "normal":
@@ -28,21 +29,16 @@ class TornadoCore(MPCore, TornadoAppClass):
         kwargs['spellsDirs'] = spellsDirs
         self.URIMap = []
         MPCore.__init__(self, appDir, appConfig, **kwargs)
+        self._initiateTornadoClass()
+    
+    def _initiateTornadoClass(self):
+        self.mpHandlerInstances = WeakValueDictionary()
         tornadoSettings = {'debug': Settings.core.debug, # autoreload
                            'cookie_secret' : str(Settings.tornado.cookie_secret),
                           }
         tornadoSettings.update(Settings.tornado.app_parameters)
+        assert len(self.URIMap) > 0
         tornado.web.Application.__init__(self, self.URIMap, **tornadoSettings)
-
-    def _prePoolInit(self):
-        self.messagePumpNeeded = False
-        from agatsuma.framework.tornado import MsgPumpHandler
-        for uri, handler in self.URIMap:
-            if issubclass(handler, MsgPumpHandler):
-                self.messagePumpNeeded = True
-                TornadoCore.mqueue = MPQueue()
-                self.waitingCallbacks = []
-                break
 
     def _stop(self):
         #self.HTTPServer.stop()
@@ -69,52 +65,70 @@ class TornadoCore(MPCore, TornadoAppClass):
         self.logger.logPump.start()
 
     def start(self):
+        self.__updateLogger()
         self.ioloop = tornado.ioloop.IOLoop.instance()
-        pumpTimeout = Settings.tornado.message_pump_timeout
         port = Settings.tornado.port
-        assert len(self.URIMap) > 0
 
         #self.logger.setMPHandler(self.ioloop)
-        self.__updateLogger()
         self.HTTPServer = tornado.httpserver.HTTPServer(self,
                                                         xheaders=Settings.tornado.xheaders,
                                                         # For future Tornado versions
                                                         #ssl_options=Settings.tornado.ssl_parameters
                                                        )
-        self.HTTPServer.listen(port)
         """
         # Preforking is only available in Tornado GIT
         if Settings.core.forks > 0:
             self.HTTPServer.bind(port)
             self.HTTPServer.start()
+        else:
         """
+        self.HTTPServer.listen(port)
         pid = multiprocessing.current_process().pid
         MPCore.rememberPid(pid)
         MPCore.writePid(pid)
         log.tcore.debug("Main process' PID: %d" % pid)
 
-        self.startSettingsUpdater()
+        self._startSettingsUpdater()
 
+        self._beforeIOLoopStart()
+        
+        log.tcore.info("=" * 60)
+        log.tcore.info("Starting %s/Agatsuma in server mode on port %d..." % (self.appName, port))
+        log.tcore.info("=" * 60)
+        self.ioloop.start()
+
+    def _startSettingsUpdater(self):
+        configChecker = tornado.ioloop.PeriodicCallback(MPCore._updateSettings,
+                                                        1000 * Settings.mpcore.settings_update_timeout,
+                                                        io_loop=self.ioloop)
+        configChecker.start()
+
+    def _beforeIOLoopStart(self):
         if self.messagePumpNeeded:
-            mpump = tornado.ioloop.PeriodicCallback(self.messagePump,
+            pumpTimeout = Settings.tornado.message_pump_timeout
+            mpump = tornado.ioloop.PeriodicCallback(self._messagePump,
                                                     pumpTimeout,
                                                     io_loop=self.ioloop)
             log.tcore.debug("Starting message pump...")
             mpump.start()
         else:
             log.tcore.debug("Message pump initiation skipped, it isn't required for any spell")
-        log.tcore.info("=" * 60)
-        log.tcore.info("Starting %s/Agatsuma in server mode on port %d..." % (self.appName, port))
-        log.tcore.info("=" * 60)
-        self.ioloop.start()
 
-    def startSettingsUpdater(self):
-        configChecker = tornado.ioloop.PeriodicCallback(MPCore._updateSettings,
-                                                        1000 * Settings.mpcore.settings_update_timeout,
-                                                        io_loop=self.ioloop)
-        configChecker.start()
+    def _prePoolInit(self):
+        # Check if message pump is required for some of controllers
+        self.messagePumpNeeded = False
+        from agatsuma.framework.tornado import MsgPumpHandler
+        for uri, handler in self.URIMap:
+            if issubclass(handler, MsgPumpHandler):
+                self.messagePumpNeeded = True
+                TornadoCore.mqueue = MPQueue()
+                self.waitingCallbacks = []
+                break
 
-    def messagePump(self):
+    def _messagePump(self):
+        """Extracts messages from message queue if any and pass them to
+        appropriate controller
+        """
         while not self.mqueue.empty():
             try:
                 message = self.mqueue.get_nowait()
@@ -141,3 +155,25 @@ class TornadoCore(MPCore, TornadoAppClass):
     def handlerInitiated(self, handler):
         # references are weak, so handler will be correctly destroyed and removed from dict automatically
         self.mpHandlerInstances[id(handler)] = handler
+
+class TornadoStandaloneCore(object):
+    """Implements standalone Tornado server, useful to develop
+    lightweight asynchronous web applications
+    """
+
+    def __init__(self, ):
+        """
+        """
+        pass
+
+class TornadoWSGICore(object):
+    """Implements Tornado WSGI server, useful to run usual WSGI
+    applications on top of Tornado.
+    """
+
+    def __init__(self, ):
+        """
+        """
+        pass
+
+

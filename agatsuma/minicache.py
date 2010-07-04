@@ -3,7 +3,7 @@ import threading
 # I've tried django RWLock. It is very slow, so I prefer
 # usual threading.Lock. Yes, it gives exclusive access for readers,
 # but faster for five times.
-#from agatsuma.third_party.rwlock import RWLock 
+#from agatsuma.third_party.rwlock import RWLock
 
 class MiniCache(object):
     """Implements thread-safe dict-based cache. Intended only for internal usage.
@@ -62,7 +62,8 @@ class MiniCache(object):
 class EternalInvariantHelper(object):
     """Decorator intended to speed-up absolute invariant functions
     (they always return same result and haven't side effects).
-    Caching is based on args, kwargs are not accounted.
+    Caching is based on args, kwargs are not accounted so wrapped
+    function should be invariant of kwargs.
     """
 
     def __init__(self, fn):

@@ -64,7 +64,8 @@ setup(
     version = Core.versionString,
     packages = find_packages(),
     install_requires = dependencies,
-
+    zip_safe=False,
+    
     #scripts = ['say_hello.py'],
 
     package_data = {

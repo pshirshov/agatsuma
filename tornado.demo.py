@@ -44,7 +44,7 @@ else:
 # TODO: cache services
 
 # TODO: type conversion for settings (unicode->str), convert read-only lists to tuples
-# TODO: update options via HTTP from master server (or propagate to set of slaves)
+# TODO: update options via HTTP from master server (or propagate to set of slaves, or re-read from storage)
 # TODO: multiple sessions backends
 # TODO: list of session backends instead of one
 
