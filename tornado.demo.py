@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from agatsuma.framework.tornado import TornadoCore
+from agatsuma.framework.tornado import TornadoStandaloneCore
 
 # Very important: app root path should also be namespace name
 # So if we replace all '/' with '.' in appRoot we should get importable namespace
 appRoot = 'demo-tornado'
 appConfig = "settings.json"
 
-core = TornadoCore([appRoot], appConfig,
+core = TornadoStandaloneCore([appRoot], appConfig,
             appName = "TornadoDemoApp",
             #appSpells = ["namespace.module"], # namespaces to load as spells
             #prohibitedSpells = ["spellspace.py", "demoapp.demo.multiprocessing_handlers"] # file names or namespaces

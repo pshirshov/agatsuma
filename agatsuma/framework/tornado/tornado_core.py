@@ -15,9 +15,10 @@ else:
     TornadoAppClass = object
 
 from agatsuma import Settings
+from agatsuma.errors import EAbstractFunctionCall
 from agatsuma import log, MPLogHandler
 
-class TornadoCore(MPCore, TornadoAppClass):
+class TornadoCore(MPCore):
     mqueue = None
 
     def __init__(self, appDir, appConfig, **kwargs):
@@ -29,16 +30,7 @@ class TornadoCore(MPCore, TornadoAppClass):
         kwargs['spellsDirs'] = spellsDirs
         self.URIMap = []
         MPCore.__init__(self, appDir, appConfig, **kwargs)
-        self._initiateTornadoClass()
-    
-    def _initiateTornadoClass(self):
-        self.mpHandlerInstances = WeakValueDictionary()
-        tornadoSettings = {'debug': Settings.core.debug, # autoreload
-                           'cookie_secret' : str(Settings.tornado.cookie_secret),
-                          }
-        tornadoSettings.update(Settings.tornado.app_parameters)
-        assert len(self.URIMap) > 0
-        tornado.web.Application.__init__(self, self.URIMap, **tornadoSettings)
+        self._initiateTornado()
 
     def _stop(self):
         #self.HTTPServer.stop()
@@ -65,8 +57,8 @@ class TornadoCore(MPCore, TornadoAppClass):
         self.logger.logPump.start()
 
     def start(self):
-        self.__updateLogger()
         self.ioloop = tornado.ioloop.IOLoop.instance()
+        self.__updateLogger()
         port = Settings.tornado.port
 
         #self.logger.setMPHandler(self.ioloop)
@@ -91,7 +83,7 @@ class TornadoCore(MPCore, TornadoAppClass):
         self._startSettingsUpdater()
 
         self._beforeIOLoopStart()
-        
+
         log.tcore.info("=" * 60)
         log.tcore.info("Starting %s/Agatsuma in server mode on port %d..." % (self.appName, port))
         log.tcore.info("=" * 60)
@@ -102,9 +94,31 @@ class TornadoCore(MPCore, TornadoAppClass):
                                                         1000 * Settings.mpcore.settings_update_timeout,
                                                         io_loop=self.ioloop)
         configChecker.start()
+        
+    def _beforeIOLoopStart(self):
+        raise EAbstractFunctionCall()
+    
+class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
+    """Implements standalone Tornado server, useful to develop
+    lightweight asynchronous web applications
+    """
+
+    def __init__(self, appDir, appConfig, **kwargs):
+        """
+        """
+        TornadoCore.__init__(self, appDir, appConfig, **kwargs)
+
+    def _initiateTornado(self):
+        self.mpHandlerInstances = WeakValueDictionary()
+        tornadoSettings = {'debug': Settings.core.debug, # autoreload
+                           'cookie_secret' : str(Settings.tornado.cookie_secret),
+                          }
+        tornadoSettings.update(Settings.tornado.app_parameters)
+        assert len(self.URIMap) > 0
+        tornado.web.Application.__init__(self, self.URIMap, **tornadoSettings)
 
     def _beforeIOLoopStart(self):
-        if self.messagePumpNeeded:
+        if self.messagePumpNeeded and self.pool:
             pumpTimeout = Settings.tornado.message_pump_timeout
             mpump = tornado.ioloop.PeriodicCallback(self._messagePump,
                                                     pumpTimeout,
@@ -156,22 +170,12 @@ class TornadoCore(MPCore, TornadoAppClass):
         # references are weak, so handler will be correctly destroyed and removed from dict automatically
         self.mpHandlerInstances[id(handler)] = handler
 
-class TornadoStandaloneCore(object):
-    """Implements standalone Tornado server, useful to develop
-    lightweight asynchronous web applications
-    """
-
-    def __init__(self, ):
-        """
-        """
-        pass
-
-class TornadoWSGICore(object):
+class TornadoWSGICore(TornadoCore):
     """Implements Tornado WSGI server, useful to run usual WSGI
     applications on top of Tornado.
     """
 
-    def __init__(self, ):
+    def __init__(self, appDir, appConfig, **kwargs):
         """
         """
         pass
