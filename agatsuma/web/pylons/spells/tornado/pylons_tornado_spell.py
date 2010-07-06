@@ -7,7 +7,7 @@ from agatsuma.interfaces import AbstractSpell
 class PylonsWSGISpell(AbstractSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Pylons/Tornado Spell',
-                  'deps' : (''),
+                  'deps' : ('agatsuma_tornado', ),
                   'eager_unload' : True,
                  }
         AbstractSpell.__init__(self, 'agatsuma_pylons_tornado', config)
