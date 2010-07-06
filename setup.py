@@ -7,7 +7,7 @@ import sys
 from agatsuma.core import Core
 from agatsuma import Implementations
 #from agatsuma import log
-from agatsuma.interfaces import AbstractSpell, SetupSpell
+from agatsuma.interfaces import SetupSpell
 
 def collectEntryPoints():
     spells = Implementations(SetupSpell)
@@ -32,6 +32,7 @@ def formatEntryPoints(epoints):
 def out(s):
     #log.setup.info
     print s
+
 def line():
     out("="*25)
 
