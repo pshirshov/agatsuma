@@ -81,7 +81,7 @@ class TornadoCore(MPCore):
         MPCore.writePid(pid)
         log.tcore.debug("Main process' PID: %d" % pid)
 
-        self._startSettingsUpdater()
+        self.startSettingsUpdater()
 
         self._beforeIOLoopStart()
 

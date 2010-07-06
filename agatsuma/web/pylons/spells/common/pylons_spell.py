@@ -13,9 +13,7 @@ class PylonsSpell(AbstractSpell, SetupSpell):
         AbstractSpell.__init__(self, 'agatsuma_pylons', config)
 
     def preConfigure(self, core):
-        pass
-        #TODO: options
-        #log.newLogger("tcore")
+        log.newLogger("pcore")
         #core.registerOption("!tornado.cookie_secret", unicode, "cookie secret")
         #core.registerOption("!tornado.message_pump_timeout", int, "Message pushing interval (msec)")
         #core.registerOption("!tornado.app_parameters", dict, "Kwarg parameters for tornado application")

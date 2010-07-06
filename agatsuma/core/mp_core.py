@@ -111,10 +111,16 @@ in core subclass and don't spawn unwanted thread.
         if os.path.exists(pidfile):
             os.remove(pidfile)
 
+    def _startSettingsUpdater(self):
+        MPCore._updateSettingsByTimer(Settings.mpcore.settings_update_timeout)
+        
     def startSettingsUpdater(self):
         """ Initiates periodic checking for config updates. May be overriden in
         subclasses """
-        MPCore._updateSettingsByTimer(Settings.mpcore.settings_update_timeout)
+        if self.pool:
+            self._startSettingsUpdater()
+        else:
+            log.mpcore.info("Settings updater is not started in main thread due empty process' pool")
 
     @staticmethod
     def _updateSettings():

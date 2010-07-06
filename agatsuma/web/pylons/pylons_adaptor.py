@@ -19,7 +19,7 @@ from routes import Mapper
 
 from mako.lookup import TemplateLookup
 
-from agatsuma import Implementations
+from agatsuma import Implementations, log
 from agatsuma.web.pylons.interfaces import MiddlewareSpell, HandlingSpell
 
 class PylonsAdaptor(object):
@@ -29,6 +29,7 @@ class PylonsAdaptor(object):
     def __init__(self, **kwargs):
         """
         """
+        log.pcore.debug("Initializing Pylons...")
         pylonsRoot = kwargs['pylons_root']
         global_conf = kwargs['global_conf']
         app_conf = kwargs['app_conf']
@@ -44,6 +45,7 @@ class PylonsAdaptor(object):
 
     def _makeApp(self, config, full_stack=True, static_files=True):
         # The Pylons WSGI app
+        log.pcore.debug("Initializing middleware...")
         app = PylonsApp(config=config)
         # Routing/Session Middleware
         app = RoutesMiddleware(app, config['routes.map'], singleton=False)
@@ -77,11 +79,13 @@ class PylonsAdaptor(object):
         return app
 
     def _loadEnvironment(self, pylonsRoot, global_conf, app_conf, GlobalsClass, helpers):
+        log.pcore.debug("Loading environment...")
         """Configure the Pylons environment via the ``pylons.config``
         object
         """
-        print global_conf
-        print app_conf
+        log.pcore.debug("global_conf for Pylons: %s" % str(global_conf))
+        log.pcore.debug("app_conf for Pylons: %s" % str(app_conf))
+
         config = PylonsConfig()
 
         # Pylons paths
@@ -120,6 +124,7 @@ class PylonsAdaptor(object):
         return config
 
     def _makeMap(self, config):
+        log.pcore.debug("Setting up routes...")
         """Create, configure and return the routes Mapper"""
         map = Mapper(directory=config['pylons.paths']['controllers'],
                      always_scan=config['debug'])
