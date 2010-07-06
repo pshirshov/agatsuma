@@ -1,0 +1,72 @@
+{
+"core" :
+    {
+        "recovery" : false,
+        "debug": true,
+        "debug_level" : 1,
+        "settings_storage_uri" : "mongo+mongotable://agatsuma_data/settings"
+    },
+"logging" :
+    {
+        "root_level" : "debug",
+        "default_level" : "debug",
+        "levels" : 
+        {
+            "storage" : "debug"
+        }
+    },
+"mpcore" : 
+    {
+        "workers" : -1,
+        "settings_update_timeout" : 15,
+        "pidfile" : "pidfile~"
+    },
+"tornado" :
+    {
+        "port": 8888,
+        "xheaders" : false,
+        "message_pump_timeout" : 50,
+        "logger_pump_timeout" : 500,
+        "cookie_secret" : "NYANYANYANYANYA",
+        "app_parameters" :
+            {
+                "template_path" : "demo-tornado/templates"
+            },
+        "ssl_parameters" :
+            {
+            }
+    },
+"sessions" : {
+        "storage_uri" : "mongo+mongotable://agatsuma_data/sessions",
+        "expiration_interval" : 20
+    },
+"sqla" :
+    {
+        "uri" : "postgresql+psycopg2://agatsuma:agatsuma@dbhost:5432/agatsuma",
+        "parameters" : 
+            {
+                "encoding" : "utf-8",
+                "echo" : false
+            }
+    },
+"mongo" :
+    {
+        "uri" : "mongodb://dbhost:27017",
+        "db_collections" : ["agatsuma_data"]
+    },
+"memcached" :
+    {
+        "uri" : "memcached://memcachehost:11211",
+        "behaviors" :
+            {
+              "tcp_nodelay": true,
+              "no block": true,
+              "ketama": true
+            }
+    },
+"test" :
+    {
+        "test" : "dummy2",
+        "rotest" : "dummy"
+    }
+}

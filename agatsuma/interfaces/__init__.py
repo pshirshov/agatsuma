@@ -13,6 +13,9 @@ Base core interfaces
    :members:
    :inherited-members:
 
+.. autoclass:: agatsuma.interfaces.SetupSpell
+   :members:
+   :inherited-members:
 
 .. autoclass:: agatsuma.interfaces.FilteringSpell
    :members:
@@ -51,7 +54,7 @@ Base services' interfaces
 Web-related spells
 ==================
 
-.. autoclass:: agatsuma.interfaces.SessionHandler
+.. autoclass:: agatsuma.web.tornado.interfaces.SessionHandler
    :members:
    :inherited-members:
 
@@ -71,12 +74,10 @@ from settings_backend_spell import SettingsBackendSpell
 from settings_backend import SettingsBackend
 from pool_event_spell import PoolEventSpell
 from storage_spell import StorageSpell
-
-# web-related
-from session_handler import SessionHandler
-from session import Session # for internal usage
+from setup_spell import SetupSpell
 
 __all__ = ["AbstractSpell",
+           "SetupSpell",
            "FilteringSpell",
 
            "PoolEventSpell",
@@ -84,8 +85,5 @@ __all__ = ["AbstractSpell",
            "ModelSpell",
            "SettingsBackendSpell",
            "SettingsBackend",
-           "StorageSpell"
-
-           "Session", 
-           "SessionHandler",
+           "StorageSpell",
           ]

@@ -74,7 +74,6 @@ in core subclass and don't spawn unwanted thread.
                              initializer = _workerInitializer,
                              initargs = (Settings.mpcore.settings_update_timeout, ))
         else:
-            self.pool = None
             log.mpcore.info("Pool initiation skipped due negative workers count")
 
         log.mpcore.info("Calling post-pool-init routines...")

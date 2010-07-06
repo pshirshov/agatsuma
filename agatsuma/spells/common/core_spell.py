@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from agatsuma.interfaces import AbstractSpell
+from agatsuma.interfaces import AbstractSpell, SetupSpell
 
-class CoreSpell(AbstractSpell):
+class CoreSpell(AbstractSpell, SetupSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Core Spell',
                   'deps' : (),

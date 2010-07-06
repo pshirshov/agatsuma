@@ -27,11 +27,22 @@ class Enumerator(object):
 
     def enumerateSpells(self, essentialSpellSpaces, additionalSpellPaths):
         spellsDirs = []
+        spellsDirs.extend(additionalSpellPaths)
+
         if self.appDirs:
             spellsDirs.extend(self.appDirs)
             if not self.core.appName:
+                log.core.warning("Application name not provided, so trying to guess one...")
                 self.core.appName = self.appDirs[0][0].capitalize() + self.appDirs[0][1:]
-        spellsDirs.extend(additionalSpellPaths)
+                log.core.info('Guessed name: %s' % self.core.appName)
+        else:
+            log.core.critical("No main spellpaths to process provided")
+            if self.core.internalState.get('mode') == 'setup':
+                log.core.info("Setup mode detected, so replacing all the spellpaths with Agatsuma itself...")
+                spellsDirs = [(os.path.join(self.core.agatsumaBaseDir, 'agatsuma'), 'agatsuma')]
+        log.core.debug("Spellpaths to process:")
+        for p in spellsDirs:
+            log.core.debug("* %s" % str(p))
 
         log.core.debug("System paths:")
         for p in sys.path:

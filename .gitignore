@@ -1,8 +1,9 @@
 *.pyc
 *~
-agatsuma/version.py
-.metadata/
-settings.json
+.metadata/*
 .ropeproject/*
 build/*
+dist/*
+agatsuma/version.py
 agatsuma/doc/build/*
+

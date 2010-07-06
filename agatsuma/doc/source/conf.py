@@ -22,7 +22,7 @@ print "Agatsuma's root:", libRoot
 sys.path.append(libRoot)
 
 from agatsuma.core import Core
-#import agatsuma.framework.tornado.interfaces
+#import agatsuma.web.tornado.interfaces
 core = Core(None, None, appMode = 'doc')
 
 # If extensions (or modules to document with autodoc) are in another directory,
