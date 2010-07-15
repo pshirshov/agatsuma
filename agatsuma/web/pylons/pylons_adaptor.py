@@ -19,6 +19,7 @@ from routes import Mapper
 
 from mako.lookup import TemplateLookup
 
+from agatsuma.core import Core
 from agatsuma import Implementations, log
 from agatsuma.web.pylons.interfaces import MiddlewareSpell, HandlingSpell
 
@@ -29,7 +30,7 @@ class PylonsAdaptor(object):
     def __init__(self, **kwargs):
         """
         """
-        if kwargs.get("internalState").get("mode", None) == "normal":
+        if Core.internalState.get("mode", None) == "normal":
             log.pcore.debug("Initializing Pylons...")
             pylonsRoot = kwargs['pylons_root']
             global_conf = kwargs['global_conf']

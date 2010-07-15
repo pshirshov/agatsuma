@@ -15,6 +15,5 @@ class PylonsCore(Core, PylonsAdaptor):
         kwargs['spellsDirs'] = spellsDirs
 
         Core.__init__(self, appDir, appConfig, **kwargs)
-        kwargs["internalState"] = Core.internalState
         PylonsAdaptor.__init__(self, **kwargs)
 

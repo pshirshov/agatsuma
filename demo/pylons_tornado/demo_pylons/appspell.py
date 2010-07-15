@@ -15,7 +15,7 @@ class DemoAppSpell(AbstractSpell, SetupSpell, HandlingSpell):
         core.registerOption("!pylons.glob", dict, "dev.ini equivalent")
         core.registerOption("!pylons.full_stack", bool, "pylons parameter")
         core.registerOption("!pylons.static_files", bool, "pylons parameter")
-        
+
     def requirements(self):
         return {}
               #{"agatsuma" : ["agatsuma>=0.1"], }
