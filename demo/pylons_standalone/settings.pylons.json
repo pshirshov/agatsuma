@@ -14,28 +14,10 @@
         {
             "storage" : "debug"
         },
-        "named_levels" : {}
-    },
-"mpcore" : 
-    {
-        "workers" : 1,
-        "settings_update_timeout" : 15,
-        "pidfile" : "pidfile~"
-    },
-"tornado" :
-    {
-        "port": 8888,
-        "xheaders" : false,
-        "message_pump_timeout" : 50,
-        "logger_pump_timeout" : 500,
-        "cookie_secret" : "NYANYANYANYANYA",
-        "app_parameters" :
-            {
-                "template_path" : "demo-tornado/templates"
-            },
-        "ssl_parameters" :
-            {
-            }
+        "named_levels" :
+        {
+            "routes" : "debug"
+        }
     },
 "sessions" : {
         "storage_uri" : "mongo+mongotable://agatsuma_data/sessions",

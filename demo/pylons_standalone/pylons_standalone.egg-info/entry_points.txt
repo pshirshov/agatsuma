@@ -1,0 +1,4 @@
+[paste.app_factory]
+main = pylons_demo:make_app
+[paste.app_install]
+main = pylons.util:PylonsInstaller

@@ -33,7 +33,11 @@ class Enumerator(object):
             spellsDirs.extend(self.appDirs)
             if not self.core.appName:
                 log.core.warning("Application name not provided, so trying to guess one...")
-                self.core.appName = self.appDirs[0][0].capitalize() + self.appDirs[0][1:]
+                print self.appDirs
+                if type(self.appDirs[0]) == str:
+                    self.core.appName = self.appDirs[0][0].capitalize() + self.appDirs[0][1:]
+                else:
+                    self.core.appName = self.appDirs[0][1][0].capitalize() + self.appDirs[0][1][1:]
                 log.core.info('Guessed name: %s' % self.core.appName)
         else:
             log.core.critical("No main spellpaths to process provided")

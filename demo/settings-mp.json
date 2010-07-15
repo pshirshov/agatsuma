@@ -19,7 +19,8 @@
         "levels" : 
         {
             "storage" : "debug"
-        }
+        },
+        "named_levels" : {}
     },
 "mongo" :
     {

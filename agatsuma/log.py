@@ -62,6 +62,11 @@ class log(object):
                            (loggerName, level))
             logger.setLevel(level)
 
+        namedLevels = Settings.logging.named_levels
+        for loggerName, level in namedLevels.items():
+            namedLog = logging.getLogger(loggerName)
+            namedLog.setLevel(log.__strToLevel(level))
+
         # TODO: maybe move it into config?
         if Settings.core.debug:
             if Settings.core.debug_level > 1:

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 import Queue
 import multiprocessing
 from multiprocessing import Queue as MPQueue
@@ -43,7 +42,7 @@ class TornadoCore(MPCore):
             try:
                 message = log.instance.logQueue.get_nowait()
                 log.rootHandler.realHandler.emit(message)
-            except Queue.Empty, e:
+            except Queue.Empty:
                 log.instance.rootHandler.realHandler.emit("log: raised Queue.Empty")
 
     def __updateLogger(self):

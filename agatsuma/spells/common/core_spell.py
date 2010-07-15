@@ -13,7 +13,8 @@ class CoreSpell(AbstractSpell, SetupSpell):
     def preConfigure(self, core):
         core.registerOption("!core.debug", bool, "Debug mode")
         core.registerOption("!core.debug_level", int, "Debug level. Possible values: 0, 1 (debug message pump), 2 (debug threads)")
-        core.registerOption("!logging.levels", dict, "Logging levels for named loggers")
+        core.registerOption("!logging.levels", dict, "Logging levels for loggers instantiated by Agatsuma")
+        core.registerOption("!logging.named_levels", dict, "Logging levels for named loggers")
         core.registerOption("!logging.root_level", unicode, "Logging level for root handler")
         core.registerOption("!logging.default_level", unicode, "Default logging level")
 

@@ -1,4 +1,20 @@
 {
+"pylons" :
+{
+"app" : {"beaker.session.key": "helloworld",
+         "cache_dir": "./data",
+         "beaker.session.secret": "somesecret"
+        },
+"glob" : {
+        "debug": "false", 
+        "error_email_from": "paste@localhost", 
+        "__file__": "./development.ini",
+        "here": "./", 
+        "smtp_server": "localhost"
+       },
+"full_stack" : true,
+"static_files" : true
+},
 "core" :
     {
         "recovery" : false,
@@ -13,7 +29,8 @@
         "levels" : 
         {
             "storage" : "debug"
-        }
+        },
+        "named_levels" : {}
     },
 "mpcore" : 
     {
@@ -63,10 +80,5 @@
               "no block": true,
               "ketama": true
             }
-    },
-"test" :
-    {
-        "test" : "dummy2",
-        "rotest" : "dummy"
     }
 }

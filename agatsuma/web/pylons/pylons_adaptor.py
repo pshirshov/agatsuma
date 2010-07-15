@@ -29,19 +29,23 @@ class PylonsAdaptor(object):
     def __init__(self, **kwargs):
         """
         """
-        log.pcore.debug("Initializing Pylons...")
-        pylonsRoot = kwargs['pylons_root']
-        global_conf = kwargs['global_conf']
-        app_conf = kwargs['app_conf']
-        #appName = kwargs['appName']
-        helpers = kwargs['helpers']
-        GlobalsClass = kwargs['globals_class']
-        config = self._loadEnvironment(pylonsRoot,
-                                       global_conf, app_conf,
-                                       GlobalsClass, helpers)
-        full_stack = kwargs['full_stack']
-        static_files = kwargs['static_files']
-        self.app = self._makeApp(config, full_stack, static_files)
+        if kwargs.get("internalState").get("mode", None) == "normal":
+            log.pcore.debug("Initializing Pylons...")
+            pylonsRoot = kwargs['pylons_root']
+            global_conf = kwargs['global_conf']
+            app_conf = kwargs['app_conf']
+            #appName = kwargs['appName']
+            helpers = kwargs['helpers']
+            GlobalsClass = kwargs['globals_class']
+            config = self._loadEnvironment(pylonsRoot,
+                                           global_conf, app_conf,
+                                           GlobalsClass, helpers)
+            full_stack = kwargs['full_stack']
+            static_files = kwargs['static_files']
+            self.app = self._makeApp(config, full_stack, static_files)
+        else:
+            log.core.warning("Setup mode. Pylons initialization skipped")
+            self.app = None
 
     def _makeApp(self, config, full_stack=True, static_files=True):
         # The Pylons WSGI app
@@ -138,7 +142,9 @@ class PylonsAdaptor(object):
         map.connect('/error/{action}/{id}', controller='error')
 
         # CUSTOM ROUTES HERE
+        print HandlingSpell
         spells = Implementations(HandlingSpell)
+        print ">>>", spells
         for spell in spells:
             spell.initRoutes(map)
         for spell in spells:

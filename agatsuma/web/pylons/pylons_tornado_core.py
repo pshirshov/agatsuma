@@ -20,5 +20,8 @@ class PylonsTornadoCore(TornadoWSGICore, PylonsAdaptor):
         kwargs['spellsDirs'] = spellsDirs
 
         TornadoWSGICore.__init__(self, appDir, appConfig, **kwargs)
+
+    def setupPylons(self, **kwargs):
+        kwargs["internalState"] = TornadoWSGICore.internalState
         PylonsAdaptor.__init__(self, **kwargs)
         self.setWSGI(self.app)
