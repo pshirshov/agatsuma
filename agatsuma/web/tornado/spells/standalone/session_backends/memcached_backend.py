@@ -12,7 +12,7 @@ from agatsuma import log
 #from agatsuma.settings import Settings
 #from agatsuma import Core
 from agatsuma import Spell
-from agatsuma.interfaces import AbstractSpell
+from agatsuma.interfaces import AbstractSpell, InternalSpell
 from agatsuma.web.tornado.interfaces import SessionBackendSpell
 from agatsuma.web.tornado import BaseSessionManager
 
@@ -69,7 +69,7 @@ class MemcachedSessionManager(BaseSessionManager):
                                    pickle.dumps(data), time=expTime):
             log.sessions.critical("Saving %s session failed" % sessionId)
 
-class MemcachedSessionSpell(AbstractSpell, SessionBackendSpell):
+class MemcachedSessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
     def __init__(self):
         config = {'info' : 'Memcached session storage',
                   'deps' : ('agatsuma_memcached', ),

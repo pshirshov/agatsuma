@@ -14,7 +14,8 @@
         {
             "storage" : "debug"
         },
-        "named_levels" : {}
+        "named_levels" : {},
+        "formatters" : {}
     },
 "mongo" :
     {

@@ -3,10 +3,10 @@
 from agatsuma import log
 from agatsuma import Implementations
 
-from agatsuma.interfaces import AbstractSpell
+from agatsuma.interfaces import AbstractSpell, InternalSpell
 from agatsuma.interfaces import FilteringSpell
 
-class TextFiltersSpell(AbstractSpell):
+class TextFiltersSpell(AbstractSpell, InternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Text Filtering Core Spell',
                   'deps' : ("agatsuma_core", )

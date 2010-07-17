@@ -7,7 +7,7 @@ import re
 #import traceback
 
 from agatsuma.log import log
-from agatsuma.interfaces import AbstractSpell
+from agatsuma.interfaces import AbstractSpell, InternalSpell
 
 class Enumerator(object):
     def __init__(self, core, appDirs, prohibitedSpells):
@@ -146,8 +146,12 @@ class Enumerator(object):
             spells[newId] = falseSpell
             falseSpells.append(falseSpell)
 
-        log.core.info("IMPORT STAGE COMPLETED. Imported %d spells:" % len(spells))
-        self.printSpellsList(spells.values())
+        spellsList = spells.values()
+        internalSpells = filter(lambda spell: issubclass(type(spell), InternalSpell), spellsList)
+        log.core.info("IMPORT STAGE COMPLETED. Imported %d spells (%d provided by Agatsuma, %d fake spells for groups):"
+                      % (len(spells), len(internalSpells), len(falseSpells)))
+        self.printSpellsList(spellsList)
+
         log.core.info('RESOLVING DEPENDENCIES...')
         needCheck = True
         while needCheck:

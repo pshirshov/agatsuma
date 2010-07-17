@@ -9,6 +9,7 @@ class log(object):
     loggersNeedUpdate = {}
 
     def initiateLoggers(self):
+        #formatter = logging.Formatter("[%(asctime)s %(process)d:%(thread)d:%(name)s:%(levelname)s] %(message)s")
         formatter = logging.Formatter("[%(asctime)s %(name)s:%(levelname)s] %(message)s")
         log.rootHandler = logging.StreamHandler()
         log.rootHandler.setLevel(logging.DEBUG) # TODO:
@@ -52,15 +53,21 @@ class log(object):
         log.rootHandler.setLevel(rootLevel)
 
         levels = Settings.logging.levels
+        #formatters = Settings.logging.formatters
         for loggerName, logger in log.loggers.items():
             level = levels.get(loggerName, None)
             if level:
                 level = log.__strToLevel(level)
             else:
                 level = defaultLevel
-            log.core.debug("Setting logging level for logger '%s' to %d" %
+            log.core.debug("Setting level for logger '%s' to %d" %
                            (loggerName, level))
             logger.setLevel(level)
+            #formatter = formatters.get(loggerName, None)
+            #print dir(logger)
+            #if formatter:
+            #    log.core.debug("Setting formatter for logger '%s' to %s" %
+            #               (loggerName, formatter))
 
         namedLevels = Settings.logging.named_levels
         for loggerName, level in namedLevels.items():

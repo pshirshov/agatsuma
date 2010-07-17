@@ -2,11 +2,11 @@
 
 from agatsuma.log import log
 
-from agatsuma.interfaces import AbstractSpell, SetupSpell
+from agatsuma.interfaces import AbstractSpell, InternalSpell, SetupSpell
 from agatsuma.web.tornado.interfaces import HandlingSpell
 from agatsuma.web.tornado import Url
 
-class TornadoSpell(AbstractSpell, SetupSpell):
+class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Tornado Spell',
                   'deps' : (),

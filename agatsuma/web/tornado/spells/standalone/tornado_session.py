@@ -5,11 +5,10 @@ import re
 from agatsuma import Spell
 from agatsuma import Settings
 from agatsuma import log
-from agatsuma.interfaces import AbstractSpell
-from agatsuma.web.tornado.interfaces import RequestSpell
-from agatsuma.interfaces import SessionHandler
+from agatsuma.interfaces import AbstractSpell, InternalSpell
+from agatsuma.web.tornado.interfaces import RequestSpell, SessionHandler
 
-class SessionSpell(AbstractSpell, RequestSpell):
+class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Session Spell',
                   'deps' : ('agatsuma_tornado', ),

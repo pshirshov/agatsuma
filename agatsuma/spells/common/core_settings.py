@@ -6,9 +6,9 @@ import copy
 from agatsuma import log
 from agatsuma import Settings
 from agatsuma import Spell
-from agatsuma.interfaces.abstract_spell import AbstractSpell
+from agatsuma.interfaces import AbstractSpell, InternalSpell
 
-class SettingsSpell(AbstractSpell):
+class SettingsSpell(AbstractSpell, InternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Settings Spell',
                   'deps' : (),

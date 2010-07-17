@@ -2,9 +2,9 @@
 
 from agatsuma.log import log
 
-from agatsuma.interfaces import AbstractSpell, SetupSpell
+from agatsuma.interfaces import AbstractSpell, InternalSpell, SetupSpell
 
-class PylonsSpell(AbstractSpell, SetupSpell):
+class PylonsSpell(AbstractSpell, InternalSpell, SetupSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Pylons Spell',
                   'deps' : (),

@@ -9,6 +9,7 @@ except ImportError:
 from agatsuma import log
 from agatsuma import Spell
 from agatsuma.interfaces import (AbstractSpell,
+                                 InternalSpell,
                                  SettingsBackendSpell,
                                  SettingsBackend)
 
@@ -52,7 +53,7 @@ class MemcachedSettingsBackend(SettingsBackend):
                                    pickle.dumps(value)):
             log.settings.critical("Saving setting '%s' failed" % name)
 
-class MemcachedSettingsSpell(AbstractSpell, SettingsBackendSpell):
+class MemcachedSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell):
     def __init__(self):
         config = {'info' : 'Memcached settings storage',
                   'deps' : ('agatsuma_memcached', ),

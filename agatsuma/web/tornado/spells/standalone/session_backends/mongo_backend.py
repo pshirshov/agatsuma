@@ -7,7 +7,7 @@ import datetime
 import pymongo
 
 from agatsuma import log, Spell
-from agatsuma.interfaces import AbstractSpell
+from agatsuma.interfaces import AbstractSpell, InternalSpell
 from agatsuma.web.tornado.interfaces import SessionBackendSpell
 from agatsuma.web.tornado import BaseSessionManager
 
@@ -84,7 +84,7 @@ class MongoSessionManager(BaseSessionManager):
         except pymongo.errors.AutoReconnect:
             log.sessions.critical("Mongo exception during saving %s with data %s" % (session_id, str(data)))
 
-class MongoSessionSpell(AbstractSpell, SessionBackendSpell):
+class MongoSessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
     def __init__(self):
         config = {'info' : 'MongoDB session storage',
                   'deps' : ('agatsuma_mongodb', ),

@@ -9,7 +9,7 @@ class MPLogHandler(logging.Handler):
     def setFormatter(self, fmt):
         logging.Handler.setFormatter(self, fmt)
         self.realHandler.setFormatter(fmt)
-        
+
     def _format_record(self, record):
         ei = record.exc_info
         if ei:

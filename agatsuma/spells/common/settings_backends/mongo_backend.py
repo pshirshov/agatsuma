@@ -6,7 +6,8 @@ import pymongo
 
 from agatsuma import log
 from agatsuma import Spell
-from agatsuma.interfaces import AbstractSpell, SettingsBackendSpell, SettingsBackend
+from agatsuma.interfaces import AbstractSpell, InternalSpell
+from agatsuma.interfaces import SettingsBackendSpell, SettingsBackend
 
 class MongoSettingsBackend(SettingsBackend):
     def __init__(self, uri):
@@ -52,7 +53,7 @@ class MongoSettingsBackend(SettingsBackend):
         except pymongo.errors.AutoReconnect:
             log.settings.critical("Mongo exception during saving %s=%s" % (name, str(value)))
 
-class MongoSettingsSpell(AbstractSpell, SettingsBackendSpell):
+class MongoSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell):
     def __init__(self):
         config = {'info' : 'MongoDB settings storage',
                   'deps' : ('agatsuma_mongodb', ),

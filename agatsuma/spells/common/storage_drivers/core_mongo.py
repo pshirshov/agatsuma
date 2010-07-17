@@ -6,9 +6,10 @@ import re
 
 from agatsuma.log import log
 from agatsuma.settings import Settings
-from agatsuma.interfaces import AbstractSpell, StorageSpell, SetupSpell
+from agatsuma.interfaces import AbstractSpell, InternalSpell
+from agatsuma.interfaces import StorageSpell, SetupSpell
 
-class MongoDBSpell(AbstractSpell, StorageSpell, SetupSpell):
+class MongoDBSpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
     def __init__(self):
         config = {'info' : 'MongoDB support',
                   'deps' : (),

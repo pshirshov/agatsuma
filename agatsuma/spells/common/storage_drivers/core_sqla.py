@@ -14,9 +14,10 @@ from agatsuma import log
 from agatsuma import Settings
 from agatsuma import Implementations
 
-from agatsuma.interfaces import AbstractSpell, StorageSpell, ModelSpell, SetupSpell
+from agatsuma.interfaces import AbstractSpell, InternalSpell
+from agatsuma.interfaces import StorageSpell, ModelSpell, SetupSpell
 
-class SQLASpell(AbstractSpell, StorageSpell, SetupSpell):
+class SQLASpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
     """.. _sqla-driver:
 
     """

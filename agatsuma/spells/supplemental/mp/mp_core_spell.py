@@ -3,9 +3,9 @@
 from agatsuma import Settings, log
 from agatsuma.core import MPCore
 
-from agatsuma.interfaces import AbstractSpell
+from agatsuma.interfaces import AbstractSpell, InternalSpell
 
-class MPCoreSpell(AbstractSpell):
+class MPCoreSpell(AbstractSpell, InternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Multiprocessing Core Spell',
                   'deps' : (),

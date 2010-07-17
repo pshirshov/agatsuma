@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from agatsuma.log import log
+#from agatsuma.log import log
 
-from agatsuma.interfaces import AbstractSpell
+from agatsuma.interfaces import AbstractSpell, InternalSpell
 
-class PylonsWSGISpell(AbstractSpell):
+class PylonsWSGISpell(AbstractSpell, InternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Pylons/Tornado Spell',
                   'deps' : ('agatsuma_tornado', ),
@@ -14,8 +14,4 @@ class PylonsWSGISpell(AbstractSpell):
 
     def preConfigure(self, core):
         pass
-        #TODO: options
-        #log.newLogger("tcore")
-        #core.registerOption("!tornado.cookie_secret", unicode, "cookie secret")
-        #core.registerOption("!tornado.message_pump_timeout", int, "Message pushing interval (msec)")
-        #core.registerOption("!tornado.app_parameters", dict, "Kwarg parameters for tornado application")
+        #TODO: options? This problem belongs to application for now

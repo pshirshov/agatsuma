@@ -75,8 +75,10 @@ from settings_backend import SettingsBackend
 from pool_event_spell import PoolEventSpell
 from storage_spell import StorageSpell
 from setup_spell import SetupSpell
+from internal_spell import InternalSpell
 
 __all__ = ["AbstractSpell",
+           "InternalSpell",
            "SetupSpell",
            "FilteringSpell",
 
