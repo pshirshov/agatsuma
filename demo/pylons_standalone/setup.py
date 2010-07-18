@@ -7,19 +7,24 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) # only for demo app
 sys.path.append('../../')
 
-from agatsuma.setup_helpers import getEntryPoints, depinfo, runSetuptools
+from agatsuma.setup_helpers import (getEntryPoints,
+                                    runSetuptools,
+                                    getDeps,
+                                    groupsPredicate,
+                                    out,
+                                    nl,
+                                    )
 
-#core = Core([("./../demo-pylons", "demo-pylons")], None, appMode = 'setup', appName = 'helloworld')
 from pylons_demo import make_core
-
 make_core({}, appMode = 'setup', appName = "demo")
+
 entryPoints = getEntryPoints()
-dependencies = depinfo(lambda x: True)[0]
+dependencies = getDeps(groupsPredicate(sys.argv))
 
+nl()
+out("Continuing with Distribute...")
+nl()
 from setuptools import find_packages
-
-print "dependencies:", dependencies
-print "entry points:", entryPoints
 
 runSetuptools(
     name='pylons_standalone',
@@ -40,11 +45,3 @@ runSetuptools(
 
     entry_points=entryPoints,
  )
-"""
-    [paste.app_factory]
-    main = helloworld.config.middleware:make_app
-
-    [paste.app_install]
-    main = pylons.util:PylonsInstaller
-"""
-
