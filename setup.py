@@ -27,18 +27,15 @@ def main():
     nl()
     from setuptools import find_packages
     runSetuptools(
-        name = "Agatsuma",
-        version = Core.versionString,
-        packages = find_packages(exclude=['distribute_setup']),
         install_requires = dependencies,
         entry_points = entryPoints,
+        version = Core.versionString,
 
+        packages = find_packages(exclude=['distribute_setup']),
         zip_safe=False,
         include_package_data = True,
-
-        #scripts = ['say_hello.py'],
-
         #test_suite = 'nose.collector',
+        #scripts = ['say_hello.py'],
         package_data = {
             # If any package contains *.txt or *.rst files, include them:
             '': ['*.txt', '*.rst'],
@@ -47,6 +44,7 @@ def main():
         },
 
         # metadata for upload to PyPI
+        name = "Agatsuma",
         author = "Fei Wong Reed",
         author_email = "feiwreed@gmail.com",
         description = "Flexible modular metaframework, mostly intended for web but not only",
@@ -54,7 +52,6 @@ def main():
         keywords = "agatsuma modularity web framework dynamic imports tornado pylons",
         url = "http://agatsuma.ritsuka.org/",
     )
-################################################################################
 
 if __name__ == '__main__':
     main()

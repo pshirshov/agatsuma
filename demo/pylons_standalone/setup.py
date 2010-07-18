@@ -27,12 +27,9 @@ nl()
 from setuptools import find_packages
 
 runSetuptools(
-    name='pylons_standalone',
-    version='0.1',
-    description='agatsuma demo app for pylons under paster',
-    author='fei wong reed',
-    author_email='',
-    url='',
+    install_requires=dependencies,
+    entry_points=entryPoints,
+
     packages=find_packages(exclude=['distribute_setup']),
     include_package_data=True,
     test_suite='nose.collector',
@@ -41,7 +38,11 @@ runSetuptools(
     paster_plugins=['PasteScript', 'Pylons'],
     setup_requires=["PasteScript>=1.6.3"],
 
-    install_requires=dependencies,
-
-    entry_points=entryPoints,
+    # pypi metadata
+    name='pylons_standalone',
+    version='0.1',
+    description='agatsuma demo app for pylons under paster',
+    author='fei wong reed',
+    author_email='',
+    url='',
  )
