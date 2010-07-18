@@ -45,8 +45,6 @@ else:
 
 # TODO: cache services
 
-# TODO: type conversion for settings (unicode->str), convert read-only lists to tuples
-# TODO: list of session backends instead of one
 # TODO: update options via HTTP from master server (or propagate to set of slaves, or re-read from storage)
 
 # ========================== Far far in future =================================
@@ -55,6 +53,6 @@ else:
 # TODO: tornado: another template engine (?)
 # TODO: tornado: forking support (when new Tornado will be released)
 
+# TODO: type conversion for settings (unicode->str), convert read-only lists to tuples
 # TODO: py3k (when dependencies will be ported)
-
 # TODO: debug MW problems in pylons: the only solution is setting debug to false when running pylons under tornado...

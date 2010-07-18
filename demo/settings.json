@@ -38,7 +38,7 @@
             }
     },
 "sessions" : {
-        "storage_uri" : "mongo+mongotable://agatsuma_data/sessions",
+        "storage_uris" : ["mongo+mongotable://agatsuma_data/sessions"],
         "expiration_interval" : 20
     },
 "sqla" :

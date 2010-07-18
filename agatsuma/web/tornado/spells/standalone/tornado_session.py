@@ -18,24 +18,34 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
 
     def preConfigure(self, core):
         log.newLogger("sessions")
-        core.registerOption("!sessions.storage_uri", unicode, "Storage URI")
+        core.registerOption("!sessions.storage_uris", list, "Storage URIs")
         core.registerOption("!sessions.expiration_interval", int, "Default session length in seconds")
 
     def postConfigure(self, core):
         log.sessions.info("Initializing Session Storage..")
         rex = re.compile(r"^(\w+)\+(.*)$")
-        match = rex.match(Settings.sessions.storage_uri)
-        if match:
-            managerId = match.group(1)
-            uri = match.group(2)
-            spellName = "tornado_session_backend_%s" % managerId
-            spell = Spell(spellName)
-            if spell:
-                self.sessman = spell.instantiateBackend(uri)
+        self.sessmans = []
+        for uri in Settings.sessions.storage_uris:
+            match = rex.match(uri)
+            if match:
+                managerId = match.group(1)
+                uri = match.group(2)
+                spellName = "tornado_session_backend_%s" % managerId
+                spell = Spell(spellName)
+                if spell:
+                    self.sessmans.append(spell.instantiateBackend(uri))
+                else:
+                    raise Exception("Session backend improperly configured, spell '%s' not found" % spellName)
             else:
-                raise Exception("Session backend improperly configured, spell '%s' not found" % spellName)
-        else:
-            raise Exception("Incorrect session storage URI")
+                raise Exception("Incorrect session storage URI")
+
+    def saveSession(self, session):
+        for sessman in self.sessmans:
+            sessman.save(session)
+
+    def deleteSession(self, session):
+        for sessman in self.sessmans:
+            sessman.delete(session)
 
     def beforeRequestCallback(self, handler):
         if isinstance(handler, SessionHandler):
@@ -43,22 +53,25 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
             log.sessions.debug("Loading session for %s" % cookie)
             session = None
             if cookie:
-                session = self.sessman.load(cookie)
-                if session:
-                    session.handler = handler
-                    # Update timestamp if left time < than elapsed time
-                    timestamp = session["timestamp"]
-                    now = datetime.datetime.now()
-                    elapsed = now - timestamp
-                    left = (self.sessman._sessionDoomsday(timestamp)- now)
-                    if elapsed >= left:
-                        log.sessions.debug("Updating timestamp for session %s (E: %s, L: %s)" % (cookie, str(elapsed), str(left)))
-                        self.sessman.save(session)
+                for sessman in self.sessmans:
+                    session = sessman.load(cookie)
+                    if session:
+                        session.handler = handler
+                        # Update timestamp if left time < than elapsed time
+                        timestamp = session["timestamp"]
+                        now = datetime.datetime.now()
+                        elapsed = now - timestamp
+                        left = (sessman._sessionDoomsday(timestamp)- now)
+                        if elapsed >= left:
+                            log.sessions.debug("Updating timestamp for session %s (E: %s, L: %s)" %
+                                               (cookie, str(elapsed), str(left)))
+                            self.saveSession(session)
+                        break
             if not session:
-                session = self.sessman.new(handler.request.remote_ip,
+                session = self.sessmans[0].new(handler.request.remote_ip,
                                            handler.request.headers["User-Agent"])
                 session.handler = handler
-                self.sessman.save(session)
+                self.saveSession(session)
             handler.session = session
-            session.sessman = self.sessman
+            session.sessSpell = self
 
