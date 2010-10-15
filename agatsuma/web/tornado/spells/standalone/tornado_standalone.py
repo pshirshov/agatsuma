@@ -3,10 +3,11 @@
 from agatsuma.log import log
 
 from agatsuma.interfaces import AbstractSpell, InternalSpell, SetupSpell
+from agatsuma.interfaces import PoolEventSpell
 from agatsuma.web.tornado.interfaces import HandlingSpell
 from agatsuma.web.tornado import Url
 
-class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell):
+class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Tornado Spell',
                   'deps' : (),
@@ -48,6 +49,16 @@ class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell):
                 log.tcore.debug("* %s" % str(p))
         else:
             raise Exception("Handling spells not found!")
+
+    def prePoolInit(self, core):
+        # Check if message pump is required for some of controllers
+        core.messagePumpNeeded = False
+        from agatsuma.web.tornado import MsgPumpHandler
+        for uri, handler in core.URIMap:
+            if issubclass(handler, MsgPumpHandler):
+                core.messagePumpNeeded = True
+                core.waitingCallbacks = []
+                break
 
     def requirements(self):
         return {"tornado" : ["tornado>=0.2"],

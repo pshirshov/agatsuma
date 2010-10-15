@@ -19,8 +19,8 @@ Agatsuma Multiprocessing Core
 """
 
 from base_core import Core
-from mp_core import MPCore
+from mp_core import MultiprocessingCoreExtension
 
 __all__ = ["Core",
-           "MPCore",
+           "MultiprocessingCoreExtension",
            ]

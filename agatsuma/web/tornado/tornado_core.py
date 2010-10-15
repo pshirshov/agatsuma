@@ -4,8 +4,9 @@ import multiprocessing
 from multiprocessing import Queue as MPQueue
 from weakref import WeakValueDictionary
 
-from agatsuma.core import MPCore
-if MPCore.internalState.get("mode", None) == "normal":
+from agatsuma.core import Core
+from agatsuma.core import MultiprocessingCoreExtension
+if Core.internalState.get("mode", None) == "normal":
     import tornado.httpserver
     import tornado.ioloop
     import tornado.web
@@ -20,7 +21,18 @@ from agatsuma import Settings
 from agatsuma.errors import EAbstractFunctionCall
 from agatsuma import log, MPLogHandler
 
-class TornadoCore(MPCore):
+class TornadoMPExtension(MultiprocessingCoreExtension):
+    @staticmethod
+    def name():
+        return "tornadomp"
+
+    def _startSettingsUpdater(self):
+        configChecker = tornado.ioloop.PeriodicCallback(MultiprocessingCoreExtension._updateSettings,
+                                                        1000 * Settings.mpcore.settings_update_timeout,
+                                                        io_loop=Core.instance.ioloop)
+        configChecker.start()
+
+class TornadoCore(Core):
     mqueue = None
 
     def __init__(self, appDir, appConfig, **kwargs):
@@ -30,12 +42,15 @@ class TornadoCore(MPCore):
                             ])
         spellsDirs.extend(kwargs.get('spellsDirs', []))
         kwargs['spellsDirs'] = spellsDirs
-        MPCore.__init__(self, appDir, appConfig, **kwargs)
+        extensions = kwargs.get('core_extensions', [])
+        extensions.append(TornadoMPExtension)
+        kwargs['core_extensions'] = extensions
+        Core.__init__(self, appDir, appConfig, **kwargs)
 
     def _stop(self):
         #self.HTTPServer.stop()
         self.ioloop.stop()
-        MPCore._stop(self)
+        Core._stop(self)
 
     def processLog(self):
         while not log.instance.logQueue.empty():
@@ -76,11 +91,13 @@ class TornadoCore(MPCore):
         """
         self.HTTPServer.listen(port)
         pid = multiprocessing.current_process().pid
-        MPCore.rememberPid(pid)
-        MPCore.writePid(pid)
+
+        self.remember_pid(pid)
+        self.write_pid(pid)
+
         log.tcore.debug("Main process' PID: %d" % pid)
 
-        self.startSettingsUpdater()
+        self.start_settings_updater()
 
         self._beforeIOLoopStart()
 
@@ -88,12 +105,6 @@ class TornadoCore(MPCore):
         log.tcore.info("Starting %s/Agatsuma in server mode on port %d..." % (self.appName, port))
         log.tcore.info("=" * 60)
         self.ioloop.start()
-
-    def _startSettingsUpdater(self):
-        configChecker = tornado.ioloop.PeriodicCallback(MPCore._updateSettings,
-                                                        1000 * Settings.mpcore.settings_update_timeout,
-                                                        io_loop=self.ioloop)
-        configChecker.start()
 
     def _beforeIOLoopStart(self):
         raise EAbstractFunctionCall()
@@ -125,6 +136,7 @@ class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
 
     def _beforeIOLoopStart(self):
         if self.messagePumpNeeded and self.pool:
+            TornadoCore.mqueue = MPQueue()
             pumpTimeout = Settings.tornado.message_pump_timeout
             mpump = tornado.ioloop.PeriodicCallback(self._messagePump,
                                                     pumpTimeout,
@@ -133,17 +145,6 @@ class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
             mpump.start()
         else:
             log.tcore.debug("Message pump initiation skipped, it isn't required for any spell")
-
-    def _prePoolInit(self):
-        # Check if message pump is required for some of controllers
-        self.messagePumpNeeded = False
-        from agatsuma.web.tornado import MsgPumpHandler
-        for uri, handler in self.URIMap:
-            if issubclass(handler, MsgPumpHandler):
-                self.messagePumpNeeded = True
-                TornadoCore.mqueue = MPQueue()
-                self.waitingCallbacks = []
-                break
 
     def _messagePump(self):
         """Extracts messages from message queue if any and pass them to

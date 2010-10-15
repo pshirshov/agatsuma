@@ -68,6 +68,8 @@ Other interfaces
 """
 
 from abstract_spell import AbstractSpell
+from abstract_core_extension import AbstractCoreExtension
+
 from model_spell import ModelSpell
 from filtering_spell import FilteringSpell
 from settings_backend_spell import SettingsBackendSpell
@@ -78,6 +80,7 @@ from setup_spell import SetupSpell
 from internal_spell import InternalSpell
 
 __all__ = ["AbstractSpell",
+           "AbstractCoreExtension",
            "InternalSpell",
            "SetupSpell",
            "FilteringSpell",

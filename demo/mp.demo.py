@@ -3,19 +3,21 @@
 
 import envir # to add upper directory into sys.path, not required for real app
 
-from agatsuma.core import MPCore
+from agatsuma.core import Core
+from agatsuma.core import MultiprocessingCoreExtension
 from agatsuma import log, Settings, Implementations
 from agatsuma.interfaces import AbstractSpell
 
 appRoot = 'demo-minimal'
 appConfig = "settings-mp.json"
 
-core = MPCore([appRoot], appConfig,
+core = Core([appRoot], appConfig,
             appName = "MultiprocessingAgatsumaApp",
             prohibitedSpells = ["agatsuma.spells.common.storage_drivers.core_sqla", # SQLAlchemy is not interesting for this demo
-                                ]
+                                ],
+            core_extensions = [MultiprocessingCoreExtension]
             )
-core.startSettingsUpdater()
+core.start_settings_updater()
 
 log.newLogger("demo")
 

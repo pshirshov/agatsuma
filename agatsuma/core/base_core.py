@@ -83,10 +83,24 @@ The following kwargs parameters are supported:
         log.core.info("Initializing Agatsuma")
         log.core.info("Version: %s" % self.versionString)
         log.core.info("Agatsuma's base directory: %s" % self.agatsumaBaseDir)
+
+        self.extensions = []
+        coreExtensions = kwargs.get("core_extensions", [])
+        for extensionClass in coreExtensions:
+            log.core.info("Instantiating core extension '%s'..." % extensionClass.name())
+            extension = extensionClass()
+            (appDirs, appConfig, kwargs) = extension.init(self, appDirs, appConfig, kwargs)
+            methods = extension.additional_methods()
+            for method_name, method in methods:
+                setattr(self, method_name, method)
+                log.core.debug("Extension method '%s' added to core's interface" % method_name)
+            self.extensions.append(extension)
+
         self.appName = kwargs.get("appName", None)
         self.appSpells = kwargs.get("appSpells", [])
         self.spellsDirs = kwargs.get("spellsDirs", [])
         Core.internalState["mode"] = kwargs.get("appMode", "normal")
+
         self.spells = []
         self.spellsDict = {}
         self.registeredSettings = {}
@@ -110,8 +124,8 @@ The following kwargs parameters are supported:
             for spell in self.implementationsOf(AbstractSpell):
                 spell.postConfigure(self)
             log.core.info("Spells initialization completed")
-            enumerator.eagerUnload()
             self._postConfigure()
+            enumerator.eagerUnload()
         else:
             log.core.critical("Config path is None")
 
@@ -123,10 +137,12 @@ The following kwargs parameters are supported:
         Empty virtual function intended to be overriden in subclasses.
         Runs before core shutdown.
         """
-        pass
+        for extension in self.extensions:
+            extension.on_core_stop(self)
 
     def _postConfigure(self):
-        pass
+        for extension in self.extensions:
+            extension.on_core_post_configure(self)
 
     def _sigHandler(self, signum, frame):
         log.core.debug("Received signal %d" % signum)
