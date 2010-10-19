@@ -7,28 +7,28 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) # only for demo app
 sys.path.append('../../')
 
-from agatsuma.setup_helpers import (getEntryPoints,
-                                    runSetuptools,
-                                    getDeps,
-                                    groupsPredicate,
+from agatsuma.setup_helpers import (get_entry_points,
+                                    run_setuptools,
+                                    get_dependencies,
+                                    groups_predicate,
                                     out,
                                     nl,
                                     )
 
 from pylons_demo import make_core
-make_core({}, appMode = 'setup', appName = "demo")
+make_core({}, appMode = 'setup', app_name = "demo")
 
-entryPoints = getEntryPoints()
-dependencies = getDeps(groupsPredicate(sys.argv))
+entry_points = get_entry_points()
+dependencies = get_dependencies(groups_predicate(sys.argv))
 
 nl()
 out("Continuing with Distribute...")
 nl()
 from setuptools import find_packages
 
-runSetuptools(
+run_setuptools(
     install_requires=dependencies,
-    entry_points=entryPoints,
+    entry_points=entry_points,
 
     packages=find_packages(exclude=['distribute_setup']),
     include_package_data=True,

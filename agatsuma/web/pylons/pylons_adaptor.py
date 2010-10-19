@@ -35,7 +35,7 @@ class PylonsAdaptor(object):
             pylonsRoot = kwargs['pylons_root']
             global_conf = kwargs['global_conf']
             app_conf = kwargs['app_conf']
-            #appName = kwargs['appName']
+            #app_name = kwargs['app_name']
             helpers = kwargs['helpers']
             GlobalsClass = kwargs['globals_class']
             config = self._loadEnvironment(pylonsRoot,

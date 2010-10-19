@@ -3,8 +3,8 @@
 from agatsuma.errors import EAbstractFunctionCall
 
 class AbstractCoreExtension(object):
-    def init(self, core, appDirs, appConfig, kwargs):
-        return (appDirs, appConfig, kwargs)
+    def init(self, core, app_directorys, appConfig, kwargs):
+        return (app_directorys, appConfig, kwargs)
 
     @staticmethod
     def name():

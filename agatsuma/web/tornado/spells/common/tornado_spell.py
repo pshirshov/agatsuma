@@ -13,7 +13,7 @@ class TornadoSpell(AbstractSpell, InternalSpell):
         AbstractSpell.__init__(self, 'agatsuma_tornado', config)
 
     def preConfigure(self, core):
-        log.newLogger("tcore")
+        log.new_logger("tcore")
         core.registerOption("!tornado.port", int, "Web server port")
         core.registerOption("!tornado.logger_pump_timeout", int, "Logging output interval (msec)")
         core.registerOption("!tornado.xheaders", bool, "Support the X-Real-Ip and X-Scheme headers")

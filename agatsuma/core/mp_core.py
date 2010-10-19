@@ -36,14 +36,14 @@ in core subclass and don't spawn unwanted thread.
 """
 
 class MultiprocessingCoreExtension(AbstractCoreExtension):
-    def init(self, core, appDirs, appConfig, kwargs):
+    def init(self, core, app_directorys, appConfig, kwargs):
         spellsDirs = []
         nsFragments = ('agatsuma', 'spells', 'supplemental', 'mp')
         spellsDirs.extend ([core._internalSpellSpace(*nsFragments)
                             ])
         spellsDirs.extend(kwargs.get('spellsDirs', []))
         kwargs['spellsDirs'] = spellsDirs
-        return (appDirs, appConfig, kwargs)
+        return (app_directorys, appConfig, kwargs)
 
     def additional_methods(self):
         return [("start_settings_updater", self.startSettingsUpdater),

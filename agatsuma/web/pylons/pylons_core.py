@@ -4,7 +4,7 @@ from agatsuma.core import Core
 from agatsuma.web.pylons import PylonsAdaptor
 
 class PylonsCore(Core, PylonsAdaptor):
-    def __init__(self, appDir, appConfig, **kwargs):
+    def __init__(self, app_directory, appConfig, **kwargs):
         """
         """
         spellsDirs = []
@@ -14,6 +14,6 @@ class PylonsCore(Core, PylonsAdaptor):
         spellsDirs.extend(kwargs.get('spellsDirs', []))
         kwargs['spellsDirs'] = spellsDirs
 
-        Core.__init__(self, appDir, appConfig, **kwargs)
+        Core.__init__(self, app_directory, appConfig, **kwargs)
         PylonsAdaptor.__init__(self, **kwargs)
 

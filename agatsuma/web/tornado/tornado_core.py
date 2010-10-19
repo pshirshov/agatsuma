@@ -35,7 +35,7 @@ class TornadoMPExtension(MultiprocessingCoreExtension):
 class TornadoCore(Core):
     mqueue = None
 
-    def __init__(self, appDir, appConfig, **kwargs):
+    def __init__(self, app_directory, appConfig, **kwargs):
         spellsDirs = []
         nsFragments = ('agatsuma', 'web', 'tornado', 'spells', 'common')
         spellsDirs.extend ([self._internalSpellSpace(*nsFragments)
@@ -45,7 +45,7 @@ class TornadoCore(Core):
         extensions = kwargs.get('core_extensions', [])
         extensions.append(TornadoMPExtension)
         kwargs['core_extensions'] = extensions
-        Core.__init__(self, appDir, appConfig, **kwargs)
+        Core.__init__(self, app_directory, appConfig, **kwargs)
 
     def _stop(self):
         #self.HTTPServer.stop()
@@ -102,7 +102,7 @@ class TornadoCore(Core):
         self._beforeIOLoopStart()
 
         log.tcore.info("=" * 60)
-        log.tcore.info("Starting %s/Agatsuma in server mode on port %d..." % (self.appName, port))
+        log.tcore.info("Starting %s/Agatsuma in server mode on port %d..." % (self.app_name, port))
         log.tcore.info("=" * 60)
         self.ioloop.start()
 
@@ -114,7 +114,7 @@ class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
     lightweight asynchronous web applications
     """
 
-    def __init__(self, appDir, appConfig, **kwargs):
+    def __init__(self, app_directory, appConfig, **kwargs):
         """
         """
         spellsDirs = []
@@ -125,7 +125,7 @@ class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
         kwargs['spellsDirs'] = spellsDirs
 
         self.URIMap = []
-        TornadoCore.__init__(self, appDir, appConfig, **kwargs)
+        TornadoCore.__init__(self, app_directory, appConfig, **kwargs)
         self.mpHandlerInstances = WeakValueDictionary()
         tornadoSettings = {'debug': Settings.core.debug, # autoreload
                            'cookie_secret' : str(Settings.tornado.cookie_secret),
@@ -182,10 +182,10 @@ class TornadoWSGICore(TornadoCore, TornadoWSGIClass):
     applications on top of Tornado.
     """
 
-    def __init__(self, appDir, appConfig, **kwargs):
+    def __init__(self, app_directory, appConfig, **kwargs):
         """
         """
-        TornadoCore.__init__(self, appDir, appConfig, **kwargs)
+        TornadoCore.__init__(self, app_directory, appConfig, **kwargs)
 
     def setWSGI(self, wsgiapp):
         tornado.wsgi.WSGIContainer.__init__(self, wsgiapp)

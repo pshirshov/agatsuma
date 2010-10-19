@@ -17,7 +17,7 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
         AbstractSpell.__init__(self, 'agatsuma_session', config)
 
     def preConfigure(self, core):
-        log.newLogger("sessions")
+        log.new_logger("sessions")
         core.registerOption("!sessions.storage_uris", list, "Storage URIs")
         core.registerOption("!sessions.expiration_interval", int, "Default session length in seconds")
 

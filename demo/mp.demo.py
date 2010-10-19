@@ -12,14 +12,14 @@ appRoot = 'demo-minimal'
 appConfig = "settings-mp.json"
 
 core = Core([appRoot], appConfig,
-            appName = "MultiprocessingAgatsumaApp",
-            prohibitedSpells = ["agatsuma.spells.common.storage_drivers.core_sqla", # SQLAlchemy is not interesting for this demo
+            app_name = "MultiprocessingAgatsumaApp",
+            forbidden_spells = ["agatsuma.spells.common.storage_drivers.core_sqla", # SQLAlchemy is not interesting for this demo
                                 ],
             core_extensions = [MultiprocessingCoreExtension]
             )
 core.start_settings_updater()
 
-log.newLogger("demo")
+log.new_logger("demo")
 
 log.demo.info("*" * 50)
 log.demo.info("Trivial MP application initiated")

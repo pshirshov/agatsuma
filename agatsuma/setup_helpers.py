@@ -3,7 +3,7 @@
 from agatsuma import Implementations
 from agatsuma.interfaces import SetupSpell, InternalSpell
 
-def runSetuptools(**kwargs):
+def run_setuptools(**kwargs):
     from setuptools import setup
     from distribute_setup import use_setuptools
     use_setuptools()
@@ -11,9 +11,9 @@ def runSetuptools(**kwargs):
 
 ######################################################################
 ## Entry points
-def collectEntryPoints(spellsFilter):
+def collectEntryPoints(spells_filter):
     spells = Implementations(SetupSpell)
-    spells = filter(spellsFilter, spells)
+    spells = filter(spells_filter, spells)
     sections = {}
     for spell in spells:
         pointsdict = spell.pyEntryPoints()
@@ -32,18 +32,18 @@ def formatEntryPoints(epoints):
             out += "%s = %s:%s\n" % (point[0], point[1], point[2])
     return out
 
-def entryPointsInfo(spellsFilter):
-    entryPointsDict = collectEntryPoints(spellsFilter)
-    return formatEntryPoints(entryPointsDict)
+def entry_pointsInfo(spells_filter):
+    entry_pointsDict = collectEntryPoints(spells_filter)
+    return formatEntryPoints(entry_pointsDict)
 
 ######################################################################
 ## Dependencies
 def __withoutInternalSpells(spell):
     return not issubclass(type(spell), InternalSpell)
 
-def depinfo(groupChecker, spellsFilter):
+def depinfo(groupChecker, spells_filter):
     spells = Implementations(SetupSpell)
-    spells = filter(spellsFilter, spells)
+    spells = filter(spells_filter, spells)
     depGroups = []
     dependencies = []
     depGroupsContent = {}
@@ -84,7 +84,7 @@ def printDeps(dependencies, depGroups, depGroupsContent, depGroupEnabled):
 
 ######################################################################
 ## Useful routines
-def groupsPredicate(args):
+def groups_predicate(args):
     components = filter(lambda s: s.startswith('--with'), args)
     depsDisabled = "--disable-all" in args
 
@@ -97,16 +97,16 @@ def groupsPredicate(args):
         return depEnabled
     return depGroupEnabled
 
-def getDeps(depGroupsFilter, spellsFilter = __withoutInternalSpells):
+def get_dependencies(depGroupsFilter, spells_filter = __withoutInternalSpells):
     dependencies, depGroups, depGroupsContent = depinfo(depGroupsFilter,
-                                                        spellsFilter)
+                                                        spells_filter)
     printDeps(dependencies, depGroups, depGroupsContent, depGroupsFilter)
     return dependencies
 
-def getEntryPoints(spellsFilter = __withoutInternalSpells):
-    entryPoints = entryPointsInfo(spellsFilter)
+def get_entry_points(spells_filter = __withoutInternalSpells):
+    entry_points = entry_pointsInfo(spells_filter)
     nl()
-    out("The following entry points are provided: %s" % entryPoints)
+    out("The following entry points are provided: %s" % entry_points)
     nl()
-    return entryPoints
+    return entry_points
 

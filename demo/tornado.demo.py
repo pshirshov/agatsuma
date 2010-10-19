@@ -12,9 +12,9 @@ appRoot = 'demo-tornado'
 appConfig = "settings.json"
 
 core = TornadoStandaloneCore([appRoot], appConfig,
-            appName = "TornadoDemoApp",
+            app_name = "TornadoDemoApp",
             #appSpells = ["namespace.module"], # namespaces to load as spells
-            #prohibitedSpells = ["spellspace.py", "demoapp.demo.multiprocessing_handlers"] # file names or namespaces
+            #forbidden_spells = ["spellspace.py", "demoapp.demo.multiprocessing_handlers"] # file names or namespaces
             )
 
 """

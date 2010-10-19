@@ -17,7 +17,7 @@ class SettingsSpell(AbstractSpell, InternalSpell):
         AbstractSpell.__init__(self, 'agatsuma_settings', config)
 
     def preConfigure(self, core):
-        log.newLogger("settings")
+        log.new_logger("settings")
         core.registerOption("!core.settings_storage_uri", unicode, "Settings storage URI")
         core.registerOption("!core.recovery", bool, "Recovery mode")
 

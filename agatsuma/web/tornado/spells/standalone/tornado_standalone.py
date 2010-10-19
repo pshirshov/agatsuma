@@ -16,7 +16,7 @@ class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
         AbstractSpell.__init__(self, 'agatsuma_tornado_standalone', config)
 
     def preConfigure(self, core):
-        log.newLogger("tcore")
+        log.new_logger("tcore")
         core.registerOption("!tornado.cookie_secret", unicode, "cookie secret")
         core.registerOption("!tornado.message_pump_timeout", int, "Message pushing interval (msec)")
         core.registerOption("!tornado.app_parameters", dict, "Kwarg parameters for tornado application")

@@ -7,7 +7,7 @@ class PylonsTornadoCore(TornadoWSGICore, PylonsAdaptor):
     """
     """
 
-    def __init__(self, appDir, appConfig, **kwargs):
+    def __init__(self, app_directory, appConfig, **kwargs):
         """
         """
         spellsDirs = []
@@ -19,7 +19,7 @@ class PylonsTornadoCore(TornadoWSGICore, PylonsAdaptor):
         spellsDirs.extend(kwargs.get('spellsDirs', []))
         kwargs['spellsDirs'] = spellsDirs
 
-        TornadoWSGICore.__init__(self, appDir, appConfig, **kwargs)
+        TornadoWSGICore.__init__(self, app_directory, appConfig, **kwargs)
 
     def setupPylons(self, **kwargs):
         PylonsAdaptor.__init__(self, **kwargs)

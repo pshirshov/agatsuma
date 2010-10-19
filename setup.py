@@ -4,10 +4,10 @@
 import sys
 
 from agatsuma.core import Core
-from agatsuma.setup_helpers import (getEntryPoints,
-                                    runSetuptools,
-                                    getDeps,
-                                    groupsPredicate,
+from agatsuma.setup_helpers import (get_entry_points,
+                                    run_setuptools,
+                                    get_dependencies,
+                                    groups_predicate,
                                     out,
                                     nl,
                                     )
@@ -18,18 +18,18 @@ def main():
 
     Core(None, None, appMode = 'setup')
 
-    spellsFilter = lambda x: True # consider internal spells too
-    entryPoints = getEntryPoints(spellsFilter)
-    dependencies = getDeps(groupsPredicate(sys.argv), spellsFilter)
+    spells_filter = lambda x: True # consider internal spells too
+    entry_points = get_entry_points(spells_filter)
+    dependencies = get_dependencies(groups_predicate(sys.argv), spells_filter)
 
     nl()
     out("Continuing with Distribute...")
     nl()
     from setuptools import find_packages
-    runSetuptools(
+    run_setuptools(
         install_requires = dependencies,
-        entry_points = entryPoints,
-        version = Core.versionString,
+        entry_points = entry_points,
+        version = Core.version_string,
 
         packages = find_packages(exclude=['distribute_setup']),
         zip_safe=False,

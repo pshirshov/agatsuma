@@ -15,12 +15,12 @@ appRoot = 'demo-minimal'
 appConfig = "settings-minimal.json"
 
 core = Core([appRoot], appConfig,
-            appName = "MinimalAgatsumaApp",
-            prohibitedSpells = ["agatsuma.spells.common.storage_drivers.core_sqla", # SQLAlchemy is not interesting for this demo
+            app_name = "MinimalAgatsumaApp",
+            forbidden_spells = ["agatsuma.spells.common.storage_drivers.core_sqla", # SQLAlchemy is not interesting for this demo
                                 ]
             )
 
-log.newLogger("demo")
+log.new_logger("demo")
 
 log.demo.info("*" * 50)
 log.demo.info("Trivial application initiated")

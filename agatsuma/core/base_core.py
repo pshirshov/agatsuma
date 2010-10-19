@@ -27,26 +27,26 @@ class Core(object):
     """Base core which provides basic services, such as settings
 and also able to enumerate spells.
 
-:param appDirs: list of paths to directories containing application spells.
+:param app_directorys: list of paths to directories containing application spells.
 
-.. note:: All the paths in ``appDirs`` list must define importable namespaces. So if we replace all '/' with '.'  in such path we should get importable namespace
+.. note:: All the paths in ``app_directorys`` list must define importable namespaces. So if we replace all '/' with '.'  in such path we should get importable namespace
 
-.. note:: appDirs also may contain tuples with two values (``dir``, ``ns``) where ``ns`` is namespace corresponding to directory ``dir`` but it's not recommended to use this feature.
+.. note:: app_directorys also may contain tuples with two values (``dir``, ``ns``) where ``ns`` is namespace corresponding to directory ``dir`` but it's not recommended to use this feature.
 
 :param appConfig: path to JSON file with application settings
 
 The following kwargs parameters are supported:
 
-    #. `appName` : Application name
+    #. `app_name` : Application name
     #. `appSpells` : names of namespaces to search spells inside
-    #. `spellsDirs` : additional (to `appDir`) directories to search spells inside
+    #. `spellsDirs` : additional (to `app_directory`) directories to search spells inside
 
 .. attribute:: instance
 
    The core instance. Only one core may be instantiated during application
    lifetime.
 
-.. attribute:: versionString
+.. attribute:: version_string
 
    Full Agatsuma version including commit identifier and branch.
    May be extracted from GIT repository with `getversion` script.
@@ -62,7 +62,7 @@ The following kwargs parameters are supported:
    namespaces available when added into ``PYTHONPATH``.
     """
     instance = None
-    versionString = "%d.%d.%d.%s.%s" % (majorVersion, minorVersion, commitsCount, branchId, commitId)
+    version_string = "%d.%d.%d.%s.%s" % (majorVersion, minorVersion, commitsCount, branchId, commitId)
     internalState = {"mode":"normal"}
     agatsumaBaseDir = up(up(os.path.realpath(os.path.dirname(__file__))))
 
@@ -72,16 +72,16 @@ The following kwargs parameters are supported:
         baseNS = '.'.join(fragments)
         return (basePath, baseNS)
 
-    def __init__(self, appDirs, appConfig, **kwargs):
+    def __init__(self, app_directorys, appConfig, **kwargs):
         assert Core.instance is None
         Core.instance = self
 
         self.logger = log()
-        self.logger.initiateLoggers()
-        log.newLogger("core")
-        log.newLogger("storage")
+        self.logger.initiate_loggers()
+        log.new_logger("core")
+        log.new_logger("storage")
         log.core.info("Initializing Agatsuma")
-        log.core.info("Version: %s" % self.versionString)
+        log.core.info("Version: %s" % self.version_string)
         log.core.info("Agatsuma's base directory: %s" % self.agatsumaBaseDir)
 
         self.extensions = []
@@ -89,26 +89,26 @@ The following kwargs parameters are supported:
         for extensionClass in coreExtensions:
             log.core.info("Instantiating core extension '%s'..." % extensionClass.name())
             extension = extensionClass()
-            (appDirs, appConfig, kwargs) = extension.init(self, appDirs, appConfig, kwargs)
+            (app_directorys, appConfig, kwargs) = extension.init(self, app_directorys, appConfig, kwargs)
             methods = extension.additional_methods()
             for method_name, method in methods:
                 setattr(self, method_name, method)
                 log.core.debug("Extension method '%s' added to core's interface" % method_name)
             self.extensions.append(extension)
 
-        self.appName = kwargs.get("appName", None)
+        self.app_name = kwargs.get("app_name", None)
         self.appSpells = kwargs.get("appSpells", [])
         self.spellsDirs = kwargs.get("spellsDirs", [])
         Core.internalState["mode"] = kwargs.get("appMode", "normal")
 
         self.spells = []
-        self.spellsDict = {}
+        self.spells_dict = {}
         self.registeredSettings = {}
-        self.entryPoints = {}
+        self.entry_points = {}
 
         #self.globalFilterStack = [] #TODO: templating and this
-        prohibitedSpells = kwargs.get("prohibitedSpells", [])
-        enumerator = Enumerator(self, appDirs, prohibitedSpells)
+        forbidden_spells = kwargs.get("forbidden_spells", [])
+        enumerator = Enumerator(self, app_directorys, forbidden_spells)
 
         self.spellsDirs.append(self._internalSpellSpace('agatsuma', 'spells', 'common'))
         enumerator.enumerateSpells(self.appSpells, self.spellsDirs)
@@ -119,7 +119,7 @@ The following kwargs parameters are supported:
             for spell in self.implementationsOf(AbstractSpell):
                 spell.preConfigure(self)
             self.settings = Settings(appConfig, self.registeredSettings)
-            self.logger.updateLevels()
+            self.logger.update_levels()
             log.core.info("Calling post-configure routines...")
             for spell in self.implementationsOf(AbstractSpell):
                 spell.postConfigure(self)
@@ -200,8 +200,8 @@ See also **TODO**
         different tasks that requires fully initialized environment such
         as database cleanup or something else.
         """
-        if not entryPointId in self.entryPoints:
-            self.entryPoints[entryPointId] = epFn
+        if not entryPointId in self.entry_points:
+            self.entry_points[entryPointId] = epFn
         else:
             raise Exception("Entry point with name '%s' is already registered" % entryPointId)
 
@@ -215,5 +215,5 @@ See also **TODO**
         Basic Agatsuma's services provides several usable
         :ref:`entry points<std-entry-points>`.
         """
-        self.entryPoints[name](*args, **kwargs)
+        self.entry_points[name](*args, **kwargs)
 

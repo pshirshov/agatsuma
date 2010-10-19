@@ -47,11 +47,11 @@ The following spell parameters are supported now:
         # internal variables, init in app_globals.py
         self._setDetails(None, '', '')
 
-    def _setDetails(self, namespace, namespaceName, fileName):
+    def _setDetails(self, namespace, namespace_name, file_name):
         """ *For internal usage only* """
         self.pnamespace = namespace
-        self.pnamespaceName = namespaceName
-        self.pfileName = fileName
+        self.pnamespace_name = namespace_name
+        self.pfile_name = file_name
 
     def _removeDep(self, dep):
         """ Removes dependency ID from dependency tuple. *For internal usage only* """
@@ -77,15 +77,15 @@ The following spell parameters are supported now:
         """
         return self.__pProvides
 
-    def fileName(self):
+    def file_name(self):
         """ Returns file name for file containing this spell """
-        return self.pfileName
+        return self.pfile_name
 
-    def namespaceName(self):
+    def namespace_name(self):
         """ Returns namespace name (eg. myapp.foo.bar) for namespace
         containing this spell.
         """
-        return self.pnamespaceName
+        return self.pnamespace_name
 
     def namespace(self):
         """ Returns namespace (not the namespace name but namespace itself!)

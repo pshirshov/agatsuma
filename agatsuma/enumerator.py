@@ -10,35 +10,35 @@ from agatsuma.log import log
 from agatsuma.interfaces import AbstractSpell, InternalSpell
 
 class Enumerator(object):
-    def __init__(self, core, appDirs, prohibitedSpells):
-        self.appDirs = appDirs
-        self.prohibitedSpells = prohibitedSpells
+    def __init__(self, core, app_directorys, forbidden_spells):
+        self.app_directorys = app_directorys
+        self.forbidden_spells = forbidden_spells
         self.core = core
         #def appBaseName(self):
         #  return self.__module__.split('.')[0]
 
-    def __registerSpell(self, spell):
+    def __register_spell(self, spell):
         self.core.spells.append(spell)
-        self.core.spellsDict[spell.spellId()] = spell
+        self.core.spells_dict[spell.spellId()] = spell
 
-    def __unregisterSpell(self, spell):
+    def __unregister_spell(self, spell):
         self.core.spells.remove(spell)
-        del self.core.spellsDict[spell.spellId()]
+        del self.core.spells_dict[spell.spellId()]
 
     def enumerateSpells(self, essentialSpellSpaces, additionalSpellPaths):
         spellsDirs = []
         spellsDirs.extend(additionalSpellPaths)
 
-        if self.appDirs:
-            spellsDirs.extend(self.appDirs)
-            if not self.core.appName:
+        if self.app_directorys:
+            spellsDirs.extend(self.app_directorys)
+            if not self.core.app_name:
                 log.core.warning("Application name not provided, so trying to guess one...")
-                print self.appDirs
-                if type(self.appDirs[0]) == str:
-                    self.core.appName = self.appDirs[0][0].capitalize() + self.appDirs[0][1:]
+                print self.app_directorys
+                if type(self.app_directorys[0]) == str:
+                    self.core.app_name = self.app_directorys[0][0].capitalize() + self.app_directorys[0][1:]
                 else:
-                    self.core.appName = self.appDirs[0][1][0].capitalize() + self.appDirs[0][1][1:]
-                log.core.info('Guessed name: %s' % self.core.appName)
+                    self.core.app_name = self.app_directorys[0][1][0].capitalize() + self.app_directorys[0][1][1:]
+                log.core.info('Guessed name: %s' % self.core.app_name)
         else:
             log.core.critical("No main spellpaths to process provided")
             if self.core.internalState.get('mode') == 'setup':
@@ -71,7 +71,7 @@ class Enumerator(object):
 
             for root, dirs, files in os.walk(spellsDir):
                 def useFilePred(file):
-                    if file in self.prohibitedSpells:
+                    if file in self.forbidden_spells:
                         log.core.warning('File ignored due app settings: %s' % file)
                         return False
                     return True
@@ -90,7 +90,7 @@ class Enumerator(object):
         log.core.debug('Collected namespaces: %s' % str(namespacesToImport))
         log.core.info('Started spells enumerator...')
         for nsToImport in namespacesToImport:
-            if not nsToImport in self.prohibitedSpells:
+            if not nsToImport in self.forbidden_spells:
                 #log.core.info('trying %s...' % nsToImport)
                 mod = None
                 try:
@@ -117,8 +117,8 @@ class Enumerator(object):
                             ns = mod #__import__(nsName, stateVars, {}, '*', -1)
                             instance._setDetails(
                                 namespace = ns,
-                                namespaceName = nsName,
-                                fileName = ns.__file__.replace(spellsDir + os.path.sep, '')
+                                namespace_name = nsName,
+                                file_name = ns.__file__.replace(spellsDir + os.path.sep, '')
                             )
                             spells[plid] = instance
                             prov = instance.provides()
@@ -150,7 +150,7 @@ class Enumerator(object):
         internalSpells = filter(lambda spell: issubclass(type(spell), InternalSpell), spellsList)
         log.core.info("IMPORT STAGE COMPLETED. Imported %d spells (%d provided by Agatsuma, %d fake spells for groups):"
                       % (len(spells), len(internalSpells), len(falseSpells)))
-        self.printSpellsList(spellsList)
+        self.print_spells_list(spellsList)
 
         log.core.info('RESOLVING DEPENDENCIES...')
         needCheck = True
@@ -186,7 +186,7 @@ class Enumerator(object):
                     #    log.core.info('No dependencies for "%s"; adding as %d' % (id, len(self.spells)))
                     #else:
                     #    log.core.info('Already resolved dependencies for "%s"; adding as %d' % (id, len(self.spells)))
-                    self.__registerSpell(spells[id])
+                    self.__register_spell(spells[id])
                     resolved.append(id)
                     del spells[id]
                     needIteration = True
@@ -196,13 +196,13 @@ class Enumerator(object):
         cyclicDeps = sorted(spells.values(), lambda a, b: cmp(len(a.deps()), len(b.deps())))
         for spell in cyclicDeps:
             log.core.warning('[WARNING] Adding loop-dependant spell "%s" (deps: %s)' % (spell.spellId(), str(spell.deps())))
-            self.__registerSpell(spell)
+            self.__register_spell(spell)
 
         spellsNames = map(lambda p: p.spellId(), self.core.spells)
         log.core.debug("Connected %d spells: %s. False spells will be removed now" % (len(spellsNames), str(spellsNames)))
 
         for spell in falseSpells:
-            self.__unregisterSpell(spell)
+            self.__unregister_spell(spell)
 
         spellsNames = map(lambda p: p.spellId(), self.core.spells)
         log.core.info("RESOLVING STAGE COMPLETED. Connected %d spells: %s" % (len(spellsNames), str(spellsNames)))
@@ -214,8 +214,8 @@ class Enumerator(object):
                           self.core.spells)
         for spell in toUnload:
             log.core.debug('Eager unloading "%s"' % spell.spellId())
-            self.__unregisterSpell(spell)
+            self.__unregister_spell(spell)
 
-    def printSpellsList(self, spells):
+    def print_spells_list(self, spells):
         for spell in spells:
-            log.core.info("* %s, %s, %s" % (spell.spellId(), spell.namespaceName(), spell.fileName()))
+            log.core.info("* %s, %s, %s" % (spell.spellId(), spell.namespace_name(), spell.file_name()))

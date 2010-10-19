@@ -8,7 +8,7 @@ class log(object):
     rootHandler = None
     loggersNeedUpdate = {}
 
-    def initiateLoggers(self):
+    def initiate_loggers(self):
         #formatter = logging.Formatter("[%(asctime)s %(process)d:%(thread)d:%(name)s:%(levelname)s] %(message)s")
         formatter = logging.Formatter("[%(asctime)s %(name)s:%(levelname)s] %(message)s")
         log.rootHandler = logging.StreamHandler()
@@ -17,7 +17,7 @@ class log(object):
         logging.getLogger('').addHandler(log.rootHandler)
 
     @staticmethod
-    def newLogger(loggerName, **kwargs):
+    def new_logger(loggerName, **kwargs):
         assert loggerName in log.loggers or (getattr(log, loggerName, None) is None)
         handler = kwargs.get('handler', None)
         #level = kwargs.get('level', None)
@@ -43,13 +43,13 @@ class log(object):
         }
 
     @staticmethod
-    def __strToLevel(s):
+    def __str_to_level(s):
         return log.__levels[s]
 
-    def updateLevels(self):
+    def update_levels(self):
         from agatsuma.settings import Settings
-        defaultLevel = log.__strToLevel(Settings.logging.default_level)
-        rootLevel = log.__strToLevel(Settings.logging.root_level)
+        defaultLevel = log.__str_to_level(Settings.logging.default_level)
+        rootLevel = log.__str_to_level(Settings.logging.root_level)
         log.rootHandler.setLevel(rootLevel)
 
         levels = Settings.logging.levels
@@ -57,7 +57,7 @@ class log(object):
         for loggerName, logger in log.loggers.items():
             level = levels.get(loggerName, None)
             if level:
-                level = log.__strToLevel(level)
+                level = log.__str_to_level(level)
             else:
                 level = defaultLevel
             log.core.debug("Setting level for logger '%s' to %d" %
@@ -72,7 +72,7 @@ class log(object):
         namedLevels = Settings.logging.named_levels
         for loggerName, level in namedLevels.items():
             namedLog = logging.getLogger(loggerName)
-            namedLog.setLevel(log.__strToLevel(level))
+            namedLog.setLevel(log.__str_to_level(level))
 
         # TODO: maybe move it into config?
         if Settings.core.debug:

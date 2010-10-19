@@ -12,7 +12,7 @@ class DemoAppSpell(AbstractSpell, SetupSpell, HandlingSpell):
 
     def preConfigure(self, core):
         pass
-        #log.newLogger("pcore")
+        #log.new_logger("pcore")
         #core.registerOption("!tornado.cookie_secret", unicode, "cookie secret")
         #core.registerOption("!tornado.message_pump_timeout", int, "Message pushing interval (msec)")
         #core.registerOption("!tornado.app_parameters", dict, "Kwarg parameters for tornado application")
