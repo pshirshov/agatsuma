@@ -10,11 +10,11 @@ class DemoAppSpell(AbstractSpell, SetupSpell, HandlingSpell):
                  }
         AbstractSpell.__init__(self, 'demoapp_spell', config)
 
-    def preConfigure(self, core):
-        core.registerOption("!pylons.app", dict, "dev.ini equivalent")
-        core.registerOption("!pylons.glob", dict, "dev.ini equivalent")
-        core.registerOption("!pylons.full_stack", bool, "pylons parameter")
-        core.registerOption("!pylons.static_files", bool, "pylons parameter")
+    def pre_configure(self, core):
+        core.register_option("!pylons.app", dict, "dev.ini equivalent")
+        core.register_option("!pylons.glob", dict, "dev.ini equivalent")
+        core.register_option("!pylons.full_stack", bool, "pylons parameter")
+        core.register_option("!pylons.static_files", bool, "pylons parameter")
 
     def requirements(self):
         return {}

@@ -61,12 +61,12 @@ class MongoSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell):
                  }
         AbstractSpell.__init__(self, 'agatsuma_settings_backend_mongo', config)
 
-    def instantiateBackend(self, uri):
+    def instantiate_backend(self, uri):
         self.managerInstance = MongoSettingsBackend(uri)
         return self.managerInstance
 
-    def preConfigure(self, core):
-        core.registerEntryPoint("mongodb:settings:cleanup", self.entryPoint)
+    def pre_configure(self, core):
+        core.register_entry_point("mongodb:settings:cleanup", self.entryPoint)
 
     def entryPoint(self, *args, **kwargs):
         log.settings.info("Cleaning up settings in MongoDB")

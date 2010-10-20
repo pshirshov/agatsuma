@@ -39,7 +39,7 @@ class DictAccessProxy(object):
                                )
             else:
                 self.__dict[name] = value
-                Settings.setConfigData(Settings.settings)
+                Settings.set_config_data(Settings.settings)
         else:
             object.__setattr__(self, name, value)
 
@@ -70,7 +70,7 @@ class Settings(object):
     roSettings = []
     types = {}
     recovery = False
-    configLock = threading.Lock()
+    config_lock = threading.Lock()
 
     def __setattr__(self, name, value):
         if name in type.__getattribute__(Settings, "settings"):
@@ -95,10 +95,10 @@ class Settings(object):
         Settings.recovery = kwargs.get('recovery', False)
         conf.close()
         log.settings.info("Loading config '%s'" % config)
-        self.parseSettings(settings, descriptors)
+        self.parse_settings(settings, descriptors)
         log.settings.info('Config loaded')
 
-    def parseSettings(self, settings, descriptors):
+    def parse_settings(self, settings, descriptors):
         settings = self.load(settings)
         problems = []
         newsettings = {}
@@ -148,10 +148,10 @@ class Settings(object):
         Settings.types = types
         Settings.comments = comments
         Settings.descriptors = descriptors
-        Settings.setConfigData(newsettings)
+        Settings.set_config_data(newsettings)
 
     @staticmethod
-    def setConfigData(settings, **kwargs):
+    def set_config_data(settings, **kwargs):
         from agatsuma.core import Core
         process = multiprocessing.current_process()
         thread = threading.currentThread()
@@ -159,18 +159,18 @@ class Settings(object):
                       (str(process.name), process.pid, thread.getName()))
         timestamp = datetime.datetime.now()
         try:
-            Settings.configLock.acquire()
+            Settings.config_lock.acquire()
             Settings.settings.update(settings)
         finally:
-            Settings.configLock.release()
+            Settings.config_lock.release()
         if settings["core"]["debug_level"] > 0:
             log.settings.debug("Updated config: %s" % str(Settings.settings))
         Settings.configData = {"data": settings,
                                "update" : timestamp,
                               }
-        spells = Core.instance.implementationsOf(AbstractSpell) #Implementations(AbstractSpell)
+        spells = Core.instance.implementations_of(AbstractSpell) #Implementations(AbstractSpell)
         for spell in spells:
-            spell.postConfigUpdate(**kwargs)
+            spell.post_config_update(**kwargs)
 
     def load(self, settings):
         """

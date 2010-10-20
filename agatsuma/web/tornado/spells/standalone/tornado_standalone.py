@@ -15,11 +15,11 @@ class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
                  }
         AbstractSpell.__init__(self, 'agatsuma_tornado_standalone', config)
 
-    def preConfigure(self, core):
+    def pre_configure(self, core):
         log.new_logger("tcore")
-        core.registerOption("!tornado.cookie_secret", unicode, "cookie secret")
-        core.registerOption("!tornado.message_pump_timeout", int, "Message pushing interval (msec)")
-        core.registerOption("!tornado.app_parameters", dict, "Kwarg parameters for tornado application")
+        core.register_option("!tornado.cookie_secret", unicode, "cookie secret")
+        core.register_option("!tornado.message_pump_timeout", int, "Message pushing interval (msec)")
+        core.register_option("!tornado.app_parameters", dict, "Kwarg parameters for tornado application")
 
     def __processURL(self, core, url):
         if type(url) is tuple:
@@ -29,9 +29,9 @@ class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
             return (url.regex, url.handler)
         raise Exception("Incorrect URL data^ %s" % str(url))
 
-    def postConfigure(self, core):
+    def post_configure(self, core):
         log.tcore.info("Initializing URI map..")
-        spells = core.implementationsOf(HandlingSpell)
+        spells = core.implementations_of(HandlingSpell)
         if spells:
             urimap = []
             for spell in spells:
@@ -50,7 +50,7 @@ class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
         else:
             raise Exception("Handling spells not found!")
 
-    def prePoolInit(self, core):
+    def pre_pool_init(self, core):
         # Check if message pump is required for some of controllers
         core.messagePumpNeeded = False
         from agatsuma.web.tornado import MsgPumpHandler

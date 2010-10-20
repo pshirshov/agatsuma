@@ -19,18 +19,18 @@ class Enumerator(object):
 
     def __register_spell(self, spell):
         self.core.spells.append(spell)
-        self.core.spells_dict[spell.spellId()] = spell
+        self.core.spells_dict[spell.spell_id()] = spell
 
     def __unregister_spell(self, spell):
         self.core.spells.remove(spell)
-        del self.core.spells_dict[spell.spellId()]
+        del self.core.spells_dict[spell.spell_id()]
 
-    def enumerateSpells(self, essentialSpellSpaces, additionalSpellPaths):
-        spellsDirs = []
-        spellsDirs.extend(additionalSpellPaths)
+    def enumerate_spells(self, essentialSpellSpaces, additionalSpellPaths):
+        spell_directories = []
+        spell_directories.extend(additionalSpellPaths)
 
         if self.app_directorys:
-            spellsDirs.extend(self.app_directorys)
+            spell_directories.extend(self.app_directorys)
             if not self.core.app_name:
                 log.core.warning("Application name not provided, so trying to guess one...")
                 print self.app_directorys
@@ -41,11 +41,11 @@ class Enumerator(object):
                 log.core.info('Guessed name: %s' % self.core.app_name)
         else:
             log.core.critical("No main spellpaths to process provided")
-            if self.core.internalState.get('mode') == 'setup':
+            if self.core.internal_state.get('mode') == 'setup':
                 log.core.info("Setup mode detected, so replacing all the spellpaths with Agatsuma itself...")
-                spellsDirs = [(os.path.join(self.core.agatsumaBaseDir, 'agatsuma'), 'agatsuma')]
+                spell_directories = [(os.path.join(self.core.agatsuma_base_dir, 'agatsuma'), 'agatsuma')]
         log.core.debug("Spellpaths to process:")
-        for p in spellsDirs:
+        for p in spell_directories:
             log.core.debug("* %s" % str(p))
 
         log.core.debug("System paths:")
@@ -56,7 +56,7 @@ class Enumerator(object):
         namespacesToImport = []
         namespacesToImport.extend(essentialSpellSpaces)
 
-        for spellsDir in spellsDirs:
+        for spellsDir in spell_directories:
             #spellsDir =  #os.path.realpath(os.path.join(self.OPT.appPath, 'controllers'))
             #sys.path.append(spellsDir)
 
@@ -107,7 +107,7 @@ class Enumerator(object):
                     possibleSpells = map(lambda x: x[1], possibleSpells)
                     for possibleSpell in possibleSpells:
                         instance = possibleSpell()
-                        plid = instance.spellId()
+                        plid = instance.spell_id()
                         if not idRe.match(plid):
                             raise Exception("Incorrect spell Id: %s" % plid)
                         log.core.info("Spell found: %s; base=%s" % (plid, nsToImport))
@@ -115,7 +115,7 @@ class Enumerator(object):
                         if not spells.has_key(plid):
                             nsName = mod.__name__
                             ns = mod #__import__(nsName, stateVars, {}, '*', -1)
-                            instance._setDetails(
+                            instance._set_details(
                                 namespace = ns,
                                 namespace_name = nsName,
                                 file_name = ns.__file__.replace(spellsDir + os.path.sep, '')
@@ -163,7 +163,7 @@ class Enumerator(object):
                         if not dep in spells:
                             log.core.warning('[WARNING] Disconnected: "%s"; non-existent dependence: "%s"' % (id, dep))
                             for falseSpell in falseSpells:
-                                falseSpell._removeDep(id)
+                                falseSpell._remove_dep(id)
                             del spells[id]
                             needCheck = True
                             break
@@ -195,16 +195,16 @@ class Enumerator(object):
 
         cyclicDeps = sorted(spells.values(), lambda a, b: cmp(len(a.deps()), len(b.deps())))
         for spell in cyclicDeps:
-            log.core.warning('[WARNING] Adding loop-dependant spell "%s" (deps: %s)' % (spell.spellId(), str(spell.deps())))
+            log.core.warning('[WARNING] Adding loop-dependant spell "%s" (deps: %s)' % (spell.spell_id(), str(spell.deps())))
             self.__register_spell(spell)
 
-        spellsNames = map(lambda p: p.spellId(), self.core.spells)
+        spellsNames = map(lambda p: p.spell_id(), self.core.spells)
         log.core.debug("Connected %d spells: %s. False spells will be removed now" % (len(spellsNames), str(spellsNames)))
 
         for spell in falseSpells:
             self.__unregister_spell(spell)
 
-        spellsNames = map(lambda p: p.spellId(), self.core.spells)
+        spellsNames = map(lambda p: p.spell_id(), self.core.spells)
         log.core.info("RESOLVING STAGE COMPLETED. Connected %d spells: %s" % (len(spellsNames), str(spellsNames)))
         log.core.info('SPELLS ENUMERATING COMPLETED')
 
@@ -213,9 +213,9 @@ class Enumerator(object):
         toUnload = filter(lambda spell: spell.config.get('eager_unload', None),
                           self.core.spells)
         for spell in toUnload:
-            log.core.debug('Eager unloading "%s"' % spell.spellId())
+            log.core.debug('Eager unloading "%s"' % spell.spell_id())
             self.__unregister_spell(spell)
 
     def print_spells_list(self, spells):
         for spell in spells:
-            log.core.info("* %s, %s, %s" % (spell.spellId(), spell.namespace_name(), spell.file_name()))
+            log.core.info("* %s, %s, %s" % (spell.spell_id(), spell.namespace_name(), spell.file_name()))

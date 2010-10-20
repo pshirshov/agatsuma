@@ -11,14 +11,14 @@ from agatsuma import Enumerator
 from agatsuma import log
 from agatsuma import Settings
 
-majorVersion = 0
-minorVersion = 1
+major_version = 0
+minor_version = 1
 try:
-    from agatsuma.version import commitsCount, branchId, commitId
+    from agatsuma.version import commits_count, branch_id, commit_id
 except:
-    commitsCount = 0
-    branchId = "branch"
-    commitId = "commit"
+    commits_count = 0
+    branch_id = "branch"
+    commit_id = "commit"
 
 def up(p):
     return os.path.split(p)[0]
@@ -38,8 +38,8 @@ and also able to enumerate spells.
 The following kwargs parameters are supported:
 
     #. `app_name` : Application name
-    #. `appSpells` : names of namespaces to search spells inside
-    #. `spellsDirs` : additional (to `app_directory`) directories to search spells inside
+    #. `application_spells` : names of namespaces to search spells inside
+    #. `spell_directories` : additional (to `app_directory`) directories to search spells inside
 
 .. attribute:: instance
 
@@ -51,24 +51,24 @@ The following kwargs parameters are supported:
    Full Agatsuma version including commit identifier and branch.
    May be extracted from GIT repository with `getversion` script.
 
-.. attribute:: internalState
+.. attribute:: internal_state
 
    Dict. For now contains only the key ``mode`` with value ``setup`` when core
    was started from setup.py and ``normal`` otherwise.
 
-.. attribute:: agatsumaBaseDir
+.. attribute:: agatsuma_base_dir
 
    Path to directory which contains Agatsuma. This directory makes Agatsuma's
    namespaces available when added into ``PYTHONPATH``.
     """
     instance = None
-    version_string = "%d.%d.%d.%s.%s" % (majorVersion, minorVersion, commitsCount, branchId, commitId)
-    internalState = {"mode":"normal"}
-    agatsumaBaseDir = up(up(os.path.realpath(os.path.dirname(__file__))))
+    version_string = "%d.%d.%d.%s.%s" % (major_version, minor_version, commits_count, branch_id, commit_id)
+    internal_state = {"mode":"normal"}
+    agatsuma_base_dir = up(up(os.path.realpath(os.path.dirname(__file__))))
 
     @staticmethod
-    def _internalSpellSpace(*fragments):
-        basePath = os.path.join(Core.agatsumaBaseDir, *fragments)
+    def _internal_spell_space(*fragments):
+        basePath = os.path.join(Core.agatsuma_base_dir, *fragments)
         baseNS = '.'.join(fragments)
         return (basePath, baseNS)
 
@@ -82,7 +82,7 @@ The following kwargs parameters are supported:
         log.new_logger("storage")
         log.core.info("Initializing Agatsuma")
         log.core.info("Version: %s" % self.version_string)
-        log.core.info("Agatsuma's base directory: %s" % self.agatsumaBaseDir)
+        log.core.info("Agatsuma's base directory: %s" % self.agatsuma_base_dir)
 
         self.extensions = []
         coreExtensions = kwargs.get("core_extensions", [])
@@ -97,40 +97,40 @@ The following kwargs parameters are supported:
             self.extensions.append(extension)
 
         self.app_name = kwargs.get("app_name", None)
-        self.appSpells = kwargs.get("appSpells", [])
-        self.spellsDirs = kwargs.get("spellsDirs", [])
-        Core.internalState["mode"] = kwargs.get("appMode", "normal")
+        self.application_spells = kwargs.get("application_spells", [])
+        self.spell_directories = kwargs.get("spell_directories", [])
+        Core.internal_state["mode"] = kwargs.get("appMode", "normal")
 
         self.spells = []
         self.spells_dict = {}
-        self.registeredSettings = {}
+        self.registered_settings = {}
         self.entry_points = {}
 
-        #self.globalFilterStack = [] #TODO: templating and this
+        #self.global_filters_list = [] #TODO: templating and this
         forbidden_spells = kwargs.get("forbidden_spells", [])
         enumerator = Enumerator(self, app_directorys, forbidden_spells)
 
-        self.spellsDirs.append(self._internalSpellSpace('agatsuma', 'spells', 'common'))
-        enumerator.enumerateSpells(self.appSpells, self.spellsDirs)
+        self.spell_directories.append(self._internal_spell_space('agatsuma', 'spells', 'common'))
+        enumerator.enumerate_spells(self.application_spells, self.spell_directories)
 
         if appConfig:
             from agatsuma.interfaces.abstract_spell import AbstractSpell
             log.core.info("Initializing spells...")
-            for spell in self.implementationsOf(AbstractSpell):
-                spell.preConfigure(self)
-            self.settings = Settings(appConfig, self.registeredSettings)
+            for spell in self.implementations_of(AbstractSpell):
+                spell.pre_configure(self)
+            self.settings = Settings(appConfig, self.registered_settings)
             self.logger.update_levels()
             log.core.info("Calling post-configure routines...")
-            for spell in self.implementationsOf(AbstractSpell):
-                spell.postConfigure(self)
+            for spell in self.implementations_of(AbstractSpell):
+                spell.post_configure(self)
             log.core.info("Spells initialization completed")
-            self._postConfigure()
+            self._post_configure()
             enumerator.eagerUnload()
         else:
             log.core.critical("Config path is None")
 
         log.core.info("Initialization completed")
-        signal.signal(signal.SIGTERM, self._sigHandler)
+        signal.signal(signal.SIGTERM, self._signal_handler)
 
     def _stop(self):
         """
@@ -140,11 +140,11 @@ The following kwargs parameters are supported:
         for extension in self.extensions:
             extension.on_core_stop(self)
 
-    def _postConfigure(self):
+    def _post_configure(self):
         for extension in self.extensions:
             extension.on_core_post_configure(self)
 
-    def _sigHandler(self, signum, frame):
+    def _signal_handler(self, signum, frame):
         log.core.debug("Received signal %d" % signum)
         self.stop()
 
@@ -156,15 +156,15 @@ The following kwargs parameters are supported:
         log.core.info("Stopping Agatsuma...")
         self._stop()
 
-    def implementationsOf(self, InterfaceClass):
+    def implementations_of(self, InterfaceClass):
         """ The most important function for Agatsuma-based application.
         It returns all the spells implementing interface `InterfaceClass`.
         """
         return filter(lambda spell: issubclass(type(spell), InterfaceClass), self.spells)
 
-    def registerOption(self, settingName, settingType, settingComment):
+    def register_option(self, settingName, settingType, settingComment):
         """ This function must be called from
-:meth:`agatsuma.interfaces.AbstractSpell.preConfigure`
+:meth:`agatsuma.interfaces.AbstractSpell.pre_configure`
 
 **TODO**
 
@@ -185,17 +185,17 @@ See also **TODO**
                             settingComment,
                            )
             fqn = match.group(2)
-            if fqn in self.registeredSettings:
+            if fqn in self.registered_settings:
                 raise Exception("Setting is already registered: '%s' (%s)" % (fqn, settingComment))
-            self.registeredSettings[fqn] = settingDescr
+            self.registered_settings[fqn] = settingDescr
         else:
             raise Exception("Bad setting name: '%s' (%s)" % (settingName, settingComment))
 
-    def registerEntryPoint(self, entryPointId, epFn):
+    def register_entry_point(self, entryPointId, epFn):
         """ This method is intended to register *entry points*.
         Entry point is arbitrary function which receives
         arbitrary argumets list. Entry point may be called via
-        :meth:`agatsuma.core.Core.runEntryPoint`. Core and services are fully initialized when
+        :meth:`agatsuma.core.Core.run_entry_point`. Core and services are fully initialized when
         entry point became available, so it may be used to perform
         different tasks that requires fully initialized environment such
         as database cleanup or something else.
@@ -205,7 +205,7 @@ See also **TODO**
         else:
             raise Exception("Entry point with name '%s' is already registered" % entryPointId)
 
-    def runEntryPoint(self, name, *args, **kwargs):
+    def run_entry_point(self, name, *args, **kwargs):
         """ This method runs registered entry point with given `name`
         with arguments `*args` and `**kwargs`.
 

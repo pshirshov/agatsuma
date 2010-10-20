@@ -6,7 +6,7 @@ from weakref import WeakValueDictionary
 
 from agatsuma.core import Core
 from agatsuma.core import MultiprocessingCoreExtension
-if Core.internalState.get("mode", None) == "normal":
+if Core.internal_state.get("mode", None) == "normal":
     import tornado.httpserver
     import tornado.ioloop
     import tornado.web
@@ -26,8 +26,8 @@ class TornadoMPExtension(MultiprocessingCoreExtension):
     def name():
         return "tornadomp"
 
-    def _startSettingsUpdater(self):
-        configChecker = tornado.ioloop.PeriodicCallback(MultiprocessingCoreExtension._updateSettings,
+    def _start_settings_updater(self):
+        configChecker = tornado.ioloop.PeriodicCallback(MultiprocessingCoreExtension._update_settings,
                                                         1000 * Settings.mpcore.settings_update_timeout,
                                                         io_loop=Core.instance.ioloop)
         configChecker.start()
@@ -36,12 +36,12 @@ class TornadoCore(Core):
     mqueue = None
 
     def __init__(self, app_directory, appConfig, **kwargs):
-        spellsDirs = []
+        spell_directories = []
         nsFragments = ('agatsuma', 'web', 'tornado', 'spells', 'common')
-        spellsDirs.extend ([self._internalSpellSpace(*nsFragments)
+        spell_directories.extend ([self._internal_spell_space(*nsFragments)
                             ])
-        spellsDirs.extend(kwargs.get('spellsDirs', []))
-        kwargs['spellsDirs'] = spellsDirs
+        spell_directories.extend(kwargs.get('spell_directories', []))
+        kwargs['spell_directories'] = spell_directories
         extensions = kwargs.get('core_extensions', [])
         extensions.append(TornadoMPExtension)
         kwargs['core_extensions'] = extensions
@@ -117,12 +117,12 @@ class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
     def __init__(self, app_directory, appConfig, **kwargs):
         """
         """
-        spellsDirs = []
+        spell_directories = []
         nsFragments = ('agatsuma', 'web', 'tornado', 'spells', 'standalone')
-        spellsDirs.extend ([self._internalSpellSpace(*nsFragments)
+        spell_directories.extend ([self._internal_spell_space(*nsFragments)
                             ])
-        spellsDirs.extend(kwargs.get('spellsDirs', []))
-        kwargs['spellsDirs'] = spellsDirs
+        spell_directories.extend(kwargs.get('spell_directories', []))
+        kwargs['spell_directories'] = spell_directories
 
         self.URIMap = []
         TornadoCore.__init__(self, app_directory, appConfig, **kwargs)

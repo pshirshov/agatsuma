@@ -12,14 +12,14 @@ class MPCoreSpell(AbstractSpell, InternalSpell):
                  }
         AbstractSpell.__init__(self, 'agatsuma_mp_core', config)
 
-    def preConfigure(self, core):
+    def pre_configure(self, core):
         #import logging
         log.new_logger("mpcore")
-        core.registerOption("!mpcore.workers", int, "Size of working processes pool. Negative to disable")
-        core.registerOption("!mpcore.settings_update_timeout", int, "Update timeout for workers (sec)")
-        core.registerOption("!mpcore.pidfile", unicode, "File with PIDs of all Agatsuma's processes")
+        core.register_option("!mpcore.workers", int, "Size of working processes pool. Negative to disable")
+        core.register_option("!mpcore.settings_update_timeout", int, "Update timeout for workers (sec)")
+        core.register_option("!mpcore.pidfile", unicode, "File with PIDs of all Agatsuma's processes")
 
-    def postConfigUpdate(self, **kwargs):
-        if kwargs.get('updateShared', True):
+    def post_config_update(self, **kwargs):
+        if kwargs.get('update_shared', True):
             log.mpcore.info("Propagating new config data to another processes")
-            MultiprocessingCoreExtension.sharedConfigData.update(Settings.configData)
+            MultiprocessingCoreExtension.shared_config_data.update(Settings.configData)

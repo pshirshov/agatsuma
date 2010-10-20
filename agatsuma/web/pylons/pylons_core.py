@@ -7,12 +7,12 @@ class PylonsCore(Core, PylonsAdaptor):
     def __init__(self, app_directory, appConfig, **kwargs):
         """
         """
-        spellsDirs = []
+        spell_directories = []
         nsFragments = ('agatsuma', 'web', 'pylons', 'spells', 'common')
-        spellsDirs.extend ([self._internalSpellSpace(*nsFragments)
+        spell_directories.extend ([self._internal_spell_space(*nsFragments)
                             ])
-        spellsDirs.extend(kwargs.get('spellsDirs', []))
-        kwargs['spellsDirs'] = spellsDirs
+        spell_directories.extend(kwargs.get('spell_directories', []))
+        kwargs['spell_directories'] = spell_directories
 
         Core.__init__(self, app_directory, appConfig, **kwargs)
         PylonsAdaptor.__init__(self, **kwargs)

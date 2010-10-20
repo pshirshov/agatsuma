@@ -92,12 +92,12 @@ class MongoSessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
                  }
         AbstractSpell.__init__(self, 'tornado_session_backend_mongo', config)
 
-    def instantiateBackend(self, uri):
+    def instantiate_backend(self, uri):
         self.managerInstance = MongoSessionManager(uri)
         return self.managerInstance
 
-    def preConfigure(self, core):
-        core.registerEntryPoint("mongodb:sessions:cleanup", self.entryPoint)
+    def pre_configure(self, core):
+        core.register_entry_point("mongodb:sessions:cleanup", self.entryPoint)
 
     def entryPoint(self, *args, **kwargs):
         log.core.info("Cleaning old sessions in MongoDB")

@@ -13,7 +13,7 @@ appConfig = "settings.json"
 
 core = TornadoStandaloneCore([appRoot], appConfig,
             app_name = "TornadoDemoApp",
-            #appSpells = ["namespace.module"], # namespaces to load as spells
+            #application_spells = ["namespace.module"], # namespaces to load as spells
             #forbidden_spells = ["spellspace.py", "demoapp.demo.multiprocessing_handlers"] # file names or namespaces
             )
 
@@ -32,7 +32,7 @@ if len(sys.argv) < 2:
         core.stop()
 else:
     entryPointName = sys.argv[1]
-    core.runEntryPoint(entryPointName, sys.argv)
+    core.run_entry_point(entryPointName, sys.argv)
 
 # TODO: session backends: database
 # TODO: settings backends: database

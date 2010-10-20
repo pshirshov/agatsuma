@@ -10,19 +10,19 @@ class DemoAppSpell(AbstractSpell, SetupSpell, HandlingSpell):
                  }
         AbstractSpell.__init__(self, 'demoapp_spell', config)
 
-    def preConfigure(self, core):
+    def pre_configure(self, core):
         pass
         #log.new_logger("pcore")
-        #core.registerOption("!tornado.cookie_secret", unicode, "cookie secret")
-        #core.registerOption("!tornado.message_pump_timeout", int, "Message pushing interval (msec)")
-        #core.registerOption("!tornado.app_parameters", dict, "Kwarg parameters for tornado application")
+        #core.register_option("!tornado.cookie_secret", unicode, "cookie secret")
+        #core.register_option("!tornado.message_pump_timeout", int, "Message pushing interval (msec)")
+        #core.register_option("!tornado.app_parameters", dict, "Kwarg parameters for tornado application")
 
 
     def requirements(self):
         return {}
               #{"agatsuma" : ["agatsuma>=0.1"], }
 
-    def pyEntryPoints(self):
+    def py_entry_points(self):
         return {'paste.app_factory' : [('main', 'pylons_demo', 'make_app'), ],
                 'paste.app_install' : [('main', 'pylons.util', 'PylonsInstaller'), ],
         }

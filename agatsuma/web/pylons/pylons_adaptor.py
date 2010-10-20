@@ -30,7 +30,7 @@ class PylonsAdaptor(object):
     def __init__(self, **kwargs):
         """
         """
-        if Core.internalState.get("mode", None) == "normal":
+        if Core.internal_state.get("mode", None) == "normal":
             log.pcore.debug("Initializing Pylons...")
             pylonsRoot = kwargs['pylons_root']
             global_conf = kwargs['global_conf']

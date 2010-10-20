@@ -5,7 +5,7 @@ class AbstractSpell(object):
 and callbacks. When Core traversing directories it looks for
 implementations of this interface and threats them as spells.
 
-:param spellId: unique identifier (name) of this spell.
+:param spell_id: unique identifier (name) of this spell.
     Should match the ``\w+`` regex.
 
 :param spellConfig: dict with optional spell parameters.
@@ -23,15 +23,15 @@ The following spell parameters are supported now:
        functionality required for this spell to work.
     #. `eager_unload` : boolean parameter. When it's set to ``True``
        core unregisters spell recently after completing
-       :meth:`agatsuma.interfaces.AbstractSpell.postConfigure` calls.
+       :meth:`agatsuma.interfaces.AbstractSpell.post_configure` calls.
        This may usable for spells which only required for perform some
        application initialization, such as settings registering
        and data preparation. Also it may be suitable for
        :ref:`dependencies helpers<dependencies-helpers>`.
     """
 
-    def __init__(self, spellId, spellConfig = {}):
-        self.__pId = spellId
+    def __init__(self, spell_id, spellConfig = {}):
+        self.__pId = spell_id
         self.config = spellConfig
 
         # spell config
@@ -45,22 +45,22 @@ The following spell parameters are supported now:
             self.__pdeps = tuple(self.__pdeps)
 
         # internal variables, init in app_globals.py
-        self._setDetails(None, '', '')
+        self._set_details(None, '', '')
 
-    def _setDetails(self, namespace, namespace_name, file_name):
+    def _set_details(self, namespace, namespace_name, file_name):
         """ *For internal usage only* """
         self.pnamespace = namespace
         self.pnamespace_name = namespace_name
         self.pfile_name = file_name
 
-    def _removeDep(self, dep):
+    def _remove_dep(self, dep):
         """ Removes dependency ID from dependency tuple. *For internal usage only* """
         if dep in self.__pdeps:
             deps = list(self.__pdeps)
             deps.remove(dep)
             self.__pdeps = tuple(deps)
 
-    def spellId(self):
+    def spell_id(self):
         """ Returns name of this spell
         (see `spellConfig` constructor parameter) """
         return self.__pId
@@ -93,17 +93,17 @@ The following spell parameters are supported now:
         """
         return self.pnamespace
 
-    def preConfigure(self, core):
+    def pre_configure(self, core):
         """ Core calls this method before settings settings service
         initialization. All the options that are needed for spell
         to work should be registered in this method using core method
-        :meth:`agatsuma.core.Core.registerOption`
+        :meth:`agatsuma.core.Core.register_option`
 
         *Should be overriden in subclasses*
         """
         pass
 
-    def postConfigure(self, core):
+    def post_configure(self, core):
         """ Core calls this method subsequent to settings initialization.
         This method intended to preconfigure application related to loaded
         settings (run some threads or open database connections for example)
@@ -112,7 +112,7 @@ The following spell parameters are supported now:
         """
         pass
 
-    def postConfigUpdate(self, **kwargs):
+    def post_config_update(self, **kwargs):
         """ Settings service calls this method when any writable setting is
         updated. This method may be used to send updated data to worker
         processes for example.

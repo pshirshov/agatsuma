@@ -6,11 +6,11 @@ class PoolEventSpell(object):
     process pool created by :class:`agatsuma.core.MPCore`.
     """
 
-    def prePoolInit(self, core):
+    def pre_pool_init(self, core):
         """ Multiprocessing core calls this method just before
         initialization of processes pool
         (and after all
-        :meth:`agatsuma.interfaces.AbstractSpell.postConfigure`
+        :meth:`agatsuma.interfaces.AbstractSpell.post_configure`
         calls).
 
         So this method may be used to initialize some objects that should be
@@ -18,7 +18,7 @@ class PoolEventSpell(object):
         """
         pass
 
-    def postPoolInit(self, core):
+    def post_pool_init(self, core):
         """ Multiprocessing core calls this method recently after
         initialization of processes pool.
 

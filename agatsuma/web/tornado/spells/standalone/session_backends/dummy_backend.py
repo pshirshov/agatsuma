@@ -31,6 +31,6 @@ class DummySessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
                  }
         AbstractSpell.__init__(self, 'tornado_session_backend_dummy', config)
 
-    def instantiateBackend(self, uri):
+    def instantiate_backend(self, uri):
         log.sessions.critical("Instantiating dummy session backend. URI '%s' ignored" % uri)
         return DummySessionManager()

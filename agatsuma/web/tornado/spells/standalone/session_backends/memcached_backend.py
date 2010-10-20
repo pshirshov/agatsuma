@@ -78,6 +78,6 @@ class MemcachedSessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
         AbstractSpell.__init__(self, 'tornado_session_backend_memcached',
                                config)
 
-    def instantiateBackend(self, uri):
+    def instantiate_backend(self, uri):
         self.managerInstance = MemcachedSessionManager(uri)
         return self.managerInstance

@@ -4,7 +4,7 @@ import copy
 
 from agatsuma.core import Core
 
-if Core.internalState.get("mode", None) == "normal":
+if Core.internal_state.get("mode", None) == "normal":
     import sqlalchemy as sa
     import sqlalchemy.orm as orm
 else:
@@ -43,17 +43,17 @@ class SQLASpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
                 self.meta.drop_all()
                 self.meta.create_all()
             for spell in spells:
-                spell.performDeployment(Core.instance)
+                spell.perform_deployment(Core.instance)
             log.storage.info("Deployment completed")
         else:
             log.storage.info("Model spells not found")
 
-    def preConfigure(self, core):
-        core.registerOption("!sqla.uri", unicode, "SQLAlchemy engine URI")
-        core.registerOption("!sqla.parameters", dict, "kwargs for create_engine")
-        core.registerEntryPoint("agatsuma:sqla_init", self.deploy)
+    def pre_configure(self, core):
+        core.register_option("!sqla.uri", unicode, "SQLAlchemy engine URI")
+        core.register_option("!sqla.parameters", dict, "kwargs for create_engine")
+        core.register_entry_point("agatsuma:sqla_init", self.deploy)
 
-    def postConfigure(self, core):
+    def post_configure(self, core):
         spells = Implementations(ModelSpell)
         if spells:
             log.storage.info("Initializing SQLAlchemy engine and session...")
@@ -64,17 +64,17 @@ class SQLASpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
 
             log.storage.info("Initializing SQLAlchemy data model..")
             for spell in spells:
-                spell.initMetadata(SQLASpell.protoMeta)
+                spell.init_metadata(SQLASpell.protoMeta)
             SQLASpell.meta = SQLASpell.metaCopy()
             SQLASpell.meta.bind = self.SqlaEngine
             log.storage.info("Setting up ORM...")
             for spell in spells:
-                spell.setupORM(core)
+                spell.setup_orm(core)
             log.storage.info("Model initialized")
 
             self.sqlaDefaultSess = self.makeSession()
             for spell in spells:
-                spell.postORMSetup(core)
+                spell.post_orm_setup(core)
         else:
             log.storage.info("Model spells not found")
 

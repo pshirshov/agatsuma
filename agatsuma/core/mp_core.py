@@ -20,35 +20,35 @@ from agatsuma.interfaces import AbstractCoreExtension
      Base core extension providing pool of worker processes and able to
 notify them about settings changes.
 
-.. warning:: If you want to change settings from worker threads you should call :meth:`agatsuma.core.MPCore.startSettingsUpdater` recently after core initialization.
+.. warning:: If you want to change settings from worker threads you should call :meth:`agatsuma.core.MPCore.start_settings_updater` recently after core initialization.
 
 ``MPCore`` uses timer for updating settings in main process. It may be not really
 good if you using Agatsuma with another library which provides periodic
-callbacks. If so you should override method :meth:`agatsuma.core.MPCore.startSettingsUpdater`
+callbacks. If so you should override method :meth:`agatsuma.core.MPCore.start_settings_updater`
 in core subclass and don't spawn unwanted thread.
 
 .. note:: The only way to shutdown multiprocessing application correctly from another application is sending of ``SIGTERM`` signal to main process.
 
 
-    def startSettingsUpdater(self):
+    def start_settings_updater(self):
          Initiates periodic checking for config updates. May be overriden in
         subclasses
 """
 
 class MultiprocessingCoreExtension(AbstractCoreExtension):
     def init(self, core, app_directorys, appConfig, kwargs):
-        spellsDirs = []
+        spell_directories = []
         nsFragments = ('agatsuma', 'spells', 'supplemental', 'mp')
-        spellsDirs.extend ([core._internalSpellSpace(*nsFragments)
+        spell_directories.extend ([core._internal_spell_space(*nsFragments)
                             ])
-        spellsDirs.extend(kwargs.get('spellsDirs', []))
-        kwargs['spellsDirs'] = spellsDirs
+        spell_directories.extend(kwargs.get('spell_directories', []))
+        kwargs['spell_directories'] = spell_directories
         return (app_directorys, appConfig, kwargs)
 
     def additional_methods(self):
-        return [("start_settings_updater", self.startSettingsUpdater),
-                ("remember_pid", self.rememberPid),
-                ("write_pid", self.writePid)
+        return [("start_settings_updater", self.start_settings_updater),
+                ("remember_pid", self.remember_pid),
+                ("write_pid", self.write_pid)
                 ]
 
     @staticmethod
@@ -57,30 +57,30 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
 
     def on_core_post_configure(self, core):
         """
-        spellsDirs = []
+        spell_directories = []
         nsFragments = ('agatsuma', 'framework', 'tornado', 'spells')
-        spellsDirs.extend ([self._internalSpellSpace(*nsFragments)
+        spell_directories.extend ([self._internal_spell_space(*nsFragments)
                             ])
         """
         MultiprocessingCoreExtension.removePidFile()
         log.mpcore.info("Calling pre-pool-init routines...")
-        #self._prePoolInit() # TODO: XXX:
-        for spell in core.implementationsOf(PoolEventSpell):
-            spell.prePoolInit(core)
+        #self._pre_pool_init() # TODO: XXX:
+        for spell in core.implementations_of(PoolEventSpell):
+            spell.pre_pool_init(core)
 
         core.pool = None
         workers = Settings.mpcore.workers
         if workers >= 0:
             log.mpcore.debug("Starting %d workers..." % workers)
             core.pool = Pool(processes=workers,
-                             initializer = _workerInitializer,
+                             initializer = _worker_initializer,
                              initargs = (Settings.mpcore.settings_update_timeout, ))
         else:
             log.mpcore.info("Pool initiation skipped due negative workers count")
 
         log.mpcore.info("Calling post-pool-init routines...")
-        for spell in core.implementationsOf(PoolEventSpell):
-            spell.postPoolInit(core)
+        for spell in core.implementations_of(PoolEventSpell):
+            spell.post_pool_init(core)
         self.pool = core.pool
 
     def on_core_stop(self, core):
@@ -89,18 +89,18 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
         self.removePidFile()
 
 ################################################
-    configUpdateManager = Manager()
-    sharedConfigData = configUpdateManager.dict()
-    pids = configUpdateManager.list()
+    config_update_manager = Manager()
+    shared_config_data = config_update_manager.dict()
+    pids = config_update_manager.list()
 
     # TODO: XXX: one method enough
     @staticmethod
-    def rememberPid(pid):
+    def remember_pid(pid):
         assert type(pid) is int
         MultiprocessingCoreExtension.pids.append(pid)
 
     @staticmethod
-    def writePid(pid):
+    def write_pid(pid):
         log.mpcore.debug("Writing PID %d" % pid)
         mode = "a+"
         pidfile = Settings.mpcore.pidfile
@@ -117,19 +117,19 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
         if os.path.exists(pidfile):
             os.remove(pidfile)
 
-    def startSettingsUpdater(self):
+    def start_settings_updater(self):
         """ Initiates periodic checking for config updates. May be overriden in
         subclasses """
         if self.pool:
-            self._startSettingsUpdater()
+            self._start_settings_updater()
         else:
             log.mpcore.info("Settings updater is not started in main thread due empty process' pool")
 
-    def _startSettingsUpdater(self):
+    def _start_settings_updater(self):
         raise EAbstractFunctionCall()
 
     @staticmethod
-    def _updateSettings():
+    def _update_settings():
         # Settings in current thread are in old state
         # If we detect, that shared object has updated config we replace it
         process = multiprocessing.current_process()
@@ -138,27 +138,27 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
                           % (str(process.name), process.pid, thread.getName()))
 
         prevUpdate = Settings.configData['update']
-        lastUpdate = MultiprocessingCoreExtension.sharedConfigData['update']
+        lastUpdate = MultiprocessingCoreExtension.shared_config_data['update']
         if (prevUpdate < lastUpdate):
             process = multiprocessing.current_process()
             thread = threading.currentThread()
             log.mpcore.info("Process '%s' with PID %s received new config, updating using thread '%s'..."
                           % (str(process.name), process.pid, thread.getName()))
-            #Core.settings.parseSettings(Core.sharedConfigData['data'], Settings.descriptors)
-            Settings.setConfigData(MultiprocessingCoreExtension.sharedConfigData['data'], updateShared = False)
+            #Core.settings.parse_settings(Core.shared_config_data['data'], Settings.descriptors)
+            Settings.set_config_data(MultiprocessingCoreExtension.shared_config_data['data'], update_shared = False)
 
-def _workerInitializer(timeout):
+def _worker_initializer(timeout):
     process = multiprocessing.current_process()
-    MultiprocessingCoreExtension.rememberPid(process.pid)
-    MultiprocessingCoreExtension.writePid(process.pid)
+    MultiprocessingCoreExtension.remember_pid(process.pid)
+    MultiprocessingCoreExtension.write_pid(process.pid)
     log.mpcore.debug("Initializing worker process '%s' with PID %d. Starting config update checker with %ds timeout" % (str(process.name), process.pid, timeout))
-    MPStandaloneExtension._updateSettingsByTimer(timeout)
+    MPStandaloneExtension._update_settings_by_timer(timeout)
 
 class MPStandaloneExtension(MultiprocessingCoreExtension):
-    def _startSettingsUpdater(self):
-        MultiprocessingCoreExtension._updateSettingsByTimer(Settings.mpcore.settings_update_timeout)
+    def _start_settings_updater(self):
+        MultiprocessingCoreExtension._update_settings_by_timer(Settings.mpcore.settings_update_timeout)
 
     @staticmethod
-    def _updateSettingsByTimer(timeout):
-        threading.Timer(timeout, MPStandaloneExtension._updateSettingsByTimer, (timeout, )).start()
-        MultiprocessingCoreExtension._updateSettings()
+    def _update_settings_by_timer(timeout):
+        threading.Timer(timeout, MPStandaloneExtension._update_settings_by_timer, (timeout, )).start()
+        MultiprocessingCoreExtension._update_settings()

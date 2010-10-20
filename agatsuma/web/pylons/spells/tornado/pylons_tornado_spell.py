@@ -12,6 +12,6 @@ class PylonsWSGISpell(AbstractSpell, InternalSpell):
                  }
         AbstractSpell.__init__(self, 'agatsuma_pylons_tornado', config)
 
-    def preConfigure(self, core):
+    def pre_configure(self, core):
         pass
         #TODO: options? This problem belongs to application for now

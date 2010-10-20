@@ -41,39 +41,39 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
         AbstractSpell.__init__(self, 'sqla_demo_spell', config)
         ModelSpell.__init__(self)
 
-    def initMetadata(self, metadata):
+    def init_metadata(self, metadata):
         users_table = sa.Table('users',
         metadata,
         sa.Column('id', sa.types.Integer, primary_key=True),
         sa.Column('name', sa.types.String),
         sa.Column('password', sa.types.String)
         )
-        self.registerTable(users_table)
+        self.register_table(users_table)
         posts_table = sa.Table('posts',
         metadata,
         sa.Column('id', sa.types.Integer, primary_key=True),
         sa.Column("user_id" , sa.types.Integer, sa.ForeignKey('users.id')),
         sa.Column('message', sa.types.String),
         )
-        self.registerTable(posts_table, "postsTable")
+        self.register_table(posts_table, "postsTable")
         """
-        self.registerTable({'tableName' : 'users', 'propertyName' : None},
+        self.register_table({'tableName' : 'users', 'propertyName' : None},
                             sa.Column('id', sa.types.Integer, primary_key=True),
                             sa.Column('name', sa.types.String),
                             sa.Column('password', sa.types.String)
                           )
-        self.registerTable({'tableName' : 'posts', 'propertyName' : 'postsTable'})
+        self.register_table({'tableName' : 'posts', 'propertyName' : 'postsTable'})
         """
-    def setupORM(self, core):
+    def setup_orm(self, core):
         userProps = {'posts' : orm.relation(Post,
                      cascade = "all, delete, delete-orphan",
                      order_by = [self.postsTable.c.id]),
                     }
         postProps = {'user' : orm.relation(User)}
-        self.registerMapping(core, User, self.users, properties = userProps)
-        self.registerMapping(core, Post, self.postsTable, properties = postProps)
+        self.register_mapping(core, User, self.users, properties = userProps)
+        self.register_mapping(core, Post, self.postsTable, properties = postProps)
 
-    def postORMSetup(self, core):
+    def post_orm_setup(self, core):
         sqlaSpell = Spell("agatsuma_sqla")
         ModelDemoSpell.SqlaSess = sqlaSpell.sqlaDefaultSess
 
@@ -83,7 +83,7 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
 
                    ])
 
-    def performDeployment(self, core):
+    def perform_deployment(self, core):
         log.core.debug("Hello from the demo deployment callback. Now we can add objects into DB")
         session = ModelDemoSpell.SqlaSess
         userscount = session.query(User).count()

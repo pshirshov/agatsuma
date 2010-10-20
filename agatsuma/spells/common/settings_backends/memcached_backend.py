@@ -62,6 +62,6 @@ class MemcachedSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell)
         AbstractSpell.__init__(self, 'agatsuma_settings_backend_memcached',
                                config)
 
-    def instantiateBackend(self, uri):
+    def instantiate_backend(self, uri):
         self.managerInstance = MemcachedSettingsBackend(uri)
         return self.managerInstance

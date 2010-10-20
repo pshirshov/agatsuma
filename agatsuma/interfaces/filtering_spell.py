@@ -11,7 +11,7 @@ class FilteringSpell(object):
     def __init__(self):
         pass
     
-    def filtersList(self):
+    def filters_ist(self):
         """ This method should return list or tuple of functions
         that have one string argument and returns string
         """
@@ -19,6 +19,6 @@ class FilteringSpell(object):
         
     #TODO: templating and this
     """
-    def globalFiltersList(self):
+    def global_filters_list(self):
         return []
     """

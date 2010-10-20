@@ -19,7 +19,7 @@ class NullSpell(AbstractSpell, FilteringSpell):
                  }
         AbstractSpell.__init__(self, 'null_spell', config)
 
-    def filtersList(self):
+    def filters_ist(self):
         return (self.testFilter,)
 
     def testFilter(self, inp):
@@ -28,10 +28,10 @@ class NullSpell(AbstractSpell, FilteringSpell):
     def entryPoint(self, *args, **kwargs):
         log.core.info("Demo entry point called with argv %s" % str(args))
 
-    def preConfigure(self, core):
-        core.registerOption("!test.rotest", unicode, "Test read-only setting")
-        core.registerOption("test.test", unicode, "Test setting")
-        core.registerEntryPoint("demoPoint", self.entryPoint)
+    def pre_configure(self, core):
+        core.register_option("!test.rotest", unicode, "Test read-only setting")
+        core.register_option("test.test", unicode, "Test setting")
+        core.register_entry_point("demoPoint", self.entryPoint)
 
 class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
     def __init__(self):
@@ -40,7 +40,7 @@ class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
                  }
         AbstractSpell.__init__(self, 'mp_demo_spell', config)
 
-    def preConfigure(self, core):
+    def pre_configure(self, core):
         log.new_logger("test")
 
     def beforeRequestCallback(self, handler):

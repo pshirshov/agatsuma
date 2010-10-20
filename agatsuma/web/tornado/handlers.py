@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from agatsuma.core import Core
-if Core.internalState.get("mode", None) == "normal":
+if Core.internal_state.get("mode", None) == "normal":
     import tornado.web
     HandlerBaseClass = tornado.web.RequestHandler
 else:
@@ -17,7 +17,7 @@ class AgatsumaHandler(HandlerBaseClass):
         tornado.web.RequestHandler.__init__(self, application, request, transforms)
 
     def prepare(self):
-        spells = self.application.implementationsOf(RequestSpell)
+        spells = self.application.implementations_of(RequestSpell)
         for spell in spells:
             spell.beforeRequestCallback(self)
 

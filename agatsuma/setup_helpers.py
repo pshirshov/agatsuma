@@ -16,7 +16,7 @@ def collectEntryPoints(spells_filter):
     spells = filter(spells_filter, spells)
     sections = {}
     for spell in spells:
-        pointsdict = spell.pyEntryPoints()
+        pointsdict = spell.py_entry_points()
         for section in pointsdict:
             if not sections.get(section, None):
                 sections[section] = []

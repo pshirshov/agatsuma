@@ -3,17 +3,17 @@
 from agatsuma.minicache import EternalInvariant
 from agatsuma.core import Core
 
-def Spell(spellId):
+def Spell(spell_id):
     """Helper function which returns spell with given name
 
     Arguments:
-    - `spellId`:
+    - `spell_id`:
     """
-    return Core.instance.spells_dict.get(spellId, None)
+    return Core.instance.spells_dict.get(spell_id, None)
 
 @EternalInvariant
 def Implementations(interface):
-    """Wrapper function for :meth:`agatsuma.core.Core.implementationsOf`
+    """Wrapper function for :meth:`agatsuma.core.Core.implementations_of`
     caches results with :class:`agatsuma.minicache.MiniCache`
     """
-    return Core.instance.implementationsOf(interface)
+    return Core.instance.implementations_of(interface)

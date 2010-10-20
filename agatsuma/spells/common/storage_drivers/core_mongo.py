@@ -1,5 +1,5 @@
 from agatsuma.core import Core
-if Core.internalState.get("mode", None) == "normal":
+if Core.internal_state.get("mode", None) == "normal":
     import pymongo
 
 import re
@@ -17,11 +17,11 @@ class MongoDBSpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
                  }
         AbstractSpell.__init__(self, 'agatsuma_mongodb', config)
 
-    def preConfigure(self, core):
-        core.registerOption("!mongo.uri", unicode, "MongoDB host URI")
-        core.registerOption("!mongo.db_collections", list, "MongoDB databases to use")
+    def pre_configure(self, core):
+        core.register_option("!mongo.uri", unicode, "MongoDB host URI")
+        core.register_option("!mongo.db_collections", list, "MongoDB databases to use")
 
-    def postConfigure(self, core):
+    def post_configure(self, core):
         self.initConnection()
 
     def initConnection(self):

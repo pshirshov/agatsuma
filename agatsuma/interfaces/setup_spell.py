@@ -105,12 +105,12 @@ content::
            import SomeBigLibrary
            SomeBigLibrary.makeAllGood()
 
-**Solution 3** use of the :attr:`agatsuma.core.Core.internalState`.
+**Solution 3** use of the :attr:`agatsuma.core.Core.internal_state`.
 
 ``foo.py``::
 
    from agatsuma.core import Core
-   if Core.internalState.get('mode', None) == 'normal':
+   if Core.internal_state.get('mode', None) == 'normal':
        import SomeBigLibrary
 
    from agatsuma.interfaces import AbstractSpell
@@ -131,7 +131,7 @@ content::
         """
         return {}
 
-    def pyEntryPoints(self):
+    def py_entry_points(self):
         """
         {'section' : [('name', 'namespace', 'entrypoint'), ],
         }

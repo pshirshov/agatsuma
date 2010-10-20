@@ -16,12 +16,12 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
                  }
         AbstractSpell.__init__(self, 'agatsuma_session', config)
 
-    def preConfigure(self, core):
+    def pre_configure(self, core):
         log.new_logger("sessions")
-        core.registerOption("!sessions.storage_uris", list, "Storage URIs")
-        core.registerOption("!sessions.expiration_interval", int, "Default session length in seconds")
+        core.register_option("!sessions.storage_uris", list, "Storage URIs")
+        core.register_option("!sessions.expiration_interval", int, "Default session length in seconds")
 
-    def postConfigure(self, core):
+    def post_configure(self, core):
         log.sessions.info("Initializing Session Storage..")
         rex = re.compile(r"^(\w+)\+(.*)$")
         self.sessmans = []
@@ -33,7 +33,7 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
                 spellName = "tornado_session_backend_%s" % managerId
                 spell = Spell(spellName)
                 if spell:
-                    self.sessmans.append(spell.instantiateBackend(uri))
+                    self.sessmans.append(spell.instantiate_backend(uri))
                 else:
                     raise Exception("Session backend improperly configured, spell '%s' not found" % spellName)
             else:

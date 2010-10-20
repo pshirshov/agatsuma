@@ -16,12 +16,12 @@ class SettingsSpell(AbstractSpell, InternalSpell):
                  }
         AbstractSpell.__init__(self, 'agatsuma_settings', config)
 
-    def preConfigure(self, core):
+    def pre_configure(self, core):
         log.new_logger("settings")
-        core.registerOption("!core.settings_storage_uri", unicode, "Settings storage URI")
-        core.registerOption("!core.recovery", bool, "Recovery mode")
+        core.register_option("!core.settings_storage_uri", unicode, "Settings storage URI")
+        core.register_option("!core.recovery", bool, "Recovery mode")
 
-    def postConfigure(self, core):
+    def post_configure(self, core):
         Settings.save = self.save
         log.core.debug('Settings.save method overriden')
         storageUri = Settings.core.settings_storage_uri
@@ -37,7 +37,7 @@ class SettingsSpell(AbstractSpell, InternalSpell):
                 spellName = "agatsuma_settings_backend_%s" % backendId
                 spell = Spell(spellName)
                 if spell:
-                    self.backend = spell.instantiateBackend(uri)
+                    self.backend = spell.instantiate_backend(uri)
                 else:
                     raise Exception("Settings backend improperly configured: spell '%s' not found" % spellName)
             else:
@@ -63,7 +63,7 @@ class SettingsSpell(AbstractSpell, InternalSpell):
                     if updatedInGroup:
                         Settings.settings[groupName] = newGroup
             if updated:
-                Settings.setConfigData(Settings.settings)
+                Settings.set_config_data(Settings.settings)
             log.settings.info("Settings updated from storage: %d" % updated)
 
     def save(self):
