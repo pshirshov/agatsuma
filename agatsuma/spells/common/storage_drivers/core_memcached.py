@@ -23,22 +23,22 @@ class MemcachedSpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
                             "Memcached additional parameters")
 
     def post_configure(self, core):
-        self.initConnection()
+        self.init_connection()
 
-    def initConnection(self):
+    def init_connection(self):
         log.storage.info("Initializing Memcached connections on URI '%s'" % \
                       Settings.memcached.uri)
-        connData = self._parseMemcachedUri(Settings.memcached.uri)
+        connData = self._parse_memcached_uri(Settings.memcached.uri)
         print connData
         self._connection = pylibmc.Client([":".join(connData)])
         self._connection.behaviors = Settings.memcached.behaviors
         self._pool = pylibmc.ThreadMappedPool(self._connection)
 
-    def getConnectionPool(self):
+    def get_connection_pool(self):
         return self._pool
 
     @staticmethod
-    def _parseMemcachedUri(uri):
+    def _parse_memcached_uri(uri):
         # memcached://host:port
         match = re.match(r'^memcached://([\S|\.]+?)?(?::(\d+))?$', uri)
         if match and match.group(2):

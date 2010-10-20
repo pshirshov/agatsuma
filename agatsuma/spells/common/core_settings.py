@@ -53,7 +53,7 @@ class SettingsSpell(AbstractSpell, InternalSpell):
                 newGroup = copy.deepcopy(group)
                 updatedInGroup = 0
                 for setting in group:
-                    if not setting in Settings.roSettings[groupName]:
+                    if not setting in Settings.readonly_settings[groupName]:
                         curVal = group[setting]
                         newVal = self.backend.get("%s.%s" % (groupName, setting), curVal)
                         if newVal != curVal:
@@ -72,7 +72,7 @@ class SettingsSpell(AbstractSpell, InternalSpell):
         for groupName in Settings.settings:
             group = Settings.settings[groupName]
             for setting in group:
-                if not setting in Settings.roSettings[groupName]:
+                if not setting in Settings.readonly_settings[groupName]:
                     self.backend.save("%s.%s" % (groupName, setting), group[setting])
                     written += 1
         log.settings.info("Settings written into storage: %d" % written)

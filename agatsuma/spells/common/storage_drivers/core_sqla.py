@@ -28,7 +28,7 @@ class SQLASpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
                  }
         AbstractSpell.__init__(self, 'agatsuma_sqla', config)
         if sa:
-            SQLASpell.protoMeta = sa.MetaData()
+            SQLASpell.proto_metadata = sa.MetaData()
 
     def requirements(self):
         return {"sqla" : ["sqlalchemy>=0.6.1"],
@@ -64,15 +64,15 @@ class SQLASpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
 
             log.storage.info("Initializing SQLAlchemy data model..")
             for spell in spells:
-                spell.init_metadata(SQLASpell.protoMeta)
-            SQLASpell.meta = SQLASpell.metaCopy()
+                spell.init_metadata(SQLASpell.proto_metadata)
+            SQLASpell.meta = SQLASpell.metadata_copy()
             SQLASpell.meta.bind = self.SqlaEngine
             log.storage.info("Setting up ORM...")
             for spell in spells:
                 spell.setup_orm(core)
             log.storage.info("Model initialized")
 
-            self.sqlaDefaultSess = self.makeSession()
+            self.sqla_default_session = self.makeSession()
             for spell in spells:
                 spell.post_orm_setup(core)
         else:
@@ -85,8 +85,8 @@ class SQLASpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
         return self.Session()
 
     @staticmethod
-    def metaCopy():
-        meta = copy.deepcopy(SQLASpell.protoMeta)
+    def metadata_copy():
+        meta = copy.deepcopy(SQLASpell.proto_metadata)
         # little bugfix
         meta.ddl_listeners = sa.util.defaultdict(list)
         return meta

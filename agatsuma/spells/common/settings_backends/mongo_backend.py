@@ -12,9 +12,9 @@ from agatsuma.interfaces import SettingsBackendSpell, SettingsBackend
 class MongoSettingsBackend(SettingsBackend):
     def __init__(self, uri):
         self.uri = uri
-        self.initConnection()
+        self.init_connection()
 
-    def initConnection(self):
+    def init_connection(self):
         log.settings.info("Initializing MongoDB settings backend using URI '%s'" % self.uri)
         connData = MongoSettingsBackend._parseMongoTableUri(self.uri)
         mongoSpell = Spell("agatsuma_mongodb")
@@ -66,9 +66,9 @@ class MongoSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell):
         return self.managerInstance
 
     def pre_configure(self, core):
-        core.register_entry_point("mongodb:settings:cleanup", self.entryPoint)
+        core.register_entry_point("mongodb:settings:cleanup", self.entry_point)
 
-    def entryPoint(self, *args, **kwargs):
+    def entry_point(self, *args, **kwargs):
         log.settings.info("Cleaning up settings in MongoDB")
         self.managerInstance.cleanup()
 

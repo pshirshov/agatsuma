@@ -58,7 +58,7 @@ class SettingsMeta(type):
         if name in settings:
             return DictAccessProxy(name, # group
                                    settings[name],
-                                   Settings.roSettings[name],
+                                   Settings.readonly_settings[name],
                                    Settings.types[name],
                                    Settings.comments[name])
         else:
@@ -67,7 +67,7 @@ class SettingsMeta(type):
 class Settings(object):
     __metaclass__ = SettingsMeta
     settings = {}
-    roSettings = []
+    readonly_settings = []
     types = {}
     recovery = False
     config_lock = threading.Lock()
@@ -83,7 +83,7 @@ class Settings(object):
         if name in settings:
             return DictAccessProxy(name, # group
                                    settings[name],
-                                   Settings.roSettings[name],
+                                   Settings.readonly_settings[name],
                                    Settings.types[name],
                                    Settings.comments[name])
         else:
@@ -144,7 +144,7 @@ class Settings(object):
             log.settings.error('\n'.join(problems))
             raise Exception("Can't load settings")
         log.settings.info('%d settings found in config, %d are actual (%d read-only)' % (len(descriptors), actual, rocount))
-        Settings.roSettings = rosettings
+        Settings.readonly_settings = rosettings
         Settings.types = types
         Settings.comments = comments
         Settings.descriptors = descriptors

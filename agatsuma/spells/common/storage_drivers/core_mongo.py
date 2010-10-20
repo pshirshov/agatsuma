@@ -22,18 +22,18 @@ class MongoDBSpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
         core.register_option("!mongo.db_collections", list, "MongoDB databases to use")
 
     def post_configure(self, core):
-        self.initConnection()
+        self.init_connection()
 
-    def initConnection(self):
+    def init_connection(self):
         log.storage.info("Initializing MongoDB connections on URI '%s'" % Settings.mongo.uri)
-        connData = MongoDBSpell._parseMongoUri(Settings.mongo.uri)
+        connData = MongoDBSpell._parse_mongo_uri(Settings.mongo.uri)
         self.connection = pymongo.Connection(connData[0], connData[1])
         for dbCollectionName in Settings.mongo.db_collections:
             assert type(dbCollectionName) is unicode
             setattr(self, dbCollectionName, self.connection[dbCollectionName])
 
     @staticmethod
-    def _parseMongoUri(uri):
+    def _parse_mongo_uri(uri):
         # mongodb://host:port
         match = re.match(r'^mongodb://([\S|\.]+?)?(?::(\d+))?$', uri)
         if match.group(2):

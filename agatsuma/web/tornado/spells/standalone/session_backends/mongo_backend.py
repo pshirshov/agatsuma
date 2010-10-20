@@ -29,9 +29,9 @@ class MongoSessionManager(BaseSessionManager):
     def __init__(self, uri):
         BaseSessionManager.__init__(self)
         self.uri = uri
-        self.initConnection()
+        self.init_connection()
 
-    def initConnection(self):
+    def init_connection(self):
         log.sessions.info("Initializing MongoDB session backend using URI '%s'" % self.uri)
         connData = MongoSessionManager._parseMongoTableUri(self.uri)
         mongoSpell = Spell("agatsuma_mongodb")
@@ -97,9 +97,9 @@ class MongoSessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
         return self.managerInstance
 
     def pre_configure(self, core):
-        core.register_entry_point("mongodb:sessions:cleanup", self.entryPoint)
+        core.register_entry_point("mongodb:sessions:cleanup", self.entry_point)
 
-    def entryPoint(self, *args, **kwargs):
+    def entry_point(self, *args, **kwargs):
         log.core.info("Cleaning old sessions in MongoDB")
         self.managerInstance.cleanup()
 

@@ -20,14 +20,14 @@ class MemcachedSessionManager(BaseSessionManager):
     def __init__(self, uri):
         BaseSessionManager.__init__(self)
         self.uri = uri
-        self.initConnection()
+        self.init_connection()
 
-    def initConnection(self):
+    def init_connection(self):
         log.sessions.info("Initializing Memcached session backend "\
                           "using URI '%s'" % self.uri)
-        self.keyprefix = self._parseMemcachedPrefixUri(self.uri)
+        self.keyprefix = self._parse_memcached_prefix_uri(self.uri)
         memcachedSpell = Spell("agatsuma_memcached")
-        self.pool = memcachedSpell.getConnectionPool()
+        self.pool = memcachedSpell.get_connection_pool()
 
     @property
     def connection(self):
@@ -40,7 +40,7 @@ class MemcachedSessionManager(BaseSessionManager):
         return sessionId
 
     @staticmethod
-    def _parseMemcachedPrefixUri(details):
+    def _parse_memcached_prefix_uri(details):
         # memprefix://prefixname
         match = re.match('^memprefix://(\w+)$', details)
         return match.group(1) if match else ''

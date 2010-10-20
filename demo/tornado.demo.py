@@ -31,8 +31,8 @@ if len(sys.argv) < 2:
     except (KeyboardInterrupt, SystemExit):
         core.stop()
 else:
-    entryPointName = sys.argv[1]
-    core.run_entry_point(entryPointName, sys.argv)
+    entry_pointName = sys.argv[1]
+    core.run_entry_point(entry_pointName, sys.argv)
 
 # TODO: session backends: database
 # TODO: settings backends: database

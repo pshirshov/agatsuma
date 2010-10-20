@@ -191,7 +191,7 @@ See also **TODO**
         else:
             raise Exception("Bad setting name: '%s' (%s)" % (settingName, settingComment))
 
-    def register_entry_point(self, entryPointId, epFn):
+    def register_entry_point(self, entry_pointId, epFn):
         """ This method is intended to register *entry points*.
         Entry point is arbitrary function which receives
         arbitrary argumets list. Entry point may be called via
@@ -200,10 +200,10 @@ See also **TODO**
         different tasks that requires fully initialized environment such
         as database cleanup or something else.
         """
-        if not entryPointId in self.entry_points:
-            self.entry_points[entryPointId] = epFn
+        if not entry_pointId in self.entry_points:
+            self.entry_points[entry_pointId] = epFn
         else:
-            raise Exception("Entry point with name '%s' is already registered" % entryPointId)
+            raise Exception("Entry point with name '%s' is already registered" % entry_pointId)
 
     def run_entry_point(self, name, *args, **kwargs):
         """ This method runs registered entry point with given `name`
