@@ -43,11 +43,11 @@ class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
     def pre_configure(self, core):
         log.new_logger("test")
 
-    def beforeRequestCallback(self, handler):
-        log.test.debug("beforeRequestCallback: %s" % str(handler))
+    def before_request_callback(self, handler):
+        log.test.debug("before_request_callback: %s" % str(handler))
         log.test.debug("request: %s" % str(handler.request))
 
-    def initRoutes(self, map):
+    def init_routes(self, map):
         map.extend([(r"/test/mp/worker", MPWorkerHandler),
                     (r"/test/mp/pump", MPPumpHandler),
                     (r"/test/mp/timer", MPWorkerTimerHandler),
@@ -108,19 +108,19 @@ class MPPumpHandler(MsgPumpHandler):
         for x in range(1, 15):
             log.core.info("test %d" % x)
             time.sleep(1)
-            MsgPumpHandler.sendMessage(handlerId, "Iteration %d completed<br>" % x)
+            MsgPumpHandler.send_message(handlerId, "Iteration %d completed<br>" % x)
         return 1
 
     def onWorkerCompleted(self, ret):
         self.storedValue = ret
-        self.waitForQueue(self.complete)
+        self.wait_for_queue(self.complete)
 
     def complete(self):
         ret = self.storedValue
         self.write("Worker returned: %s" % str(ret))
         self.finish()
 
-    def processMessage(self, message):
+    def process_message(self, message):
         self.write(str(message[1]))
         self.flush()
 
@@ -159,9 +159,9 @@ class MPWorkerTimerHandler(MsgPumpHandler):
     @staticmethod
     def onTimer(handlerId):
         print "onTimer", multiprocessing.current_process()
-        MsgPumpHandler.sendMessage(handlerId, "ololo<br/>")
+        MsgPumpHandler.send_message(handlerId, "ololo<br/>")
 
-    def processMessage(self, message):
+    def process_message(self, message):
         self.write(str(message[1]))
         self.reallyCompleted = True
         self.flush()

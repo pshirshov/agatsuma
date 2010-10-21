@@ -99,14 +99,14 @@ class TornadoCore(Core):
 
         self.start_settings_updater()
 
-        self._beforeIOLoopStart()
+        self._before_ioloop_start()
 
         log.tcore.info("=" * 60)
         log.tcore.info("Starting %s/Agatsuma in server mode on port %d..." % (self.app_name, port))
         log.tcore.info("=" * 60)
         self.ioloop.start()
 
-    def _beforeIOLoopStart(self):
+    def _before_ioloop_start(self):
         raise EAbstractFunctionCall()
 
 class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
@@ -134,7 +134,7 @@ class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
         assert len(self.URIMap) > 0
         tornado.web.Application.__init__(self, self.URIMap, **tornadoSettings)
 
-    def _beforeIOLoopStart(self):
+    def _before_ioloop_start(self):
         if self.messagePumpNeeded and self.pool:
             TornadoCore.mqueue = MPQueue()
             pumpTimeout = Settings.tornado.message_pump_timeout
@@ -158,7 +158,7 @@ class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
                 if message and type(message) is tuple:
                     handlerId = message[0]
                     if handlerId in self.mpHandlerInstances:
-                        self.mpHandlerInstances[handlerId].processMessage(message)
+                        self.mpHandlerInstances[handlerId].process_message(message)
                     else:
                         log.tcore.warning("unknown message recepient: '%s'" % str(message))
                 else:
@@ -187,8 +187,8 @@ class TornadoWSGICore(TornadoCore, TornadoWSGIClass):
         """
         TornadoCore.__init__(self, app_directory, appConfig, **kwargs)
 
-    def setWSGI(self, wsgiapp):
+    def set_wsgi(self, wsgiapp):
         tornado.wsgi.WSGIContainer.__init__(self, wsgiapp)
 
-    def _beforeIOLoopStart(self):
+    def _before_ioloop_start(self):
         pass

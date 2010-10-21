@@ -4,7 +4,7 @@ class RequestSpell(object):
     """
     """
 
-    def beforeRequest(self, controller, environ, start_response):
+    def before_request(self, controller, environ, start_response):
         """
 
         Arguments:

@@ -3,5 +3,5 @@
 class MiddlewareSpell(object):
     """
     """
-    def addMiddleware(app):
+    def add_middleware(app):
         return app

@@ -21,6 +21,6 @@ class PylonsTornadoCore(TornadoWSGICore, PylonsAdaptor):
 
         TornadoWSGICore.__init__(self, app_directory, appConfig, **kwargs)
 
-    def setupPylons(self, **kwargs):
+    def setup_pylons(self, **kwargs):
         PylonsAdaptor.__init__(self, **kwargs)
-        self.setWSGI(self.app)
+        self.set_wsgi(self.app)

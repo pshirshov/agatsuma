@@ -47,7 +47,7 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
         for sessman in self.sessmans:
             sessman.delete(session)
 
-    def beforeRequestCallback(self, handler):
+    def before_request_callback(self, handler):
         if isinstance(handler, SessionHandler):
             cookie = handler.get_secure_cookie("AgatsumaSessId")
             log.sessions.debug("Loading session for %s" % cookie)
@@ -61,7 +61,7 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
                         timestamp = session["timestamp"]
                         now = datetime.datetime.now()
                         elapsed = now - timestamp
-                        left = (sessman._sessionDoomsday(timestamp)- now)
+                        left = (sessman._session_doomsday(timestamp)- now)
                         if elapsed >= left:
                             log.sessions.debug("Updating timestamp for session %s (E: %s, L: %s)" %
                                                (cookie, str(elapsed), str(left)))

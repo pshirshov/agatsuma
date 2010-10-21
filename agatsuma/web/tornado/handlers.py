@@ -19,7 +19,7 @@ class AgatsumaHandler(HandlerBaseClass):
     def prepare(self):
         spells = self.application.implementations_of(RequestSpell)
         for spell in spells:
-            spell.beforeRequestCallback(self)
+            spell.before_request_callback(self)
 
     def async(self, method, args, callback):
         self.application.pool.apply_async(method,
@@ -37,11 +37,11 @@ class MsgPumpHandler(AgatsumaHandler):
         application.handlerInitiated(self)
 
     @staticmethod
-    def sendMessage(id, message):
+    def send_message(id, message):
         TornadoCore.mqueue.put((id, message))
 
-    def processMessage(self, message):
+    def process_message(self, message):
         raise EAbstractFunctionCall()
 
-    def waitForQueue(self, callback):
+    def wait_for_queue(self, callback):
         self.application.waitingCallbacks.append(callback)

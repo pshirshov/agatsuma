@@ -35,9 +35,9 @@ class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
         if spells:
             urimap = []
             for spell in spells:
-                spell.initRoutes(urimap)
+                spell.init_routes(urimap)
             for spell in spells:
-                spell.postInitRoutes(urimap)
+                spell.post_init_routes(urimap)
             core.URIMap = []
             core.URITemplates = {}
             for url in urimap:

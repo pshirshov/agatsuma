@@ -77,7 +77,7 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
         sqlaSpell = Spell("agatsuma_sqla")
         ModelDemoSpell.SqlaSess = sqlaSpell.sqla_default_session
 
-    def initRoutes(self, map):
+    def init_routes(self, map):
         map.extend([(r"/test/model/test", ModelTestHandler),
                     (r"/test/model/mptest", ModelMPTestHandler),
 

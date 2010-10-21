@@ -52,19 +52,19 @@ class MemcachedSessionManager(BaseSessionManager):
         care of cleaning out the garbage."""
         pass
 
-    def destroyData(self, sessionId):
+    def destroy_data(self, sessionId):
         if not self.connection.remove(self._getPrefixedKey(sessionId)):
             log.sessions.info("Deleting seesion %s failed. It was probably "\
                               "not set or expired" % sessionId)
 
-    def loadData(self, sessionId):
+    def load_data(self, sessionId):
         data = self.connection.get(self._getPrefixedKey(sessionId))
         if data:
             return pickle.loads(data)
 
     def saveData(self, sessionId, data):
         expTime = int(time.mktime(
-          self._sessionDoomsday(datetime.datetime.now()).timetuple()))
+          self._session_doomsday(datetime.datetime.now()).timetuple()))
         if not self.connection.set(self._getPrefixedKey(sessionId),
                                    pickle.dumps(data), time=expTime):
             log.sessions.critical("Saving %s session failed" % sessionId)

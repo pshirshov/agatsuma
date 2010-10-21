@@ -14,7 +14,7 @@ class BaseSessionManager(object):
     def _generate_session_id(cls):
         return os.urandom(32).encode('hex')
 
-    def _sessionDoomsday(self, moment):
+    def _session_doomsday(self, moment):
         return moment + datetime.timedelta(seconds=Settings.sessions.expiration_interval)
 
     def new(self, ip, user_agent):
@@ -24,12 +24,12 @@ class BaseSessionManager(object):
         return sess
 
     def load(self, sessionId):
-        sessData = self.loadData(sessionId)
+        sessData = self.load_data(sessionId)
         log.sessions.debug("Loaded session %s with data %s loaded" % (sessionId, str(sessData)))
         if sessData:
-            if datetime.datetime.now() >= self._sessionDoomsday(sessData["timestamp"]):
+            if datetime.datetime.now() >= self._session_doomsday(sessData["timestamp"]):
                 log.sessions.debug("Session %s expired and destroyed" % sessionId)
-                self.destroyData(sessionId)
+                self.destroy_data(sessionId)
                 return None
             sess = Session(sessionId, sessData)
             sess.saved = True
@@ -47,7 +47,7 @@ class BaseSessionManager(object):
         session.saved = True
 
     def delete(self, session):
-        self.destroyData(session.id)
+        self.destroy_data(session.id)
         if session.handler:
             session.handler.clear_cookie("AgatsumaSessId")
         else:
@@ -58,11 +58,11 @@ class BaseSessionManager(object):
         """Deletes sessions with timestamps in the past form storage."""
         pass
 
-    def destroyData(self, sessionId):
+    def destroy_data(self, sessionId):
         """ destroys session in storage """
         pass
 
-    def loadData(self, sessionId):
+    def load_data(self, sessionId):
         """ returns session data if exists, otherwise returns None """
         pass
 

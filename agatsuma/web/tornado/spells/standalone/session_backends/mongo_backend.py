@@ -51,14 +51,14 @@ class MongoSessionManager(BaseSessionManager):
     def cleanup(self):
         self.db.remove({'expires': {'$lte': int(time.time())}})
 
-    def destroyData(self, session_id):
+    def destroy_data(self, session_id):
         try:
             self.db.remove({'session_id': session_id})
             self.connection.end_request()
         except pymongo.errors.AutoReconnect:
             log.sessions.critical("Mongo exception during destroying %s" % session_id)
 
-    def loadData(self, session_id):
+    def load_data(self, session_id):
         try:
             data = self.db.find_one({'session_id': session_id})
             self.connection.end_request()
@@ -71,7 +71,7 @@ class MongoSessionManager(BaseSessionManager):
             self.connection.end_request()
 
     def saveData(self, session_id, data):
-        expTime = int(time.mktime(self._sessionDoomsday(datetime.datetime.now()).timetuple()))
+        expTime = int(time.mktime(self._session_doomsday(datetime.datetime.now()).timetuple()))
         try:
             self.db.update(
                 {'session_id': session_id}, # equality criteria

@@ -16,7 +16,7 @@ class AppGlobals(BaseGlobals):
 
 from demo_pylons.lib import helpers
 core = PylonsTornadoCore([appRoot], appConfig)
-core.setupPylons(helpers = helpers,
+core.setup_pylons(helpers = helpers,
                  globals_class = AppGlobals,
                  pylons_root = appRoot,
                  global_conf = Settings.pylons.glob,

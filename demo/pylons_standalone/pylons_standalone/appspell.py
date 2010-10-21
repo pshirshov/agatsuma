@@ -27,6 +27,6 @@ class DemoAppSpell(AbstractSpell, SetupSpell, HandlingSpell):
                 'paste.app_install' : [('main', 'pylons.util', 'PylonsInstaller'), ],
         }
 
-    def initRoutes(self, map):
+    def init_routes(self, map):
         map.connect('/{controller}/{action}')
         map.connect('/{controller}/{action}/{id}')

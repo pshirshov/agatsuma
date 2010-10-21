@@ -20,6 +20,6 @@ class DemoAppSpell(AbstractSpell, SetupSpell, HandlingSpell):
         return {}
               #{"agatsuma" : ["agatsuma>=0.1"], }
 
-    def initRoutes(self, map):
+    def init_routes(self, map):
         map.connect('/{controller}/{action}')
         map.connect('/{controller}/{action}/{id}')

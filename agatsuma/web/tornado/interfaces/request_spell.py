@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
 class RequestSpell(object):
-    def beforeRequestCallback(self, handler):
+    def before_request_callback(self, handler):
         pass
 

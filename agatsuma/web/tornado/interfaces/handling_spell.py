@@ -5,8 +5,8 @@ class HandlingSpell(object):
     def __init__(self):
         pass
 
-    def initRoutes(self, map):
+    def init_routes(self, map):
         pass
 
-    def postInitRoutes(self, map):
+    def post_init_routes(self, map):
         pass

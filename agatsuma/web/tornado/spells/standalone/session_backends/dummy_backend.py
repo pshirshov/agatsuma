@@ -14,10 +14,10 @@ class DummySessionManager(BaseSessionManager):
         log.sessions.critical("Cleaning not supported, destroying all")
         self.sessions = {}
 
-    def destroyData(self, sessionId):
+    def destroy_data(self, sessionId):
         del self.sessions[sessionId]
 
-    def loadData(self, sessionId):
+    def load_data(self, sessionId):
         return self.sessions.get(sessionId, None)
 
     def saveData(self, sessionId, data):

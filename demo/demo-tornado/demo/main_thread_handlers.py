@@ -18,7 +18,7 @@ class MTDemoSpell(AbstractSpell, HandlingSpell):
                  }
         AbstractSpell.__init__(self, 'mt_demo_spell', config)
 
-    def initRoutes(self, map):
+    def init_routes(self, map):
         map.extend([(r"/test/mt/sync",       MTSyncHandler),
                     (r"/test/mt/async_null", MTAsyncNullHandler),
                     (r"/test/mt/async",      MTAsyncHandler),

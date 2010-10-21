@@ -12,7 +12,7 @@ class BaseController(WSGIController):
         """Invoke the Controller"""
         spells = Implementations(RequestSpell)
         for spell in spells:
-            spell.beforeRequest(self, environ, start_response)
+            spell.before_request(self, environ, start_response)
         
         # WSGIController.__call__ dispatches to the Controller method
         # the request is routed to. This routing information is

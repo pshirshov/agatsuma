@@ -38,17 +38,17 @@ class PylonsAdaptor(object):
             #app_name = kwargs['app_name']
             helpers = kwargs['helpers']
             GlobalsClass = kwargs['globals_class']
-            config = self._loadEnvironment(pylonsRoot,
+            config = self._load_environment(pylonsRoot,
                                            global_conf, app_conf,
                                            GlobalsClass, helpers)
             full_stack = kwargs['full_stack']
             static_files = kwargs['static_files']
-            self.app = self._makeApp(config, full_stack, static_files)
+            self.app = self._make_app(config, full_stack, static_files)
         else:
             log.core.warning("Setup mode. Pylons initialization skipped")
             self.app = None
 
-    def _makeApp(self, config, full_stack=True, static_files=True):
+    def _make_app(self, config, full_stack=True, static_files=True):
         # The Pylons WSGI app
         log.pcore.debug("Initializing middleware...")
         app = PylonsApp(config=config)
@@ -59,7 +59,7 @@ class PylonsAdaptor(object):
         # CUSTOM MIDDLEWARE HERE (filtered by error handling middlewares)
         spells = Implementations(MiddlewareSpell)
         for spell in spells:
-            app = spell.addMiddleware(app)
+            app = spell.add_middleware(app)
 
         if asbool(full_stack):
             # Handle Python exceptions
@@ -83,7 +83,7 @@ class PylonsAdaptor(object):
             app.config = config
         return app
 
-    def _loadEnvironment(self, pylonsRoot, global_conf, app_conf, GlobalsClass, helpers):
+    def _load_environment(self, pylonsRoot, global_conf, app_conf, GlobalsClass, helpers):
         log.pcore.debug("Loading environment...")
         """Configure the Pylons environment via the ``pylons.config``
         object
@@ -147,9 +147,9 @@ class PylonsAdaptor(object):
         spells = Implementations(HandlingSpell)
         print ">>>", spells
         for spell in spells:
-            spell.initRoutes(map)
+            spell.init_routes(map)
         for spell in spells:
-            spell.postInitRoutes(map)
+            spell.post_init_routes(map)
 
         return map
 
