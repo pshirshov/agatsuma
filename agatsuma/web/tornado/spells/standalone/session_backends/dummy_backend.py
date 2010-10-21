@@ -20,7 +20,7 @@ class DummySessionManager(BaseSessionManager):
     def load_data(self, sessionId):
         return self.sessions.get(sessionId, None)
 
-    def saveData(self, sessionId, data):
+    def save_data(self, sessionId, data):
         self.sessions[sessionId] = data
 
 class DummySessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):

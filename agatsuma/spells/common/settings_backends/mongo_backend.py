@@ -16,14 +16,14 @@ class MongoSettingsBackend(SettingsBackend):
 
     def init_connection(self):
         log.settings.info("Initializing MongoDB settings backend using URI '%s'" % self.uri)
-        connData = MongoSettingsBackend._parseMongoTableUri(self.uri)
+        connData = MongoSettingsBackend._parse_mongo_table_uri(self.uri)
         mongoSpell = Spell("agatsuma_mongodb")
         self.connection = mongoSpell.connection
         self.dbCollection = getattr(mongoSpell, connData[0])
         self.db = getattr(self.dbCollection, connData[1])
 
     @staticmethod
-    def _parseMongoTableUri(details):
+    def _parse_mongo_table_uri(details):
         # mongotable://collection/table
         match = re.match('^mongotable://(\w+)/(\w+)$', details)
         return match.group(1), match.group(2)

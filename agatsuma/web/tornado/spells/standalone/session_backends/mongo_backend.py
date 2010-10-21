@@ -33,7 +33,7 @@ class MongoSessionManager(BaseSessionManager):
 
     def init_connection(self):
         log.sessions.info("Initializing MongoDB session backend using URI '%s'" % self.uri)
-        connData = MongoSessionManager._parseMongoTableUri(self.uri)
+        connData = MongoSessionManager._parse_mongo_table_uri(self.uri)
         mongoSpell = Spell("agatsuma_mongodb")
         self.connection = mongoSpell.connection
         self.dbCollection = getattr(mongoSpell, connData[0])
@@ -43,7 +43,7 @@ class MongoSessionManager(BaseSessionManager):
         #self.db = self.dbSet.sessions
 
     @staticmethod
-    def _parseMongoTableUri(details):
+    def _parse_mongo_table_uri(details):
         # mongotable://collection/table
         match = re.match('^mongotable://(\w+)/(\w+)$', details)
         return match.group(1), match.group(2)
@@ -70,7 +70,7 @@ class MongoSessionManager(BaseSessionManager):
             log.sessions.critical("Unknown exception during loading: %s" % str(e))
             self.connection.end_request()
 
-    def saveData(self, session_id, data):
+    def save_data(self, session_id, data):
         expTime = int(time.mktime(self._session_doomsday(datetime.datetime.now()).timetuple()))
         try:
             self.db.update(

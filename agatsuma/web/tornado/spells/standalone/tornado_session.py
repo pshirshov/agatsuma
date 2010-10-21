@@ -39,11 +39,11 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
             else:
                 raise Exception("Incorrect session storage URI")
 
-    def saveSession(self, session):
+    def save_session(self, session):
         for sessman in self.sessmans:
             sessman.save(session)
 
-    def deleteSession(self, session):
+    def delete_session(self, session):
         for sessman in self.sessmans:
             sessman.delete(session)
 
@@ -65,13 +65,13 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
                         if elapsed >= left:
                             log.sessions.debug("Updating timestamp for session %s (E: %s, L: %s)" %
                                                (cookie, str(elapsed), str(left)))
-                            self.saveSession(session)
+                            self.save_session(session)
                         break
             if not session:
                 session = self.sessmans[0].new(handler.request.remote_ip,
                                            handler.request.headers["User-Agent"])
                 session.handler = handler
-                self.saveSession(session)
+                self.save_session(session)
             handler.session = session
             session.sessSpell = self
 

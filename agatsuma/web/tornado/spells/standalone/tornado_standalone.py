@@ -21,7 +21,7 @@ class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
         core.register_option("!tornado.message_pump_timeout", int, "Message pushing interval (msec)")
         core.register_option("!tornado.app_parameters", dict, "Kwarg parameters for tornado application")
 
-    def __processURL(self, core, url):
+    def __process_url(self, core, url):
         if type(url) is tuple:
             return url
         if type(url) is Url:
@@ -41,7 +41,7 @@ class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
             core.URIMap = []
             core.URITemplates = {}
             for url in urimap:
-                core.URIMap.append(self.__processURL(core, url))
+                core.URIMap.append(self.__process_url(core, url))
             log.tcore.info("URI map initialized")
             #log.tcore.debug("URI map:\n%s" % '\n'.join(map(lambda x: str(x), self.core.URIMap)))
             log.tcore.debug("URI map:")

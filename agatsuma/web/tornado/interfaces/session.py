@@ -46,9 +46,9 @@ class Session(collections.MutableMapping):
         return len(self.data.keys())
 
     def save(self):
-        self.sessSpell.saveSession(self)
+        self.sessSpell.save_session(self)
 
     def delete(self):
-        self.sessSpell.deleteSession(self)
+        self.sessSpell.delete_session(self)
 
 

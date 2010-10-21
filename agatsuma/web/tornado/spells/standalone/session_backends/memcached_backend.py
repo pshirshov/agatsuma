@@ -62,7 +62,7 @@ class MemcachedSessionManager(BaseSessionManager):
         if data:
             return pickle.loads(data)
 
-    def saveData(self, sessionId, data):
+    def save_data(self, sessionId, data):
         expTime = int(time.mktime(
           self._session_doomsday(datetime.datetime.now()).timetuple()))
         if not self.connection.set(self._getPrefixedKey(sessionId),

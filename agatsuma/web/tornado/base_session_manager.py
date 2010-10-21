@@ -37,7 +37,7 @@ class BaseSessionManager(object):
 
     def save(self, session):
         session["timestamp"] = datetime.datetime.now()
-        self.saveData(session.id, session.data)
+        self.save_data(session.id, session.data)
         if session.handler and not session.cookieSent:
             log.sessions.debug("Session %s with data %s saved and cookie set" % (session.id, str(session.data)))
             session.handler.set_secure_cookie(u"AgatsumaSessId", session.id)
