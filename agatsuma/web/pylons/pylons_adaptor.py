@@ -2,24 +2,24 @@
 
 import os
 
-from pylons.configuration import PylonsConfig
-from pylons.error import handle_mako_error
-from pylons.middleware import ErrorHandler, StatusCodeRedirect
-from pylons.wsgiapp import PylonsApp
-
-from paste.cascade import Cascade
-from paste.registry import RegistryManager
-from paste.urlparser import StaticURLParser
-from paste.deploy.converters import asbool
-
-from beaker.middleware import SessionMiddleware
-
-from routes.middleware import RoutesMiddleware
-from routes import Mapper
-
-from mako.lookup import TemplateLookup
-
 from agatsuma.core import Core
+if Core.internal_state.get("mode", None) == "normal":
+    from pylons.configuration import PylonsConfig
+    from pylons.error import handle_mako_error
+    from pylons.middleware import ErrorHandler, StatusCodeRedirect
+    from pylons.wsgiapp import PylonsApp
+
+    from paste.cascade import Cascade
+    from paste.registry import RegistryManager
+    from paste.urlparser import StaticURLParser
+    from paste.deploy.converters import asbool
+
+    from beaker.middleware import SessionMiddleware
+
+    from routes.middleware import RoutesMiddleware
+    from routes import Mapper
+    from mako.lookup import TemplateLookup
+
 from agatsuma import Implementations, log
 from agatsuma.web.pylons.interfaces import MiddlewareSpell, HandlingSpell
 
@@ -152,4 +152,3 @@ class PylonsAdaptor(object):
             spell.post_init_routes(map)
 
         return map
-

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from beaker.cache import CacheManager
-from beaker.util import parse_cache_config_options
+from agatsuma.core import Core
+if Core.internal_state.get("mode", None) == "normal":
+    from beaker.cache import CacheManager
+    from beaker.util import parse_cache_config_options
 
 class BaseGlobals(object):
     """Globals acts as a container for objects available throughout the

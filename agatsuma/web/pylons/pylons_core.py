@@ -16,4 +16,3 @@ class PylonsCore(Core, PylonsAdaptor):
 
         Core.__init__(self, app_directory, appConfig, **kwargs)
         PylonsAdaptor.__init__(self, **kwargs)
-
