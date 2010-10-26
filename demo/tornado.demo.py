@@ -47,6 +47,9 @@ else:
 
 # TODO: update options via HTTP from master server (or propagate to set of slaves, or re-read from storage)
 
+# TODO: tornado 1.0 support
+# TODO: setuptools mode test
+
 # ========================== Far far in future =================================
 # TODO: tornado: customized errors handling (Tornado patching needed), email reports
 # TODO: tornado: more powerful url builder

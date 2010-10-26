@@ -82,7 +82,7 @@ def printDeps(dependencies, depGroups, depGroupsContent, depGroupEnabled):
     nl()
     out("The following dependencies list will be used:\n%s" % str(dependencies))
     out("NOTE: You can use AGATSUMA_CONF environment variable to pass options")
-    out("NOTE: Dependencies will not work under easy_setup/pip")
+    out("NOTE: Dependencies may not work under easy_setup. Use pip!")
 ######################################################################
 ## Useful routines
 def filter_arguments(args):

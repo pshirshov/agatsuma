@@ -176,7 +176,12 @@ class Settings(object):
         """
         Should return json-like dictionary of settings
         """
-        return json.loads(settings)
+        def test(objdict):
+            result = {}
+            for item in objdict.iteritems():
+                result[str(item[0])] = item[1]
+            return result
+        return json.loads(settings, object_hook=test)
 
     def dump(self):
         return json.dumps(Settings.settings)
