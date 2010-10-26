@@ -81,7 +81,8 @@ def printDeps(dependencies, depGroups, depGroupsContent, depGroupEnabled):
         out("    Use --with-%s to enable" % group)
     nl()
     out("The following dependencies list will be used:\n%s" % str(dependencies))
-
+    out("NOTE: You can use AGATSUMA_CONF environment variable to pass options")
+    out("NOTE: Dependencies will not work under easy_setup/pip")
 ######################################################################
 ## Useful routines
 def groups_predicate(args):
@@ -95,7 +96,7 @@ def groups_predicate(args):
         depEnabled =(not (depsDisabled or ('--without-%s' % group) in components)
                      or (depsDisabled and ('--with-%s' % group) in components))
         return depEnabled
-    return depGroupEnabled
+    return (depGroupEnabled, args)
 
 def get_dependencies(depGroupsFilter, spells_filter = __withoutInternalSpells):
     dependencies, depGroups, depGroupsContent = depinfo(depGroupsFilter,

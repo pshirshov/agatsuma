@@ -23,7 +23,7 @@ def main():
     entry_points = get_entry_points(spells_filter)
     args = environ.get("AGATSUMA_CONF", "").split(" ")
     args.extend(sys.argv)
-    dependencies = get_dependencies(groups_predicate(args), spells_filter)
+    dependencies, sys.argv = get_dependencies(groups_predicate(args), spells_filter)
 
     nl()
     out("Continuing with Distribute...")
