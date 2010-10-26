@@ -20,7 +20,9 @@ Agatsuma Multiprocessing Core
 
 from base_core import Core
 from mp_core import MultiprocessingCoreExtension
+from mp_core import MPStandaloneExtension
 
 __all__ = ["Core",
            "MultiprocessingCoreExtension",
+           "MPStandaloneExtension"
            ]

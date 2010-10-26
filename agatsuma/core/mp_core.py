@@ -36,7 +36,16 @@ in core subclass and don't spawn unwanted thread.
 """
 
 class MultiprocessingCoreExtension(AbstractCoreExtension):
+    config_update_manager = None
+    shared_config_data = None
+    pids = None
+
     def init(self, core, app_directorys, appConfig, kwargs):
+        manager = Manager()
+        MultiprocessingCoreExtension.config_update_manager = manager
+        MultiprocessingCoreExtension.shared_config_data = manager.dict()
+        MultiprocessingCoreExtension.pids = manager.list()
+
         spell_directories = []
         nsFragments = ('agatsuma', 'spells', 'supplemental', 'mp')
         spell_directories.extend ([core._internal_spell_space(*nsFragments)
@@ -89,10 +98,6 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
         self.removePidFile()
 
 ################################################
-    config_update_manager = Manager()
-    shared_config_data = config_update_manager.dict()
-    pids = config_update_manager.list()
-
     # TODO: XXX: one method enough
     @staticmethod
     def remember_pid(pid):
@@ -156,7 +161,7 @@ def _worker_initializer(timeout):
 
 class MPStandaloneExtension(MultiprocessingCoreExtension):
     def _start_settings_updater(self):
-        MultiprocessingCoreExtension._update_settings_by_timer(Settings.mpcore.settings_update_timeout)
+        MPStandaloneExtension._update_settings_by_timer(Settings.mpcore.settings_update_timeout)
 
     @staticmethod
     def _update_settings_by_timer(timeout):
