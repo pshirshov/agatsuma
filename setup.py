@@ -31,7 +31,7 @@ def main():
         entry_points = entry_points,
         version = Core.version_string,
 
-        packages = find_packages(exclude=['distribute_setup']),
+        packages = find_packages(), #exclude=['distribute_setup']),
         zip_safe=False,
         include_package_data = True,
         #test_suite = 'nose.collector',
