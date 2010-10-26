@@ -85,18 +85,20 @@ def printDeps(dependencies, depGroups, depGroupsContent, depGroupEnabled):
     out("NOTE: Dependencies will not work under easy_setup/pip")
 ######################################################################
 ## Useful routines
+def filter_arguments(args):
+    args = filter(lambda s: not s.startswith('--with'), args)
+    args = filter(lambda s: s != "--disable-all", args)
+    return args
+
 def groups_predicate(args):
     components = filter(lambda s: s.startswith('--with'), args)
     depsDisabled = "--disable-all" in args
-
-    args = filter(lambda s: not s.startswith('--with'), args)
-    args = filter(lambda s: s != "--disable-all", args)
 
     def depGroupEnabled(group):
         depEnabled =(not (depsDisabled or ('--without-%s' % group) in components)
                      or (depsDisabled and ('--with-%s' % group) in components))
         return depEnabled
-    return (depGroupEnabled, args)
+    return depGroupEnabled
 
 def get_dependencies(depGroupsFilter, spells_filter = __withoutInternalSpells):
     dependencies, depGroups, depGroupsContent = depinfo(depGroupsFilter,

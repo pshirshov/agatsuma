@@ -9,6 +9,7 @@ from agatsuma.setup_helpers import (get_entry_points,
                                     run_setuptools,
                                     get_dependencies,
                                     groups_predicate,
+                                    filter_arguments,
                                     out,
                                     nl,
                                     )
@@ -23,8 +24,10 @@ def main():
     entry_points = get_entry_points(spells_filter)
     args = environ.get("AGATSUMA_CONF", "").split(" ")
     args.extend(sys.argv)
-    dependencies, sys.argv = get_dependencies(groups_predicate(args), spells_filter)
+    dependencies = get_dependencies(groups_predicate(args), spells_filter)
 
+    sys.argv = filter_arguments(sys.argv)
+    
     nl()
     out("Continuing with Distribute...")
     nl()
