@@ -3,6 +3,7 @@
 
 import sys
 
+from os import environ
 from agatsuma.core import Core
 from agatsuma.setup_helpers import (get_entry_points,
                                     run_setuptools,
@@ -20,7 +21,9 @@ def main():
 
     spells_filter = lambda x: True # consider internal spells too
     entry_points = get_entry_points(spells_filter)
-    dependencies = get_dependencies(groups_predicate(sys.argv), spells_filter)
+    args = environ.get("AGATSUMA_CONF", "").split(" ")
+    args.extend(sys.argv)
+    dependencies = get_dependencies(groups_predicate(args), spells_filter)
 
     nl()
     out("Continuing with Distribute...")
