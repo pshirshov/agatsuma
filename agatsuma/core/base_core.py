@@ -15,7 +15,8 @@ major_version = 0
 minor_version = 1
 try:
     from agatsuma.version import commits_count, branch_id, commit_id
-except:
+except Exception, e:
+    print "Cannot obtain version information: %s" % str(e)
     commits_count = 0
     branch_id = "branch"
     commit_id = "commit"
