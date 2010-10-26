@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import sqlalchemy.orm as orm
-
 class ModelSpell(object):
     def __init__(self):
         self.__tables = {}
@@ -16,6 +14,7 @@ class ModelSpell(object):
         self.__tables[attrName] = table
 
     def register_mapping(self, core, ClassToMap, tableToMap, **kwargs):
+        import sqlalchemy.orm as orm
         properties = kwargs.get("properties", {})
         spells = core.implementations_of(ModelSpell)
         for spell in spells:
@@ -43,4 +42,3 @@ class ModelSpell(object):
 
     def perform_deployment(self, core):
         pass
-
