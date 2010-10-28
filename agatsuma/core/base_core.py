@@ -103,7 +103,7 @@ The following kwargs parameters are supported:
         Core.internal_state["mode"] = kwargs.get("appMode", "normal")
 
         self.spells = []
-        self.spells_book = {}
+        self.spellbook = {}
         self.registered_settings = {}
         self.entry_points = {}
 

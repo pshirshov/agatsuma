@@ -19,11 +19,11 @@ class Enumerator(object):
 
     def __register_spell(self, spell):
         self.core.spells.append(spell)
-        self.core.spells_book[spell.spell_id()] = spell
+        self.core.spellbook[spell.spell_id()] = spell
 
     def __unregister_spell(self, spell):
         self.core.spells.remove(spell)
-        del self.core.spells_book[spell.spell_id()]
+        del self.core.spellbook[spell.spell_id()]
 
     def enumerate_spells(self, essentialSpellSpaces, additionalSpellPaths):
         spell_directories = []
