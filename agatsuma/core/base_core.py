@@ -100,7 +100,7 @@ The following kwargs parameters are supported:
         self.app_name = kwargs.get("app_name", None)
         self.application_spells = kwargs.get("application_spells", [])
         self.spell_directories = kwargs.get("spell_directories", [])
-        Core.internal_state["mode"] = kwargs.get("appMode", "normal")
+        Core.internal_state["mode"] = kwargs.get("app_mode", "normal")
 
         self.spells = []
         self.spellbook = {}

@@ -23,7 +23,7 @@ sys.path.append(libRoot)
 
 from agatsuma.core import Core
 #import agatsuma.web.tornado.interfaces
-core = Core(None, None, appMode = 'doc')
+core = Core(None, None, app_mode = 'doc')
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

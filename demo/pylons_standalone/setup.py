@@ -16,7 +16,7 @@ from agatsuma.setup_helpers import (get_entry_points,
                                     )
 
 from pylons_demo import make_core
-make_core({}, appMode = 'setup', app_name = "demo")
+make_core({}, app_mode = 'setup', app_name = "demo")
 
 entry_points = get_entry_points()
 dependencies = get_dependencies(groups_predicate(sys.argv))

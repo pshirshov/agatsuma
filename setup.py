@@ -18,7 +18,7 @@ def main():
     out("Agatsuma: Distribute mode")
     nl()
 
-    Core(None, None, appMode = 'setup')
+    Core(None, None, app_mode = 'setup')
 
     spells_filter = lambda x: True # consider internal spells too
     entry_points = get_entry_points(spells_filter)
