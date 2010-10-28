@@ -11,11 +11,14 @@ if Core.internal_state.get("mode", None) == "normal":
     import tornado.ioloop
     import tornado.web
     import tornado.wsgi
+    import tornado
     TornadoAppClass = tornado.web.Application
     TornadoWSGIClass = tornado.wsgi.WSGIContainer
+    TornadoVersion = tornado.version
 else:
     TornadoAppClass = object
     TornadoWSGIClass = object
+    TornadoVersion = None
 
 from agatsuma import Settings
 from agatsuma.errors import EAbstractFunctionCall
@@ -32,6 +35,8 @@ class TornadoMPExtension(MultiprocessingCoreExtension):
                                                         io_loop=Core.instance.ioloop)
         configChecker.start()
 
+supported_tornado_version="0.2"
+
 class TornadoCore(Core):
     mqueue = None
 
@@ -46,6 +51,9 @@ class TornadoCore(Core):
         extensions.append(TornadoMPExtension)
         kwargs['core_extensions'] = extensions
         Core.__init__(self, app_directory, appConfig, **kwargs)
+        if TornadoVersion and supported_tornado_version < TornadoVersion:
+            log.tcore.info("Current Tornado version: %s" %(TornadoVersion, ))
+            log.tcore.warning("Current Tornado version is not supported: %s>%s" % (TornadoVersion, supported_tornado_version))
 
     def _stop(self):
         #self.HTTPServer.stop()
@@ -135,6 +143,8 @@ class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
         tornado.web.Application.__init__(self, self.URIMap, **tornadoSettings)
 
     def _before_ioloop_start(self):
+        print "!" * 100, self.pool
+        print "!" * 100, self.messagePumpNeeded        
         if self.messagePumpNeeded and self.pool:
             TornadoCore.mqueue = MPQueue()
             pumpTimeout = Settings.tornado.message_pump_timeout

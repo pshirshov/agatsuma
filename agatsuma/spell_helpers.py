@@ -9,7 +9,7 @@ def Spell(spell_id):
     Arguments:
     - `spell_id`:
     """
-    return Core.instance.spells_dict.get(spell_id, None)
+    return Core.instance.spells_book.get(spell_id, None)
 
 @EternalInvariant
 def Implementations(interface):

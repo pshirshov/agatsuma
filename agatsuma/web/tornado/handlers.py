@@ -13,8 +13,8 @@ from agatsuma.errors import EAbstractFunctionCall
 from url import UrlFor
 
 class AgatsumaHandler(HandlerBaseClass):
-    def __init__(self, application, request, transforms=None):
-        tornado.web.RequestHandler.__init__(self, application, request, transforms)
+    def __init__(self, application, request, **kwargs):
+        tornado.web.RequestHandler.__init__(self, application, request, **kwargs)
 
     def prepare(self):
         spells = self.application.implementations_of(RequestSpell)
