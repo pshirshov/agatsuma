@@ -217,4 +217,3 @@ See also **TODO**
         :ref:`entry points<std-entry-points>`.
         """
         self.entry_points[name](*args, **kwargs)
-

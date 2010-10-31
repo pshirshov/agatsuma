@@ -39,7 +39,7 @@ supported_tornado_version="0.2"
 
 class TornadoCore(Core):
     mqueue = None
-
+    
     def __init__(self, app_directory, appConfig, **kwargs):
         spell_directories = []
         nsFragments = ('agatsuma', 'web', 'tornado', 'spells', 'common')
@@ -121,7 +121,7 @@ class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
     """Implements standalone Tornado server, useful to develop
     lightweight asynchronous web applications
     """
-
+    
     def __init__(self, app_directory, appConfig, **kwargs):
         """
         """
@@ -143,8 +143,6 @@ class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
         tornado.web.Application.__init__(self, self.URIMap, **tornadoSettings)
 
     def _before_ioloop_start(self):
-        print "!" * 100, self.pool
-        print "!" * 100, self.messagePumpNeeded        
         if self.messagePumpNeeded and self.pool:
             TornadoCore.mqueue = MPQueue()
             pumpTimeout = Settings.tornado.message_pump_timeout

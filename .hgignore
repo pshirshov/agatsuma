@@ -1,0 +1,16 @@
+# use glob syntax.
+syntax: glob
+
+*.pyc
+*~
+*.bak
+.metadata/*
+.ropeproject/*
+build/*
+dist/*
+agatsuma/version.py
+agatsuma/doc/build/*
+
+# switch to regexp syntax.
+syntax: regexp
+

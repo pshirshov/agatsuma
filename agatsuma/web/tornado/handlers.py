@@ -7,7 +7,6 @@ if Core.internal_state.get("mode", None) == "normal":
 else:
     HandlerBaseClass = object
 
-from tornado_core import TornadoCore
 from agatsuma.web.tornado.interfaces import RequestSpell
 from agatsuma.errors import EAbstractFunctionCall
 from url import UrlFor
@@ -38,7 +37,7 @@ class MsgPumpHandler(AgatsumaHandler):
 
     @staticmethod
     def send_message(id, message):
-        TornadoCore.mqueue.put((id, message))
+        Core.instance.mqueue.put((id, message))
 
     def process_message(self, message):
         raise EAbstractFunctionCall()

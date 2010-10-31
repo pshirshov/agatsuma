@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from multiprocessing import Queue as MPQueue
+
 from agatsuma.log import log
 
 from agatsuma.interfaces import AbstractSpell, InternalSpell, SetupSpell
@@ -59,6 +61,8 @@ class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
                 core.messagePumpNeeded = True
                 core.waitingCallbacks = []
                 break
+        if core.messagePumpNeeded:
+            core.mqueue = MPQueue()
 
     def requirements(self):
         return {"tornado" : ["tornado>=0.2"],
