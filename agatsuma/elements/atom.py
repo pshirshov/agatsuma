@@ -17,6 +17,14 @@ False
 False
 >>> atom3 == "atom3"
 False
+>>> test_dict = {}
+>>> test_dict[Atom.keyatom] = "test"
+>>> test_dict[Atom.keyatom] == "test"
+True
+>>> test_dict["keyatom"]
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+KeyError: 'keyatom'
 """
 
 class AtomFabric(type):
@@ -26,11 +34,17 @@ class AtomFabric(type):
                 return self.__name__ == other.__name__
             return type.__eq__(self, other)
 
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
         def __repr__(self):
             return "<atom %s>" % self.__name__
 
         def __str__(self):
             return self.__name__
+
+        def __hash__(self):
+            return str.__hash__(self.__name__)
 
     def __getattribute__(stype, name):
         return type.__new__(AtomFabric.AtomImplementation, name, (type,), {})
