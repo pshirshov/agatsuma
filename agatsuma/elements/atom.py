@@ -25,6 +25,18 @@ True
 Traceback (most recent call last):
   File "<stdin>", line 1, in ?
 KeyError: 'keyatom'
+>>> is_atom(atom1)
+True
+>>> is_atom("not an atom")
+False
+>>> atom1()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+CantInstantiateAtom
+>>> Atom.test="lol"
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+CantChangeAtom
 """
 
 class AtomFabric(type):
@@ -46,11 +58,30 @@ class AtomFabric(type):
         def __hash__(self):
             return str.__hash__(self.__name__)
 
-    def __getattribute__(stype, name):
-        return type.__new__(AtomFabric.AtomImplementation, name, (type,), {})
+    class CantInstantiateAtom(Exception):
+        pass
 
+    class AtomCreationPreventor(type):
+        def __new__(*args, **kwargs):
+            raise AtomFabric.CantInstantiateAtom()
+
+    def __getattribute__(stype, name):
+        return type.__new__(AtomFabric.AtomImplementation,
+                            name,
+                            (AtomFabric.AtomCreationPreventor,),
+                            {})
+
+    class CantChangeAtom(Exception):
+        pass
+
+    def __setattr__(self, name, value):
+        raise AtomFabric.CantChangeAtom()
+    
 class Atom(object):
     __metaclass__ = AtomFabric
+
+def is_atom(entity):
+    return isinstance(entity, AtomFabric.AtomImplementation)
 
 if __name__ == "__main__":
     import doctest
