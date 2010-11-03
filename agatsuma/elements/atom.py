@@ -61,28 +61,34 @@ class AtomFabric(type):
     class CantInstantiateAtom(Exception):
         pass
 
-    class AtomCreationPreventor(type):
+    class AtomInstantiationPreventor(type):
         def __new__(*args, **kwargs):
             raise AtomFabric.CantInstantiateAtom()
 
-    def __getattribute__(stype, name):
-        return type.__new__(AtomFabric.AtomImplementation,
-                            name,
-                            (AtomFabric.AtomCreationPreventor,),
-                            {})
+    def __getattribute__(self, name):
+        return to_atom(name)
 
     class CantChangeAtom(Exception):
         pass
 
     def __setattr__(self, name, value):
         raise AtomFabric.CantChangeAtom()
-    
+
+# Public entities
 class Atom(object):
     __metaclass__ = AtomFabric
 
 def is_atom(entity):
     return isinstance(entity, AtomFabric.AtomImplementation)
 
+def to_atom(name):
+    assert isinstance(name, str)    
+    return type.__new__(AtomFabric.AtomImplementation,
+                        name,
+                        (AtomFabric.AtomInstantiationPreventor,),
+                        {})
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+

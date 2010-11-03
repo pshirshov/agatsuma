@@ -72,23 +72,6 @@ class Settings(object):
     recovery = False
     config_lock = threading.Lock()
 
-    def __setattr__(self, name, value):
-        if name in type.__getattribute__(Settings, "settings"):
-            raise Exception("It's now allowed to overwrite settings group")
-        else:
-            object.__setattr__(self, name, value)
-
-    def __getattr__(self, name):
-        settings = type.__getattribute__(Settings, "settings")
-        if name in settings:
-            return DictAccessProxy(name, # group
-                                   settings[name],
-                                   Settings.readonly_settings[name],
-                                   Settings.types[name],
-                                   Settings.comments[name])
-        else:
-            return object.__getattribute__(self, name)
-
     def __init__(self, config, descriptors, **kwargs):
         conf = open(config, 'r')
         settings = conf.read()
