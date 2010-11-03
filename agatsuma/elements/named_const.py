@@ -20,7 +20,7 @@ Traceback (most recent call last):
 CantOverwriteConstant
 
 
->>> Const.register_constants("set1", test_consts)
+>>> Const.register_constants(Atom.set1, test_consts)
 >>> Const.set1.const1
 123
 >>> Const.set1.test
@@ -37,10 +37,13 @@ AttributeError: type object 'Const' has no attribute 'set2'
 Traceback (most recent call last):
   File "<stdin>", line 1, in ?
 CantOverwriteConstant
-
+>>> Const.register_constants(Atom.set2, {"non-atomic-key" : 123, Atom.test : 456})
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+AssertionError
 """
 
-from atom import to_atom #, is_atom
+from atom import to_atom, is_atom
 
 class RODictProxy(object):
     def __init__(self, source_dict):
@@ -90,13 +93,16 @@ class Const(object):
     
     @staticmethod
     def register_constants(name, constants):
-        assert isinstance(name, str)
+        assert is_atom(name)
         assert isinstance(constants, dict)
+
+        non_atomic_keys = filter(lambda x: not is_atom(x), constants.keys())
+        assert len(non_atomic_keys) == 0
         
         if name in Const.constant_storage:
             raise Const.ConstGroupAlreadyRegistered()
         
-        Const.constant_storage[name] = RODictProxy(constants)
+        Const.constant_storage[str(name)] = RODictProxy(constants)
 
 if __name__ == "__main__":
     import doctest
