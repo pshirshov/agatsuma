@@ -5,4 +5,5 @@ echo "commits_count = `hg id -n|cut -d + -f 1`" > ${TRG}
 echo "branch_id = '`hg branch`'" >> ${TRG}
 echo "commit_id = '`hg id|cut -d + -f 1`'" >> ${TRG}
 
+echo "Extracted from HG repo:"
 cat $TRG
