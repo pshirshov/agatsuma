@@ -13,8 +13,8 @@ class PylonsTornadoCore(TornadoWSGICore, PylonsAdaptor):
         spell_directories = []
         nsFragments = ('agatsuma', 'web', 'pylons', 'spells')
 
-        spell_directories.extend ([self._internal_spell_space(*(nsFragments + ('common', ))),
-                            self._internal_spell_space(*(nsFragments + ('tornado', )))
+        spell_directories.extend ([self._i_internal_spell_space(*(nsFragments + ('common', ))),
+                            self._i_internal_spell_space(*(nsFragments + ('tornado', )))
                            ])
         spell_directories.extend(kwargs.get('spell_directories', []))
         kwargs['spell_directories'] = spell_directories

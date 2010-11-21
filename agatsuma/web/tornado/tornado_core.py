@@ -43,7 +43,7 @@ class TornadoCore(Core):
     def __init__(self, app_directory, appConfig, **kwargs):
         spell_directories = []
         nsFragments = ('agatsuma', 'web', 'tornado', 'spells', 'common')
-        spell_directories.extend ([self._internal_spell_space(*nsFragments)
+        spell_directories.extend ([self._i_internal_spell_space(*nsFragments)
                             ])
         spell_directories.extend(kwargs.get('spell_directories', []))
         kwargs['spell_directories'] = spell_directories
@@ -127,7 +127,7 @@ class TornadoStandaloneCore(TornadoCore, TornadoAppClass):
         """
         spell_directories = []
         nsFragments = ('agatsuma', 'web', 'tornado', 'spells', 'standalone')
-        spell_directories.extend ([self._internal_spell_space(*nsFragments)
+        spell_directories.extend ([self._i_internal_spell_space(*nsFragments)
                             ])
         spell_directories.extend(kwargs.get('spell_directories', []))
         kwargs['spell_directories'] = spell_directories

@@ -68,7 +68,7 @@ The following kwargs parameters are supported:
     agatsuma_base_dir = up(up(os.path.realpath(os.path.dirname(__file__))))
 
     @staticmethod
-    def _internal_spell_space(*fragments):
+    def _i_internal_spell_space(*fragments):
         basePath = os.path.join(Core.agatsuma_base_dir, *fragments)
         baseNS = '.'.join(fragments)
         return (basePath, baseNS)
@@ -113,7 +113,7 @@ The following kwargs parameters are supported:
         forbidden_spells = kwargs.get("forbidden_spells", [])
         enumerator = Enumerator(self, app_directorys, forbidden_spells)
 
-        self.spell_directories.append(self._internal_spell_space('agatsuma', 'spells', 'common'))
+        self.spell_directories.append(self._i_internal_spell_space('agatsuma', 'spells', 'common'))
         enumerator.enumerate_spells(self.application_spells, self.spell_directories)
 
         if appConfig:

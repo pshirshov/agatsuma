@@ -70,14 +70,14 @@ Other interfaces
 from abstract_spell import AbstractSpell
 from abstract_core_extension import AbstractCoreExtension
 
-from model_spell import IModelSpell
-from filtering_spell import IFilteringSpell
-from settings_backend_spell import ISettingsBackendSpell
+from i_model_spell import IModelSpell
+from i_filtering_spell import IFilteringSpell
+from i_settings_backend_spell import ISettingsBackendSpell
 from settings_backend import AbstractSettingsBackend
-from pool_event_spell import IPoolEventSpell
-from storage_spell import IStorageSpell
-from setup_spell import ISetupSpell
-from internal_spell import IInternalSpell
+from i_pool_event_spell import IPoolEventSpell
+from i_storage_spell import IStorageSpell
+from i_setup_spell import ISetupSpell
+from i_internal_spell import IInternalSpell
 
 __all__ = ["AbstractSpell",
            "AbstractCoreExtension",

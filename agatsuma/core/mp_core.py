@@ -48,7 +48,7 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
 
         spell_directories = []
         nsFragments = ('agatsuma', 'spells', 'supplemental', 'mp')
-        spell_directories.extend ([core._internal_spell_space(*nsFragments)
+        spell_directories.extend ([core._i_internal_spell_space(*nsFragments)
                             ])
         spell_directories.extend(kwargs.get('spell_directories', []))
         kwargs['spell_directories'] = spell_directories
@@ -68,7 +68,7 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
         """
         spell_directories = []
         nsFragments = ('agatsuma', 'framework', 'tornado', 'spells')
-        spell_directories.extend ([self._internal_spell_space(*nsFragments)
+        spell_directories.extend ([self._i_internal_spell_space(*nsFragments)
                             ])
         """
         MultiprocessingCoreExtension.removePidFile()
