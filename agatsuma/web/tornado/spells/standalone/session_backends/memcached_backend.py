@@ -12,7 +12,11 @@ from agatsuma import log
 #from agatsuma.settings import Settings
 #from agatsuma import Core
 from agatsuma import Spell
+
 from agatsuma.interfaces import AbstractSpell, InternalSpell
+
+from agatsuma.elements import Atom
+
 from agatsuma.web.tornado.interfaces import SessionBackendSpell
 from agatsuma.web.tornado import BaseSessionManager
 
@@ -26,7 +30,7 @@ class MemcachedSessionManager(BaseSessionManager):
         log.sessions.info("Initializing Memcached session backend "\
                           "using URI '%s'" % self.uri)
         self.keyprefix = self._parse_memcached_prefix_uri(self.uri)
-        memcachedSpell = Spell("agatsuma_memcached")
+        memcachedSpell = Spell(Atom.agatsuma_memcached)
         self.pool = memcachedSpell.get_connection_pool()
 
     @property
@@ -72,10 +76,10 @@ class MemcachedSessionManager(BaseSessionManager):
 class MemcachedSessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
     def __init__(self):
         config = {'info' : 'Memcached session storage',
-                  'deps' : ('agatsuma_memcached', ),
-                  'provides' : ('session_backend', )
+                  'deps' : (Atom.agatsuma_memcached, ),
+                  'provides' : (Atom.session_backend, )
                  }
-        AbstractSpell.__init__(self, 'tornado_session_backend_memcached',
+        AbstractSpell.__init__(self, Atom.tornado_session_backend_memcached,
                                config)
 
     def instantiate_backend(self, uri):

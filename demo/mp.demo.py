@@ -36,9 +36,10 @@ def randomizeSettings():
 
 import time
 ticks = 0
-maxticks = 100
+maxticks = 5
 while ticks < maxticks:
     log.demo.info("Iteration %d/%d of useless loop" % (ticks, maxticks))
     ticks += 1
-    time.sleep(15)
+    time.sleep(4)
     randomizeSettings()
+core.stop()

@@ -9,6 +9,9 @@ import re
 from agatsuma.log import log
 from agatsuma.interfaces import AbstractSpell, InternalSpell
 
+def alist_to_strlist(alist):
+    return map(lambda atom: str(atom), alist)
+
 class Enumerator(object):
     def __init__(self, core, app_directorys, forbidden_spells):
         self.app_directorys = app_directorys
@@ -83,7 +86,7 @@ class Enumerator(object):
                 fileList = map(lambda x: x.replace(os.path.sep, '.'), fileList)
                 fileList = map(lambda x: "%s.%s" % (basicNamespace, x), fileList)
                 namespacesToImport.extend(fileList)
-        idRe = re.compile('^[\w]+$')
+        #idRe = re.compile('^[\w]+$')
         spells = {}
         provides = {}
         namespacesToImport = list(set(namespacesToImport))
@@ -108,8 +111,8 @@ class Enumerator(object):
                     for possibleSpell in possibleSpells:
                         instance = possibleSpell()
                         plid = instance.spell_id()
-                        if not idRe.match(plid):
-                            raise Exception("Incorrect spell Id: %s" % plid)
+                        #if not idRe.match(plid):
+                        #    raise Exception("Incorrect spell Id: %s" % plid)
                         log.core.info("Spell found: %s; base=%s" % (plid, nsToImport))
 
                         if not spells.has_key(plid):
@@ -138,7 +141,7 @@ class Enumerator(object):
         falseSpells = []
         for provId in provides:
             deps = provides[provId]
-            log.core.debug("Functionality '%s' provided by %s" % (provId, deps))
+            log.core.debug("Functionality '%s' provided by %s" % (provId, alist_to_strlist(deps)))
             newId = "[%s]" % provId
             falseSpell = AbstractSpell(newId, {'info' : 'Dependencies helper for %s' % provId,
                                                'deps' : tuple(deps),

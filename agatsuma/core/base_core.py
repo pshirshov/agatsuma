@@ -12,7 +12,7 @@ from agatsuma import log
 from agatsuma import Settings
 
 major_version = 0
-minor_version = 1
+minor_version = 2
 try:
     from agatsuma.version import commits_count, branch_id, commit_id
 except Exception, e:
@@ -85,6 +85,8 @@ The following kwargs parameters are supported:
         log.core.info("Version: %s" % self.version_string)
         log.core.info("Agatsuma's base directory: %s" % self.agatsuma_base_dir)
 
+        self.shutdown = False
+        
         self.extensions = []
         coreExtensions = kwargs.get("core_extensions", [])
         for extensionClass in coreExtensions:
@@ -155,6 +157,7 @@ The following kwargs parameters are supported:
         :meth:`agatsuma.core.Core._stop` to perform some cleanup actions here.
         """
         log.core.info("Stopping Agatsuma...")
+        self.shutdown = True
         self._stop()
 
     def implementations_of(self, InterfaceClass):

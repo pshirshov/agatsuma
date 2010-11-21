@@ -4,13 +4,15 @@ from agatsuma.log import log
 
 from agatsuma.interfaces import AbstractSpell, InternalSpell, SetupSpell
 
+from agatsuma.elements import Atom
+
 class PylonsSpell(AbstractSpell, InternalSpell, SetupSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Pylons Spell',
                   'deps' : (),
                   'eager_unload' : True,
                  }
-        AbstractSpell.__init__(self, 'agatsuma_pylons', config)
+        AbstractSpell.__init__(self, Atom.agatsuma_pylons, config)
 
     def pre_configure(self, core):
         log.new_logger("pcore")

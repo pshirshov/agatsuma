@@ -6,12 +6,14 @@ from agatsuma import Implementations
 from agatsuma.interfaces import AbstractSpell, InternalSpell
 from agatsuma.interfaces import FilteringSpell
 
+from agatsuma.elements import Atom
+
 class TextFiltersSpell(AbstractSpell, InternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Text Filtering Core Spell',
-                  'deps' : ("agatsuma_core", )
+                  'deps' : (Atom.agatsuma_core, )
                  }
-        AbstractSpell.__init__(self, 'agatsuma_text_filters', config)
+        AbstractSpell.__init__(self, Atom.agatsuma_text_filters, config)
         self.filterStack = []
 
     #def pre_configure(self, core):

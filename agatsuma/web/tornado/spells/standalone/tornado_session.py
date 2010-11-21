@@ -2,19 +2,22 @@
 import datetime
 import re
 
-from agatsuma import Spell
+from agatsuma import SpellByStr
 from agatsuma import Settings
 from agatsuma import log
+
 from agatsuma.interfaces import AbstractSpell, InternalSpell
 from agatsuma.web.tornado.interfaces import RequestSpell, SessionHandler
+
+from agatsuma.elements import Atom
 
 class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Session Spell',
-                  'deps' : ('agatsuma_tornado', ),
-                  'requires' : ('session_backend', ),
+                  'deps' : (Atom.agatsuma_tornado, ),
+                  'requires' : (Atom.session_backend, ),
                  }
-        AbstractSpell.__init__(self, 'agatsuma_session', config)
+        AbstractSpell.__init__(self, Atom.agatsuma_session, config)
 
     def pre_configure(self, core):
         log.new_logger("sessions")
@@ -31,7 +34,7 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
                 managerId = match.group(1)
                 uri = match.group(2)
                 spellName = "tornado_session_backend_%s" % managerId
-                spell = Spell(spellName)
+                spell = SpellByStr(spellName)
                 if spell:
                     self.sessmans.append(spell.instantiate_backend(uri))
                 else:
@@ -74,4 +77,3 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
                 self.save_session(session)
             handler.session = session
             session.sessSpell = self
-

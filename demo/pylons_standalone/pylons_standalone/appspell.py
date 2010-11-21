@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from agatsuma.interfaces import AbstractSpell, SetupSpell
+
+from agatsuma.elements import Atom
+
 from agatsuma.web.pylons.interfaces import HandlingSpell
 
 class DemoAppSpell(AbstractSpell, SetupSpell, HandlingSpell):
@@ -8,7 +11,7 @@ class DemoAppSpell(AbstractSpell, SetupSpell, HandlingSpell):
         config = {'info' : 'Pylons Standalone Demoapp Spell',
                   'deps' : (),
                  }
-        AbstractSpell.__init__(self, 'demoapp_spell', config)
+        AbstractSpell.__init__(self, Atom.demoapp_spell, config)
 
     def pre_configure(self, core):
         pass

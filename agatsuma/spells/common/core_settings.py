@@ -5,16 +5,18 @@ import copy
 
 from agatsuma import log
 from agatsuma import Settings
-from agatsuma import Spell
+from agatsuma import SpellByStr
 from agatsuma.interfaces import AbstractSpell, InternalSpell
+
+from agatsuma.elements import Atom
 
 class SettingsSpell(AbstractSpell, InternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Settings Spell',
                   'deps' : (),
-                  'requires' : ('settings_backend', ),
+                  'requires' : (Atom.settings_backend, ),
                  }
-        AbstractSpell.__init__(self, 'agatsuma_settings', config)
+        AbstractSpell.__init__(self, Atom.agatsuma_settings, config)
 
     def pre_configure(self, core):
         log.new_logger("settings")
@@ -35,7 +37,7 @@ class SettingsSpell(AbstractSpell, InternalSpell):
                 backendId = match.group(1)
                 uri = match.group(2)
                 spellName = "agatsuma_settings_backend_%s" % backendId
-                spell = Spell(spellName)
+                spell = SpellByStr(spellName)
                 if spell:
                     self.backend = spell.instantiate_backend(uri)
                 else:

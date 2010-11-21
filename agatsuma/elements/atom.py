@@ -82,13 +82,12 @@ def is_atom(entity):
     return isinstance(entity, AtomFabric.AtomImplementation)
 
 def to_atom(name):
-    assert isinstance(name, str)    
+    assert isinstance(name, str) or isinstance(name, unicode)
     return type.__new__(AtomFabric.AtomImplementation,
-                        name,
+                        str(name),
                         (AtomFabric.AtomInstantiationPreventor,),
                         {})
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-

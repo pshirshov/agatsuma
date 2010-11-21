@@ -9,13 +9,15 @@ from agatsuma.interfaces import PoolEventSpell
 from agatsuma.web.tornado.interfaces import HandlingSpell
 from agatsuma.web.tornado import Url
 
+from agatsuma.elements import Atom
+
 class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Tornado Spell',
                   'deps' : (),
                   'eager_unload' : True,
                  }
-        AbstractSpell.__init__(self, 'agatsuma_tornado_standalone', config)
+        AbstractSpell.__init__(self, Atom.agatsuma_tornado_standalone, config)
 
     def pre_configure(self, core):
         log.new_logger("tcore")

@@ -9,6 +9,8 @@ from agatsuma import Spell
 from agatsuma.interfaces import AbstractSpell, InternalSpell
 from agatsuma.interfaces import SettingsBackendSpell, SettingsBackend
 
+from agatsuma.elements import Atom
+
 class MongoSettingsBackend(SettingsBackend):
     def __init__(self, uri):
         self.uri = uri
@@ -17,7 +19,7 @@ class MongoSettingsBackend(SettingsBackend):
     def init_connection(self):
         log.settings.info("Initializing MongoDB settings backend using URI '%s'" % self.uri)
         connData = MongoSettingsBackend._parse_mongo_table_uri(self.uri)
-        mongoSpell = Spell("agatsuma_mongodb")
+        mongoSpell = Spell(Atom.agatsuma_mongodb)
         self.connection = mongoSpell.connection
         self.dbCollection = getattr(mongoSpell, connData[0])
         self.db = getattr(self.dbCollection, connData[1])
@@ -56,10 +58,10 @@ class MongoSettingsBackend(SettingsBackend):
 class MongoSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell):
     def __init__(self):
         config = {'info' : 'MongoDB settings storage',
-                  'deps' : ('agatsuma_mongodb', ),
-                  'provides' : ('settings_backend', )
+                  'deps' : (Atom.agatsuma_mongodb, ),
+                  'provides' : (Atom.settings_backend, )
                  }
-        AbstractSpell.__init__(self, 'agatsuma_settings_backend_mongo', config)
+        AbstractSpell.__init__(self, Atom.agatsuma_settings_backend_mongo, config)
 
     def instantiate_backend(self, uri):
         self.managerInstance = MongoSettingsBackend(uri)
@@ -71,4 +73,3 @@ class MongoSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell):
     def entry_point(self, *args, **kwargs):
         log.settings.info("Cleaning up settings in MongoDB")
         self.managerInstance.cleanup()
-

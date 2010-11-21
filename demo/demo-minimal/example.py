@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from agatsuma.core import Core
-from agatsuma.settings import Settings
 from agatsuma.log import log
+from agatsuma.elements import Atom
 
 from agatsuma.interfaces import AbstractSpell
 
@@ -11,7 +10,7 @@ class SimpleSpell(AbstractSpell):
         config = {'info' : 'Simple demo spell',
                   'deps' : ()
                  }
-        AbstractSpell.__init__(self, 'demo_spell', config)
+        AbstractSpell.__init__(self, Atom.demo_spell, config)
 
     def entry_point(self, *args, **kwargs):
         log.core.info("Demo entry point called with argv %s" % str(args))

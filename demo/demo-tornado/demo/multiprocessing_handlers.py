@@ -8,6 +8,9 @@ from agatsuma import log
 from agatsuma import Spell
 
 from agatsuma.interfaces import AbstractSpell, FilteringSpell
+
+from agatsuma.elements import Atom
+
 from agatsuma.web.tornado.interfaces import  SessionHandler
 from agatsuma.web.tornado import AgatsumaHandler, MsgPumpHandler, FidelityWorker
 from agatsuma.web.tornado.interfaces import  HandlingSpell, RequestSpell
@@ -17,7 +20,7 @@ class NullSpell(AbstractSpell, FilteringSpell):
         config = {'info' : 'Null spell',
                   'deps' : ()
                  }
-        AbstractSpell.__init__(self, 'null_spell', config)
+        AbstractSpell.__init__(self, Atom.null_spell, config)
 
     def filters_ist(self):
         return (self.testFilter,)
@@ -38,7 +41,7 @@ class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
         config = {'name' : 'Demo spell for multiprocessing handlers',
                   'info' : ()
                  }
-        AbstractSpell.__init__(self, 'mp_demo_spell', config)
+        AbstractSpell.__init__(self, Atom.mp_demo_spell, config)
 
     def pre_configure(self, core):
         log.new_logger("test")

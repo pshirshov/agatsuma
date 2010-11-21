@@ -6,16 +6,19 @@ import re
 
 from agatsuma.log import log
 from agatsuma.settings import Settings
+
 from agatsuma.interfaces import AbstractSpell, InternalSpell
 from agatsuma.interfaces import StorageSpell, SetupSpell
+
+from agatsuma.elements import Atom
 
 class MemcachedSpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
     def __init__(self):
         config = {'info' : 'Memcached support',
                   'deps' : (),
-                  'provides': ('storage_driver', ),
+                  'provides': (Atom.storage_driver, ),
                  }
-        AbstractSpell.__init__(self, 'agatsuma_memcached', config)
+        AbstractSpell.__init__(self, Atom.agatsuma_memcached, config)
 
     def pre_configure(self, core):
         core.register_option("!memcached.uri", unicode, "Memcached host URI")

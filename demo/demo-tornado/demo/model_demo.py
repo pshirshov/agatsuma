@@ -8,12 +8,13 @@ import sqlalchemy.orm as orm
 import tornado.web
 import tornado.ioloop
 
-from agatsuma.core import Core
-from agatsuma import Settings
 from agatsuma import log
 from agatsuma import Spell
 
 from agatsuma.interfaces import AbstractSpell, ModelSpell
+
+from agatsuma.elements import Atom
+
 from agatsuma.web.tornado import AgatsumaHandler, FidelityWorker
 from agatsuma.web.tornado.interfaces import  HandlingSpell
 
@@ -36,9 +37,9 @@ class User(object):
 class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
     def __init__(self):
         config = {'info' : 'Model demo spell',
-                  'deps' : ("agatsuma_sqla",)
+                  'deps' : (Atom.agatsuma_sqla,)
                  }
-        AbstractSpell.__init__(self, 'sqla_demo_spell', config)
+        AbstractSpell.__init__(self, Atom.sqla_demo_spell, config)
         ModelSpell.__init__(self)
 
     def init_metadata(self, metadata):
@@ -74,7 +75,7 @@ class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
         self.register_mapping(core, Post, self.postsTable, properties = postProps)
 
     def post_orm_setup(self, core):
-        sqlaSpell = Spell("agatsuma_sqla")
+        sqlaSpell = Spell(Atom.agatsuma_sqla)
         ModelDemoSpell.SqlaSess = sqlaSpell.sqla_default_session
 
     def init_routes(self, map):

@@ -3,11 +3,11 @@
 import tornado.web
 import tornado.ioloop
 import time
-from agatsuma.core import Core
-from agatsuma import Settings
-from agatsuma import log
 
 from agatsuma.interfaces import AbstractSpell
+
+from agatsuma.elements import Atom
+
 from agatsuma.web.tornado.interfaces import  HandlingSpell
 from agatsuma.web.tornado import Url, UrlFor, AgatsumaHandler
 
@@ -16,7 +16,7 @@ class MTDemoSpell(AbstractSpell, HandlingSpell):
         config = {'name' : 'Demo spell for main-thread handlers',
                   'info' : ()
                  }
-        AbstractSpell.__init__(self, 'mt_demo_spell', config)
+        AbstractSpell.__init__(self, Atom.mt_demo_spell, config)
 
     def init_routes(self, map):
         map.extend([(r"/test/mt/sync",       MTSyncHandler),

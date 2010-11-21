@@ -5,12 +5,14 @@ from agatsuma.core import MultiprocessingCoreExtension
 
 from agatsuma.interfaces import AbstractSpell, InternalSpell
 
+from agatsuma.elements import Atom
+
 class MPCoreSpell(AbstractSpell, InternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Multiprocessing Core Spell',
                   'deps' : (),
                  }
-        AbstractSpell.__init__(self, 'agatsuma_mp_core', config)
+        AbstractSpell.__init__(self, Atom.agatsuma_mp_core, config)
 
     def pre_configure(self, core):
         #import logging

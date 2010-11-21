@@ -13,6 +13,8 @@ from agatsuma.interfaces import (AbstractSpell,
                                  SettingsBackendSpell,
                                  SettingsBackend)
 
+from agatsuma.elements import Atom
+
 class MemcachedSettingsBackend(SettingsBackend):
     def __init__(self, uri):
         SettingsBackend.__init__(self)
@@ -23,7 +25,7 @@ class MemcachedSettingsBackend(SettingsBackend):
         log.settings.info("Initializing Memcached settings backend "\
                           "using URI '%s'" % self.uri)
         self.keyprefix = self._parse_memcached_prefix_uri(self.uri)
-        memcachedSpell = Spell("agatsuma_memcached")
+        memcachedSpell = Spell(Atom.agatsuma_memcached)
         self.pool = memcachedSpell.get_connection_pool()
 
     @property
@@ -56,10 +58,10 @@ class MemcachedSettingsBackend(SettingsBackend):
 class MemcachedSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell):
     def __init__(self):
         config = {'info' : 'Memcached settings storage',
-                  'deps' : ('agatsuma_memcached', ),
-                  'provides' : ('settings_backend', )
+                  'deps' : (Atom.agatsuma_memcached, ),
+                  'provides' : (Atom.settings_backend, )
                  }
-        AbstractSpell.__init__(self, 'agatsuma_settings_backend_memcached',
+        AbstractSpell.__init__(self, Atom.agatsuma_settings_backend_memcached,
                                config)
 
     def instantiate_backend(self, uri):

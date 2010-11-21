@@ -7,7 +7,11 @@ import datetime
 import pymongo
 
 from agatsuma import log, Spell
+
 from agatsuma.interfaces import AbstractSpell, InternalSpell
+
+from agatsuma.elements import Atom
+
 from agatsuma.web.tornado.interfaces import SessionBackendSpell
 from agatsuma.web.tornado import BaseSessionManager
 
@@ -34,7 +38,7 @@ class MongoSessionManager(BaseSessionManager):
     def init_connection(self):
         log.sessions.info("Initializing MongoDB session backend using URI '%s'" % self.uri)
         connData = MongoSessionManager._parse_mongo_table_uri(self.uri)
-        mongoSpell = Spell("agatsuma_mongodb")
+        mongoSpell = Spell(Atom.agatsuma_mongodb)
         self.connection = mongoSpell.connection
         self.dbCollection = getattr(mongoSpell, connData[0])
         self.db = getattr(self.dbCollection, connData[1])
@@ -87,10 +91,10 @@ class MongoSessionManager(BaseSessionManager):
 class MongoSessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
     def __init__(self):
         config = {'info' : 'MongoDB session storage',
-                  'deps' : ('agatsuma_mongodb', ),
-                  'provides' : ('session_backend', )
+                  'deps' : (Atom.agatsuma_mongodb, ),
+                  'provides' : (Atom.session_backend, )
                  }
-        AbstractSpell.__init__(self, 'tornado_session_backend_mongo', config)
+        AbstractSpell.__init__(self, Atom.tornado_session_backend_mongo, config)
 
     def instantiate_backend(self, uri):
         self.managerInstance = MongoSessionManager(uri)
@@ -102,4 +106,3 @@ class MongoSessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
     def entry_point(self, *args, **kwargs):
         log.core.info("Cleaning old sessions in MongoDB")
         self.managerInstance.cleanup()
-

@@ -12,7 +12,7 @@ from multiprocessing import Pool, Manager
 
 from agatsuma import Settings, log
 from agatsuma.errors import EAbstractFunctionCall
-#from agatsuma.core import Core
+from agatsuma.core import Core
 from agatsuma.interfaces import PoolEventSpell
 from agatsuma.interfaces import AbstractCoreExtension
 
@@ -165,5 +165,7 @@ class MPStandaloneExtension(MultiprocessingCoreExtension):
 
     @staticmethod
     def _update_settings_by_timer(timeout):
+        if Core.instance.shutdown:
+            return
         threading.Timer(timeout, MPStandaloneExtension._update_settings_by_timer, (timeout, )).start()
         MultiprocessingCoreExtension._update_settings()

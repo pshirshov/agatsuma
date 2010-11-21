@@ -17,16 +17,18 @@ from agatsuma import Implementations
 from agatsuma.interfaces import AbstractSpell, InternalSpell
 from agatsuma.interfaces import StorageSpell, ModelSpell, SetupSpell
 
+from agatsuma.elements import Atom
+
 class SQLASpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
     """.. _sqla-driver:
 
     """
     def __init__(self):
         config = {'info' : 'Agatsuma SQLAlchemy Spell',
-                  'deps' : ('agatsuma_core', ),
-                  'provides' : ('storage_driver', ),
+                  'deps' : (Atom.agatsuma_core, ),
+                  'provides' : (Atom.storage_driver, ),
                  }
-        AbstractSpell.__init__(self, 'agatsuma_sqla', config)
+        AbstractSpell.__init__(self, Atom.agatsuma_sqla, config)
         if sa:
             SQLASpell.proto_metadata = sa.MetaData()
 
@@ -90,4 +92,3 @@ class SQLASpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
         # little bugfix
         meta.ddl_listeners = sa.util.defaultdict(list)
         return meta
-

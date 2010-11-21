@@ -5,6 +5,8 @@ from agatsuma.interfaces import AbstractSpell, InternalSpell
 from agatsuma.web.tornado.interfaces import SessionBackendSpell
 from agatsuma.web.tornado import BaseSessionManager
 
+from agatsuma.elements import Atom
+
 class DummySessionManager(BaseSessionManager):
     def __init__(self):
         BaseSessionManager.__init__(self)
@@ -27,9 +29,9 @@ class DummySessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
     def __init__(self):
         config = {'info' : 'Dict-based debug session storage',
                   'deps' : (),
-                  'provides' : ('session_backend', )
+                  'provides' : (Atom.session_backend, )
                  }
-        AbstractSpell.__init__(self, 'tornado_session_backend_dummy', config)
+        AbstractSpell.__init__(self, Atom.tornado_session_backend_dummy, config)
 
     def instantiate_backend(self, uri):
         log.sessions.critical("Instantiating dummy session backend. URI '%s' ignored" % uri)

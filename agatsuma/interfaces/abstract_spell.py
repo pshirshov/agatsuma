@@ -120,4 +120,3 @@ The following spell parameters are supported now:
         *Should be overriden in subclasses*
         """
         pass
-

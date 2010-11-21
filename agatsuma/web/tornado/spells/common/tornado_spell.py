@@ -2,6 +2,8 @@
 
 from agatsuma.log import log
 
+from agatsuma.elements import Atom
+
 from agatsuma.interfaces import AbstractSpell, InternalSpell
 
 class TornadoSpell(AbstractSpell, InternalSpell):
@@ -10,7 +12,7 @@ class TornadoSpell(AbstractSpell, InternalSpell):
                   'deps' : (),
                   'eager_unload' : True,
                  }
-        AbstractSpell.__init__(self, 'agatsuma_tornado', config)
+        AbstractSpell.__init__(self, Atom.agatsuma_tornado, config)
 
     def pre_configure(self, core):
         log.new_logger("tcore")

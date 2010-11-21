@@ -9,7 +9,7 @@
 "mpcore" : 
     {
         "workers" : 2,
-        "settings_update_timeout" : 15,
+        "settings_update_timeout" : 3,
         "pidfile" : "pidfile~"
     },
 "logging" :
