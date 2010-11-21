@@ -1,3 +1,0 @@
-
-class ISessionHandler(object):
-    pass
