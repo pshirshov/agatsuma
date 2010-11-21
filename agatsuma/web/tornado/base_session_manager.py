@@ -5,7 +5,7 @@ import os
 
 from agatsuma.log import log
 from agatsuma.settings import Settings
-from agatsuma.web.tornado.interfaces import Session
+from agatsuma.web.tornado.interfaces import AbstractSession
 
 class BaseSessionManager(object):
     def __init__(self):
@@ -19,7 +19,7 @@ class BaseSessionManager(object):
 
     def new(self, ip, user_agent):
         newId = self._generate_session_id()
-        sess = Session(newId, {})
+        sess = AbstractSession(newId, {})
         sess.fill(ip, user_agent)
         return sess
 
@@ -31,7 +31,7 @@ class BaseSessionManager(object):
                 log.sessions.debug("Session %s expired and destroyed" % sessionId)
                 self.destroy_data(sessionId)
                 return None
-            sess = Session(sessionId, sessData)
+            sess = AbstractSession(sessionId, sessData)
             sess.saved = True
             return sess
 
@@ -65,6 +65,3 @@ class BaseSessionManager(object):
     def load_data(self, sessionId):
         """ returns session data if exists, otherwise returns None """
         pass
-
-
-

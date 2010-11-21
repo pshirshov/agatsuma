@@ -6,7 +6,7 @@ import collections
     http://github.com/milancermak/tornado/blob/master/tornado/session.py
 """
 
-class Session(collections.MutableMapping):
+class AbstractSession(collections.MutableMapping):
     def __init__(self, sess_id, data): #, manager, handler):
         self.id = sess_id
         self.data = data
@@ -50,5 +50,3 @@ class Session(collections.MutableMapping):
 
     def delete(self):
         self.sessSpell.delete_session(self)
-
-

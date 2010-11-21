@@ -7,7 +7,7 @@ from agatsuma import Settings
 from agatsuma import log
 from agatsuma import Spell
 
-from agatsuma.interfaces import AbstractSpell, FilteringSpell
+from agatsuma.interfaces import AbstractSpell, IFilteringSpell
 
 from agatsuma.elements import Atom
 
@@ -15,7 +15,7 @@ from agatsuma.web.tornado.interfaces import  ISessionHandler
 from agatsuma.web.tornado import AgatsumaHandler, MsgPumpHandler, FidelityWorker
 from agatsuma.web.tornado.interfaces import  IHandlingSpell, IRequestSpell
 
-class NullSpell(AbstractSpell, FilteringSpell):
+class NullSpell(AbstractSpell, IFilteringSpell):
     def __init__(self):
         config = {'info' : 'Null spell',
                   'deps' : ()
@@ -69,7 +69,7 @@ class MPWorkerHandler(AgatsumaHandler, ISessionHandler):
       print "GET2>", self.session.get("sesskey", None)
       self.session.save()
       #self.sessman.delete(self.session)
-      out=Spell("agatsuma_text_filters").apply("Hello from MPWorkerHandler!<br>")
+      out=Spell(Atom.agatsuma_text_filters).apply("Hello from MPWorkerHandler!<br>")
       # The following is equivalent but requires appropriate import:
       # out = Implementation(TextFilterSpell)[0].apply("Hello.jpg")
       self.write(out)
