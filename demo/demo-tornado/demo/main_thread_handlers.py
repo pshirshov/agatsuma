@@ -8,10 +8,10 @@ from agatsuma.interfaces import AbstractSpell
 
 from agatsuma.elements import Atom
 
-from agatsuma.web.tornado.interfaces import  HandlingSpell
+from agatsuma.web.tornado.interfaces import  IHandlingSpell
 from agatsuma.web.tornado import Url, UrlFor, AgatsumaHandler
 
-class MTDemoSpell(AbstractSpell, HandlingSpell):
+class MTDemoSpell(AbstractSpell, IHandlingSpell):
     def __init__(self):
         config = {'name' : 'Demo spell for main-thread handlers',
                   'info' : ()

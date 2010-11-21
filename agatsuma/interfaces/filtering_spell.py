@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class FilteringSpell(object):
+class IFilteringSpell(object):
     """ This mix-in interface is intended to provide functions that
     performs substring replacements.
 

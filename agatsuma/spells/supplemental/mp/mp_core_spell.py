@@ -3,11 +3,11 @@
 from agatsuma import Settings, log
 from agatsuma.core import MultiprocessingCoreExtension
 
-from agatsuma.interfaces import AbstractSpell, InternalSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
 
 from agatsuma.elements import Atom
 
-class MPCoreSpell(AbstractSpell, InternalSpell):
+class MPCoreSpell(AbstractSpell, IInternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Multiprocessing Core Spell',
                   'deps' : (),

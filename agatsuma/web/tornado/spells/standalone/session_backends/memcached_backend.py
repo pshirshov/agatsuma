@@ -13,11 +13,11 @@ from agatsuma import log
 #from agatsuma import Core
 from agatsuma import Spell
 
-from agatsuma.interfaces import AbstractSpell, InternalSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
 
 from agatsuma.elements import Atom
 
-from agatsuma.web.tornado.interfaces import SessionBackendSpell
+from agatsuma.web.tornado.interfaces import ISessionBackendSpell
 from agatsuma.web.tornado import BaseSessionManager
 
 class MemcachedSessionManager(BaseSessionManager):
@@ -73,7 +73,7 @@ class MemcachedSessionManager(BaseSessionManager):
                                    pickle.dumps(data), time=expTime):
             log.sessions.critical("Saving %s session failed" % sessionId)
 
-class MemcachedSessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
+class MemcachedSessionSpell(AbstractSpell, IInternalSpell, ISessionBackendSpell):
     def __init__(self):
         config = {'info' : 'Memcached session storage',
                   'deps' : (Atom.agatsuma_memcached, ),

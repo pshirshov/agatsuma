@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from agatsuma.interfaces import AbstractSpell, SetupSpell
+from agatsuma.interfaces import AbstractSpell, ISetupSpell
 
 from agatsuma.elements import Atom
 
-from agatsuma.web.pylons.interfaces import HandlingSpell
+from agatsuma.web.pylons.interfaces import IHandlingSpell
 
-class DemoAppSpell(AbstractSpell, SetupSpell, HandlingSpell):
+class DemoAppSpell(AbstractSpell, ISetupSpell, IHandlingSpell):
     def __init__(self):
         config = {'info' : 'Pylons Standalone Demoapp Spell',
                   'deps' : (),

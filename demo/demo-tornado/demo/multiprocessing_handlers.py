@@ -11,9 +11,9 @@ from agatsuma.interfaces import AbstractSpell, FilteringSpell
 
 from agatsuma.elements import Atom
 
-from agatsuma.web.tornado.interfaces import  SessionHandler
+from agatsuma.web.tornado.interfaces import  ISessionHandler
 from agatsuma.web.tornado import AgatsumaHandler, MsgPumpHandler, FidelityWorker
-from agatsuma.web.tornado.interfaces import  HandlingSpell, RequestSpell
+from agatsuma.web.tornado.interfaces import  IHandlingSpell, IRequestSpell
 
 class NullSpell(AbstractSpell, FilteringSpell):
     def __init__(self):
@@ -36,7 +36,7 @@ class NullSpell(AbstractSpell, FilteringSpell):
         core.register_option("test.test", unicode, "Test setting")
         core.register_entry_point("demoPoint", self.entry_point)
 
-class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
+class DemoSpell(AbstractSpell, IHandlingSpell, IRequestSpell):
     def __init__(self):
         config = {'name' : 'Demo spell for multiprocessing handlers',
                   'info' : ()
@@ -56,7 +56,7 @@ class DemoSpell(AbstractSpell, HandlingSpell, RequestSpell):
                     (r"/test/mp/timer", MPWorkerTimerHandler),
                 ])
 
-class MPWorkerHandler(AgatsumaHandler, SessionHandler):
+class MPWorkerHandler(AgatsumaHandler, ISessionHandler):
     """
     Handler with worker that perform operations in separate
     process. Useful for long-running operations that

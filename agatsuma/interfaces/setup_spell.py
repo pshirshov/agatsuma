@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class SetupSpell(object):
+class ISetupSpell(object):
     """
     """
     def requirements(self):

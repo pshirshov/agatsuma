@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from agatsuma import Implementations
-from agatsuma.interfaces import SetupSpell, InternalSpell
+from agatsuma.interfaces import ISetupSpell, IInternalSpell
 
 def run_setuptools(**kwargs):
     from setuptools import setup
@@ -12,7 +12,7 @@ def run_setuptools(**kwargs):
 ######################################################################
 ## Entry points
 def collectEntryPoints(spells_filter):
-    spells = Implementations(SetupSpell)
+    spells = Implementations(ISetupSpell)
     spells = filter(spells_filter, spells)
     sections = {}
     for spell in spells:
@@ -38,11 +38,11 @@ def entry_pointsInfo(spells_filter):
 
 ######################################################################
 ## Dependencies
-def __withoutInternalSpells(spell):
-    return not issubclass(type(spell), InternalSpell)
+def __withoutIInternalSpells(spell):
+    return not issubclass(type(spell), IInternalSpell)
 
 def depinfo(groupChecker, spells_filter):
-    spells = Implementations(SetupSpell)
+    spells = Implementations(ISetupSpell)
     spells = filter(spells_filter, spells)
     depGroups = []
     dependencies = []
@@ -100,13 +100,13 @@ def groups_predicate(args):
         return depEnabled
     return depGroupEnabled
 
-def get_dependencies(depGroupsFilter, spells_filter = __withoutInternalSpells):
+def get_dependencies(depGroupsFilter, spells_filter = __withoutIInternalSpells):
     dependencies, depGroups, depGroupsContent = depinfo(depGroupsFilter,
                                                         spells_filter)
     printDeps(dependencies, depGroups, depGroupsContent, depGroupsFilter)
     return dependencies
 
-def get_entry_points(spells_filter = __withoutInternalSpells):
+def get_entry_points(spells_filter = __withoutIInternalSpells):
     entry_points = entry_pointsInfo(spells_filter)
     nl()
     out("The following entry points are provided: %s" % entry_points)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class MiddlewareSpell(object):
+class IMiddlewareSpell(object):
     """
     """
     def add_middleware(app):

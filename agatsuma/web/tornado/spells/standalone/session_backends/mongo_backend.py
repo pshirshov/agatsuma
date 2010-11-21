@@ -8,11 +8,11 @@ import pymongo
 
 from agatsuma import log, Spell
 
-from agatsuma.interfaces import AbstractSpell, InternalSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
 
 from agatsuma.elements import Atom
 
-from agatsuma.web.tornado.interfaces import SessionBackendSpell
+from agatsuma.web.tornado.interfaces import ISessionBackendSpell
 from agatsuma.web.tornado import BaseSessionManager
 
 """
@@ -88,7 +88,7 @@ class MongoSessionManager(BaseSessionManager):
         except pymongo.errors.AutoReconnect:
             log.sessions.critical("Mongo exception during saving %s with data %s" % (session_id, str(data)))
 
-class MongoSessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
+class MongoSessionSpell(AbstractSpell, IInternalSpell, ISessionBackendSpell):
     def __init__(self):
         config = {'info' : 'MongoDB session storage',
                   'deps' : (Atom.agatsuma_mongodb, ),

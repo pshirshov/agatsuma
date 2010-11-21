@@ -14,12 +14,12 @@ from agatsuma import log
 from agatsuma import Settings
 from agatsuma import Implementations
 
-from agatsuma.interfaces import AbstractSpell, InternalSpell
-from agatsuma.interfaces import StorageSpell, ModelSpell, SetupSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
+from agatsuma.interfaces import IStorageSpell, IModelSpell, ISetupSpell
 
 from agatsuma.elements import Atom
 
-class SQLASpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
+class SQLASpell(AbstractSpell, IInternalSpell, IStorageSpell, ISetupSpell):
     """.. _sqla-driver:
 
     """
@@ -37,7 +37,7 @@ class SQLASpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
                }
 
     def deploy(self, *args, **kwargs):
-        spells = Implementations(ModelSpell)
+        spells = Implementations(IModelSpell)
         log.storage.info("Initializing Database...")
         if spells:
             if "recreate" in args:
@@ -56,7 +56,7 @@ class SQLASpell(AbstractSpell, InternalSpell, StorageSpell, SetupSpell):
         core.register_entry_point("agatsuma:sqla_init", self.deploy)
 
     def post_configure(self, core):
-        spells = Implementations(ModelSpell)
+        spells = Implementations(IModelSpell)
         if spells:
             log.storage.info("Initializing SQLAlchemy engine and session...")
             self.SqlaEngine = sa.create_engine(Settings.sqla.uri, **Settings.sqla.parameters)

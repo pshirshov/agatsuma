@@ -6,19 +6,19 @@ import pymongo
 
 from agatsuma import log
 from agatsuma import Spell
-from agatsuma.interfaces import AbstractSpell, InternalSpell
-from agatsuma.interfaces import SettingsBackendSpell, SettingsBackend
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
+from agatsuma.interfaces import ISettingsBackendSpell, AbstractSettingsBackend
 
 from agatsuma.elements import Atom
 
-class MongoSettingsBackend(SettingsBackend):
+class MongoAbstractSettingsBackend(AbstractSettingsBackend):
     def __init__(self, uri):
         self.uri = uri
         self.init_connection()
 
     def init_connection(self):
         log.settings.info("Initializing MongoDB settings backend using URI '%s'" % self.uri)
-        connData = MongoSettingsBackend._parse_mongo_table_uri(self.uri)
+        connData = MongoAbstractSettingsBackend._parse_mongo_table_uri(self.uri)
         mongoSpell = Spell(Atom.agatsuma_mongodb)
         self.connection = mongoSpell.connection
         self.dbCollection = getattr(mongoSpell, connData[0])
@@ -55,7 +55,7 @@ class MongoSettingsBackend(SettingsBackend):
         except pymongo.errors.AutoReconnect:
             log.settings.critical("Mongo exception during saving %s=%s" % (name, str(value)))
 
-class MongoSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell):
+class MongoSettingsSpell(AbstractSpell, IInternalSpell, ISettingsBackendSpell):
     def __init__(self):
         config = {'info' : 'MongoDB settings storage',
                   'deps' : (Atom.agatsuma_mongodb, ),
@@ -64,7 +64,7 @@ class MongoSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell):
         AbstractSpell.__init__(self, Atom.agatsuma_settings_backend_mongo, config)
 
     def instantiate_backend(self, uri):
-        self.managerInstance = MongoSettingsBackend(uri)
+        self.managerInstance = MongoAbstractSettingsBackend(uri)
         return self.managerInstance
 
     def pre_configure(self, core):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class RequestSpell(object):
+class IRequestSpell(object):
     """
     """
 

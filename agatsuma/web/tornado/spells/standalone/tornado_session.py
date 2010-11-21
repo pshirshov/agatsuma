@@ -6,12 +6,12 @@ from agatsuma import SpellByStr
 from agatsuma import Settings
 from agatsuma import log
 
-from agatsuma.interfaces import AbstractSpell, InternalSpell
-from agatsuma.web.tornado.interfaces import RequestSpell, SessionHandler
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
+from agatsuma.web.tornado.interfaces import IRequestSpell, ISessionHandler
 
 from agatsuma.elements import Atom
 
-class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
+class SessionSpell(AbstractSpell, IInternalSpell, IRequestSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Session Spell',
                   'deps' : (Atom.agatsuma_tornado, ),
@@ -51,7 +51,7 @@ class SessionSpell(AbstractSpell, InternalSpell, RequestSpell):
             sessman.delete(session)
 
     def before_request_callback(self, handler):
-        if isinstance(handler, SessionHandler):
+        if isinstance(handler, ISessionHandler):
             cookie = handler.get_secure_cookie("AgatsumaSessId")
             log.sessions.debug("Loading session for %s" % cookie)
             session = None

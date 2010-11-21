@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from agatsuma.log import log
-from agatsuma.interfaces import AbstractSpell, InternalSpell
-from agatsuma.web.tornado.interfaces import SessionBackendSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
+from agatsuma.web.tornado.interfaces import ISessionBackendSpell
 from agatsuma.web.tornado import BaseSessionManager
 
 from agatsuma.elements import Atom
@@ -25,7 +25,7 @@ class DummySessionManager(BaseSessionManager):
     def save_data(self, sessionId, data):
         self.sessions[sessionId] = data
 
-class DummySessionSpell(AbstractSpell, InternalSpell, SessionBackendSpell):
+class DummySessionSpell(AbstractSpell, IInternalSpell, ISessionBackendSpell):
     def __init__(self):
         config = {'info' : 'Dict-based debug session storage',
                   'deps' : (),

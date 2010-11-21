@@ -3,15 +3,15 @@
 """ **TODO**
 """
 
-from session_backend_spell import SessionBackendSpell
-from handling_spell import HandlingSpell
-from request_spell import RequestSpell
-from session_handler import SessionHandler
+from session_backend_spell import ISessionBackendSpell
+from handling_spell import IHandlingSpell
+from request_spell import IRequestSpell
+from session_handler import ISessionHandler
 from session import Session # for internal usage
 
-__all__ = ["SessionBackendSpell",
-           "HandlingSpell",
-           "RequestSpell",
-           "SessionHandler",
+__all__ = ["ISessionBackendSpell",
+           "IHandlingSpell",
+           "IRequestSpell",
+           "ISessionHandler",
            "Session",
           ]

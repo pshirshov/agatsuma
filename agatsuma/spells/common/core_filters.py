@@ -3,12 +3,12 @@
 from agatsuma import log
 from agatsuma import Implementations
 
-from agatsuma.interfaces import AbstractSpell, InternalSpell
-from agatsuma.interfaces import FilteringSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
+from agatsuma.interfaces import IFilteringSpell
 
 from agatsuma.elements import Atom
 
-class TextFiltersSpell(AbstractSpell, InternalSpell):
+class TextFiltersSpell(AbstractSpell, IInternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Text Filtering Core Spell',
                   'deps' : (Atom.agatsuma_core, )
@@ -20,7 +20,7 @@ class TextFiltersSpell(AbstractSpell, InternalSpell):
     #    core.filterStack = []
 
     def post_configure(self, core):
-        spells = Implementations(FilteringSpell)
+        spells = Implementations(IFilteringSpell)
         if not spells:
             log.core.info("Filtering spells not found")
             return

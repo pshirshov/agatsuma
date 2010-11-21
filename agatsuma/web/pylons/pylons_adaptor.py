@@ -21,7 +21,7 @@ if Core.internal_state.get("mode", None) == "normal":
     from mako.lookup import TemplateLookup
 
 from agatsuma import Implementations, log
-from agatsuma.web.pylons.interfaces import MiddlewareSpell, HandlingSpell
+from agatsuma.web.pylons.interfaces import IMiddlewareSpell, IHandlingSpell
 
 class PylonsAdaptor(object):
     """
@@ -57,7 +57,7 @@ class PylonsAdaptor(object):
         app = SessionMiddleware(app, config)
 
         # CUSTOM MIDDLEWARE HERE (filtered by error handling middlewares)
-        spells = Implementations(MiddlewareSpell)
+        spells = Implementations(IMiddlewareSpell)
         for spell in spells:
             app = spell.add_middleware(app)
 
@@ -143,8 +143,8 @@ class PylonsAdaptor(object):
         map.connect('/error/{action}/{id}', controller='error')
 
         # CUSTOM ROUTES HERE
-        print HandlingSpell
-        spells = Implementations(HandlingSpell)
+        print IHandlingSpell
+        spells = Implementations(IHandlingSpell)
         print ">>>", spells
         for spell in spells:
             spell.init_routes(map)

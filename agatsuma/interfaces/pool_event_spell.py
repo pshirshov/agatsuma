@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class PoolEventSpell(object):
+class IPoolEventSpell(object):
     """
     Implementations of this mix-in interface may react events related to
     process pool created by :class:`agatsuma.core.MPCore`.

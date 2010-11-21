@@ -2,11 +2,11 @@
 
 #from agatsuma.log import log
 
-from agatsuma.interfaces import AbstractSpell, InternalSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
 
 from agatsuma.elements import Atom
 
-class PylonsWSGISpell(AbstractSpell, InternalSpell):
+class PylonsWSGISpell(AbstractSpell, IInternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Pylons/Tornado Spell',
                   'deps' : (Atom.agatsuma_tornado, ),

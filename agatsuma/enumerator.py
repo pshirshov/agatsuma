@@ -7,7 +7,7 @@ import re
 #import traceback
 
 from agatsuma.log import log
-from agatsuma.interfaces import AbstractSpell, InternalSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
 
 def alist_to_strlist(alist):
     return map(lambda atom: str(atom), alist)
@@ -150,7 +150,7 @@ class Enumerator(object):
             falseSpells.append(falseSpell)
 
         spellsList = spells.values()
-        internalSpells = filter(lambda spell: issubclass(type(spell), InternalSpell), spellsList)
+        internalSpells = filter(lambda spell: issubclass(type(spell), IInternalSpell), spellsList)
         log.core.info("IMPORT STAGE COMPLETED. Imported %d spells (%d provided by Agatsuma, %d fake spells for groups):"
                       % (len(spells), len(internalSpells), len(falseSpells)))
         self.print_spells_list(spellsList)

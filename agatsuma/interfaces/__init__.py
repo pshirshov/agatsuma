@@ -13,11 +13,11 @@ Base core interfaces
    :members:
    :inherited-members:
 
-.. autoclass:: agatsuma.interfaces.SetupSpell
+.. autoclass:: agatsuma.interfaces.ISetupSpell
    :members:
    :inherited-members:
 
-.. autoclass:: agatsuma.interfaces.FilteringSpell
+.. autoclass:: agatsuma.interfaces.IFilteringSpell
    :members:
    :inherited-members:
 
@@ -25,7 +25,7 @@ Base core interfaces
 Multiprocessing core interfaces
 ===============================
 
-.. autoclass:: agatsuma.interfaces.PoolEventSpell
+.. autoclass:: agatsuma.interfaces.IPoolEventSpell
    :members:
    :inherited-members:
 
@@ -34,19 +34,19 @@ Base services' interfaces
 =========================
 
 
-.. autoclass:: agatsuma.interfaces.ModelSpell
+.. autoclass:: agatsuma.interfaces.IModelSpell
    :members:
    :inherited-members:
 
-.. autoclass:: agatsuma.interfaces.SettingsBackendSpell
+.. autoclass:: agatsuma.interfaces.ISettingsBackendSpell
    :members:
    :inherited-members:
 
-.. autoclass:: agatsuma.interfaces.StorageSpell
+.. autoclass:: agatsuma.interfaces.IStorageSpell
    :members:
    :inherited-members:
 
-.. autoclass:: agatsuma.interfaces.ModelSpell
+.. autoclass:: agatsuma.interfaces.IModelSpell
    :members:
    :inherited-members:
 
@@ -54,14 +54,14 @@ Base services' interfaces
 Web-related spells
 ==================
 
-.. autoclass:: agatsuma.web.tornado.interfaces.SessionHandler
+.. autoclass:: agatsuma.web.tornado.interfaces.ISessionHandler
    :members:
    :inherited-members:
 
 Other interfaces
 ****************
 
-.. autoclass:: agatsuma.interfaces.SettingsBackend
+.. autoclass:: agatsuma.interfaces.AbstractSettingsBackend
    :members:
    :inherited-members:
 
@@ -70,25 +70,25 @@ Other interfaces
 from abstract_spell import AbstractSpell
 from abstract_core_extension import AbstractCoreExtension
 
-from model_spell import ModelSpell
-from filtering_spell import FilteringSpell
-from settings_backend_spell import SettingsBackendSpell
-from settings_backend import SettingsBackend
-from pool_event_spell import PoolEventSpell
-from storage_spell import StorageSpell
-from setup_spell import SetupSpell
-from internal_spell import InternalSpell
+from model_spell import IModelSpell
+from filtering_spell import IFilteringSpell
+from settings_backend_spell import ISettingsBackendSpell
+from settings_backend import AbstractSettingsBackend
+from pool_event_spell import IPoolEventSpell
+from storage_spell import IStorageSpell
+from setup_spell import ISetupSpell
+from internal_spell import IInternalSpell
 
 __all__ = ["AbstractSpell",
            "AbstractCoreExtension",
-           "InternalSpell",
-           "SetupSpell",
-           "FilteringSpell",
+           "IInternalSpell",
+           "ISetupSpell",
+           "IFilteringSpell",
 
-           "PoolEventSpell",
+           "IPoolEventSpell",
 
-           "ModelSpell",
-           "SettingsBackendSpell",
-           "SettingsBackend",
-           "StorageSpell",
+           "IModelSpell",
+           "ISettingsBackendSpell",
+           "AbstractSettingsBackend",
+           "IStorageSpell",
           ]

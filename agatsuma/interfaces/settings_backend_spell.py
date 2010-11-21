@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 
-class SettingsBackendSpell(object):
+class ISettingsBackendSpell(object):
     def instantiate_backend(self, uri):
         return None

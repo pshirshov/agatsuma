@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from agatsuma.interfaces import AbstractSpell, InternalSpell, SetupSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell, ISetupSpell
 
 from agatsuma.elements import Atom
 
-class CoreSpell(AbstractSpell, InternalSpell, SetupSpell):
+class CoreSpell(AbstractSpell, IInternalSpell, ISetupSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Core Spell',
                   'deps' : (),

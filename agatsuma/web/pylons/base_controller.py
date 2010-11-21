@@ -9,13 +9,13 @@ else:
     WSGIController = object
 
 from agatsuma import Implementations
-from agatsuma.web.pylons.interfaces import RequestSpell
+from agatsuma.web.pylons.interfaces import IRequestSpell
 
 class BaseController(WSGIController):
 
     def __call__(self, environ, start_response):
         """Invoke the Controller"""
-        spells = Implementations(RequestSpell)
+        spells = Implementations(IRequestSpell)
         for spell in spells:
             spell.before_request(self, environ, start_response)
 

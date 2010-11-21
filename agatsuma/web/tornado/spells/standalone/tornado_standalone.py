@@ -4,14 +4,14 @@ from multiprocessing import Queue as MPQueue
 
 from agatsuma.log import log
 
-from agatsuma.interfaces import AbstractSpell, InternalSpell, SetupSpell
-from agatsuma.interfaces import PoolEventSpell
-from agatsuma.web.tornado.interfaces import HandlingSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell, ISetupSpell
+from agatsuma.interfaces import IPoolEventSpell
+from agatsuma.web.tornado.interfaces import IHandlingSpell
 from agatsuma.web.tornado import Url
 
 from agatsuma.elements import Atom
 
-class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
+class TornadoSpell(AbstractSpell, IInternalSpell, ISetupSpell, IPoolEventSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Tornado Spell',
                   'deps' : (),
@@ -35,7 +35,7 @@ class TornadoSpell(AbstractSpell, InternalSpell, SetupSpell, PoolEventSpell):
 
     def post_configure(self, core):
         log.tcore.info("Initializing URI map..")
-        spells = core.implementations_of(HandlingSpell)
+        spells = core.implementations_of(IHandlingSpell)
         if spells:
             urimap = []
             for spell in spells:

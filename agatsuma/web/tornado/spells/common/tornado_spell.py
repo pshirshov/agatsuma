@@ -4,9 +4,9 @@ from agatsuma.log import log
 
 from agatsuma.elements import Atom
 
-from agatsuma.interfaces import AbstractSpell, InternalSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
 
-class TornadoSpell(AbstractSpell, InternalSpell):
+class TornadoSpell(AbstractSpell, IInternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Tornado Spell',
                   'deps' : (),

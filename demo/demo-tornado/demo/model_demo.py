@@ -11,12 +11,12 @@ import tornado.ioloop
 from agatsuma import log
 from agatsuma import Spell
 
-from agatsuma.interfaces import AbstractSpell, ModelSpell
+from agatsuma.interfaces import AbstractSpell, IModelSpell
 
 from agatsuma.elements import Atom
 
 from agatsuma.web.tornado import AgatsumaHandler, FidelityWorker
-from agatsuma.web.tornado.interfaces import  HandlingSpell
+from agatsuma.web.tornado.interfaces import  IHandlingSpell
 
 class Post(object):
     def __init__(self, message):
@@ -34,13 +34,13 @@ class User(object):
         newPost = Post(message)
         self.posts.append(newPost)
 
-class ModelDemoSpell(AbstractSpell, ModelSpell, HandlingSpell):
+class ModelDemoSpell(AbstractSpell, IModelSpell, IHandlingSpell):
     def __init__(self):
         config = {'info' : 'Model demo spell',
                   'deps' : (Atom.agatsuma_sqla,)
                  }
         AbstractSpell.__init__(self, Atom.sqla_demo_spell, config)
-        ModelSpell.__init__(self)
+        IModelSpell.__init__(self)
 
     def init_metadata(self, metadata):
         users_table = sa.Table('users',

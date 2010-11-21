@@ -10,6 +10,7 @@ build/*
 dist/*
 agatsuma/version.py
 agatsuma/doc/build/*
+Agatsuma.egg-info/*
 
 # switch to regexp syntax.
 syntax: regexp

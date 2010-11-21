@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class StorageSpell(object):
+class IStorageSpell(object):
     """ This interface is mix-in that whould be added
     to all the spells that are responsible to communication
     with different data storages (databases or memcache service for

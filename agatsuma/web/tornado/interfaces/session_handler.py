@@ -1,3 +1,3 @@
 
-class SessionHandler(object):
+class ISessionHandler(object):
     pass

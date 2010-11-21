@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class HandlingSpell(object):
+class IHandlingSpell(object):
     """
     """
 

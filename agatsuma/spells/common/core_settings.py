@@ -6,11 +6,11 @@ import copy
 from agatsuma import log
 from agatsuma import Settings
 from agatsuma import SpellByStr
-from agatsuma.interfaces import AbstractSpell, InternalSpell
+from agatsuma.interfaces import AbstractSpell, IInternalSpell
 
 from agatsuma.elements import Atom
 
-class SettingsSpell(AbstractSpell, InternalSpell):
+class SettingsSpell(AbstractSpell, IInternalSpell):
     def __init__(self):
         config = {'info' : 'Agatsuma Settings Spell',
                   'deps' : (),

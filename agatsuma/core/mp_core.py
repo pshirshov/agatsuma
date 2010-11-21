@@ -13,7 +13,7 @@ from multiprocessing import Pool, Manager
 from agatsuma import Settings, log
 from agatsuma.errors import EAbstractFunctionCall
 from agatsuma.core import Core
-from agatsuma.interfaces import PoolEventSpell
+from agatsuma.interfaces import IPoolEventSpell
 from agatsuma.interfaces import AbstractCoreExtension
 
 """
@@ -74,7 +74,7 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
         MultiprocessingCoreExtension.removePidFile()
         log.mpcore.info("Calling pre-pool-init routines...")
         #self._pre_pool_init() # TODO: XXX:
-        for spell in core.implementations_of(PoolEventSpell):
+        for spell in core.implementations_of(IPoolEventSpell):
             spell.pre_pool_init(core)
 
         core.pool = None
@@ -88,7 +88,7 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
             log.mpcore.info("Pool initiation skipped due negative workers count")
 
         log.mpcore.info("Calling post-pool-init routines...")
-        for spell in core.implementations_of(PoolEventSpell):
+        for spell in core.implementations_of(IPoolEventSpell):
             spell.post_pool_init(core)
         self.pool = core.pool
 

@@ -9,15 +9,15 @@ except ImportError:
 from agatsuma import log
 from agatsuma import Spell
 from agatsuma.interfaces import (AbstractSpell,
-                                 InternalSpell,
-                                 SettingsBackendSpell,
-                                 SettingsBackend)
+                                 IInternalSpell,
+                                 ISettingsBackendSpell,
+                                 AbstractSettingsBackend)
 
 from agatsuma.elements import Atom
 
-class MemcachedSettingsBackend(SettingsBackend):
+class MemcachedAbstractSettingsBackend(AbstractSettingsBackend):
     def __init__(self, uri):
-        SettingsBackend.__init__(self)
+        AbstractSettingsBackend.__init__(self)
         self.uri = uri
         self.init_connection()
 
@@ -55,7 +55,7 @@ class MemcachedSettingsBackend(SettingsBackend):
                                    pickle.dumps(value)):
             log.settings.critical("Saving setting '%s' failed" % name)
 
-class MemcachedSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell):
+class MemcachedSettingsSpell(AbstractSpell, IInternalSpell, ISettingsBackendSpell):
     def __init__(self):
         config = {'info' : 'Memcached settings storage',
                   'deps' : (Atom.agatsuma_memcached, ),
@@ -65,5 +65,5 @@ class MemcachedSettingsSpell(AbstractSpell, InternalSpell, SettingsBackendSpell)
                                config)
 
     def instantiate_backend(self, uri):
-        self.managerInstance = MemcachedSettingsBackend(uri)
+        self.managerInstance = MemcachedAbstractSettingsBackend(uri)
         return self.managerInstance
