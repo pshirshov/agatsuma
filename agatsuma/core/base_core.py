@@ -10,6 +10,7 @@ import signal
 from agatsuma import Enumerator
 from agatsuma import log
 from agatsuma import Settings
+from agatsuma import Spellbook
 
 major_version = 0
 minor_version = 2
@@ -68,7 +69,7 @@ The following kwargs parameters are supported:
     agatsuma_base_dir = up(up(os.path.realpath(os.path.dirname(__file__))))
 
     @staticmethod
-    def _i_internal_spell_space(*fragments):
+    def internal_spell_space(*fragments):
         basePath = os.path.join(Core.agatsuma_base_dir, *fragments)
         baseNS = '.'.join(fragments)
         return (basePath, baseNS)
@@ -86,7 +87,7 @@ The following kwargs parameters are supported:
         log.core.info("Agatsuma's base directory: %s" % self.agatsuma_base_dir)
 
         self.shutdown = False
-        
+
         self.extensions = []
         coreExtensions = kwargs.get("core_extensions", [])
         for extensionClass in coreExtensions:
@@ -104,8 +105,10 @@ The following kwargs parameters are supported:
         self.spell_directories = kwargs.get("spell_directories", [])
         Core.internal_state["mode"] = kwargs.get("app_mode", "normal")
 
-        self.spells = []
-        self.spellbook = {}
+        #self.spells = []
+        #self.spellbook = {}
+        
+        self.spellbook = Spellbook()
         self.registered_settings = {}
         self.entry_points = {}
 
@@ -113,18 +116,19 @@ The following kwargs parameters are supported:
         forbidden_spells = kwargs.get("forbidden_spells", [])
         enumerator = Enumerator(self, app_directorys, forbidden_spells)
 
-        self.spell_directories.append(self._i_internal_spell_space('agatsuma', 'spells', 'common'))
+        self.spell_directories.append(self.internal_spell_space('agatsuma', 'spells', 'common'))
         enumerator.enumerate_spells(self.application_spells, self.spell_directories)
 
         if appConfig:
             from agatsuma.interfaces.abstract_spell import AbstractSpell
             log.core.info("Initializing spells...")
-            for spell in self.implementations_of(AbstractSpell):
+            allTheSpells = self.spellbook.implementations_of(AbstractSpell)
+            for spell in allTheSpells:
                 spell.pre_configure(self)
             self.settings = Settings(appConfig, self.registered_settings)
             self.logger.update_levels()
             log.core.info("Calling post-configure routines...")
-            for spell in self.implementations_of(AbstractSpell):
+            for spell in allTheSpells:
                 spell.post_configure(self)
             log.core.info("Spells initialization completed")
             self._post_configure()
@@ -159,12 +163,6 @@ The following kwargs parameters are supported:
         log.core.info("Stopping Agatsuma...")
         self.shutdown = True
         self._stop()
-
-    def implementations_of(self, InterfaceClass):
-        """ The most important function for Agatsuma-based application.
-        It returns all the spells implementing interface `InterfaceClass`.
-        """
-        return filter(lambda spell: issubclass(type(spell), InterfaceClass), self.spells)
 
     def register_option(self, settingName, settingType, settingComment):
         """ This function must be called from

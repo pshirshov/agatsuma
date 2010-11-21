@@ -3,7 +3,7 @@
 import sys
 import os
 import inspect
-import re
+#import re
 #import traceback
 
 from agatsuma.log import log
@@ -21,12 +21,14 @@ class Enumerator(object):
         #  return self.__module__.split('.')[0]
 
     def __register_spell(self, spell):
-        self.core.spells.append(spell)
-        self.core.spellbook[spell.spell_id()] = spell
+        self.core.spellbook.register(spell)
+        #self.core.spells.append(spell)
+        #self.core.spellbook[spell.spell_id()] = spell
 
     def __unregister_spell(self, spell):
-        self.core.spells.remove(spell)
-        del self.core.spellbook[spell.spell_id()]
+        self.core.spellbook.eliminate(spell)
+        #self.core.spells.remove(spell)
+        #del self.core.spellbook[spell.spell_id()]
 
     def enumerate_spells(self, essentialSpellSpaces, additionalSpellPaths):
         spell_directories = []
@@ -201,20 +203,20 @@ class Enumerator(object):
             log.core.warning('[WARNING] Adding loop-dependant spell "%s" (deps: %s)' % (spell.spell_id(), str(spell.deps())))
             self.__register_spell(spell)
 
-        spellsNames = map(lambda p: p.spell_id(), self.core.spells)
+        spellsNames = self.core.spellbook.all_names() # map(lambda p: p.spell_id(), self.core.spells)
         log.core.debug("Connected %d spells: %s. False spells will be removed now" % (len(spellsNames), str(spellsNames)))
 
         for spell in falseSpells:
             self.__unregister_spell(spell)
 
-        spellsNames = map(lambda p: p.spell_id(), self.core.spells)
+        spellsNames = self.core.spellbook.all_names() # map(lambda p: p.spell_id(), self.core.spells)
         log.core.info("RESOLVING STAGE COMPLETED. Connected %d spells: %s" % (len(spellsNames), str(spellsNames)))
         log.core.info('SPELLS ENUMERATING COMPLETED')
 
     def eagerUnload(self):
         log.core.debug("Performing eager unload...")
         toUnload = filter(lambda spell: spell.config.get('eager_unload', None),
-                          self.core.spells)
+                          self.core.spellbook.to_list())
         for spell in toUnload:
             log.core.debug('Eager unloading "%s"' % spell.spell_id())
             self.__unregister_spell(spell)

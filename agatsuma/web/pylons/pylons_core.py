@@ -9,7 +9,7 @@ class PylonsCore(Core, PylonsAdaptor):
         """
         spell_directories = []
         nsFragments = ('agatsuma', 'web', 'pylons', 'spells', 'common')
-        spell_directories.extend ([self._i_internal_spell_space(*nsFragments)
+        spell_directories.extend ([self.internal_spell_space(*nsFragments)
                             ])
         spell_directories.extend(kwargs.get('spell_directories', []))
         kwargs['spell_directories'] = spell_directories

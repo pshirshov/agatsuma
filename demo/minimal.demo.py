@@ -35,9 +35,9 @@ log.demo.info("Implementations() [cached]        test completed in %s" % str(tim
 
 time1 = datetime.datetime.now()
 for x in range(0, 100000):
-    allTheSpells = Core.instance.implementations_of(AbstractSpell)
+    allTheSpells = Core.instance.spellbook.implementations_of(AbstractSpell)
 time2 = datetime.datetime.now()
-log.demo.info("Core.instance.implementations_of() test completed in %s" % str(time2 - time1))
+log.demo.info("Core.instance.spellbook.implementations_of() test completed in %s" % str(time2 - time1))
 log.demo.info("*" * 50)
 
 log.demo.debug("Here is the all available spells: %s" % str(allTheSpells))

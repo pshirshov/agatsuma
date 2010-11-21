@@ -16,7 +16,7 @@ class AgatsumaHandler(HandlerBaseClass):
         tornado.web.RequestHandler.__init__(self, application, request, **kwargs)
 
     def prepare(self):
-        spells = self.application.implementations_of(IRequestSpell)
+        spells = self.application.spellbook.implementations_of(IRequestSpell)
         for spell in spells:
             spell.before_request_callback(self)
 

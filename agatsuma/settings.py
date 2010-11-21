@@ -151,7 +151,7 @@ class Settings(object):
         Settings.configData = {"data": settings,
                                "update" : timestamp,
                               }
-        spells = Core.instance.implementations_of(AbstractSpell) #Implementations(AbstractSpell)
+        spells = Core.instance.spellbook.implementations_of(AbstractSpell)
         for spell in spells:
             spell.post_config_update(**kwargs)
 

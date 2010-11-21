@@ -48,7 +48,7 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
 
         spell_directories = []
         nsFragments = ('agatsuma', 'spells', 'supplemental', 'mp')
-        spell_directories.extend ([core._i_internal_spell_space(*nsFragments)
+        spell_directories.extend ([core.internal_spell_space(*nsFragments)
                             ])
         spell_directories.extend(kwargs.get('spell_directories', []))
         kwargs['spell_directories'] = spell_directories
@@ -68,13 +68,14 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
         """
         spell_directories = []
         nsFragments = ('agatsuma', 'framework', 'tornado', 'spells')
-        spell_directories.extend ([self._i_internal_spell_space(*nsFragments)
+        spell_directories.extend ([self.internal_spell_space(*nsFragments)
                             ])
         """
         MultiprocessingCoreExtension.removePidFile()
         log.mpcore.info("Calling pre-pool-init routines...")
         #self._pre_pool_init() # TODO: XXX:
-        for spell in core.implementations_of(IPoolEventSpell):
+        poolEventSpells = core.spellbook.implementations_of(IPoolEventSpell)
+        for spell in poolEventSpells:
             spell.pre_pool_init(core)
 
         core.pool = None
@@ -88,7 +89,7 @@ class MultiprocessingCoreExtension(AbstractCoreExtension):
             log.mpcore.info("Pool initiation skipped due negative workers count")
 
         log.mpcore.info("Calling post-pool-init routines...")
-        for spell in core.implementations_of(IPoolEventSpell):
+        for spell in poolEventSpells:
             spell.post_pool_init(core)
         self.pool = core.pool
 

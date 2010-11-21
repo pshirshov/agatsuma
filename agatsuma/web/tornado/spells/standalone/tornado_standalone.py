@@ -35,7 +35,7 @@ class TornadoSpell(AbstractSpell, IInternalSpell, ISetupSpell, IPoolEventSpell):
 
     def post_configure(self, core):
         log.tcore.info("Initializing URI map..")
-        spells = core.implementations_of(IHandlingSpell)
+        spells = core.spellbook.implementations_of(IHandlingSpell)
         if spells:
             urimap = []
             for spell in spells:

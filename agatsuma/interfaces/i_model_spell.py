@@ -16,7 +16,7 @@ class IModelSpell(object):
     def register_mapping(self, core, ClassToMap, tableToMap, **kwargs):
         import sqlalchemy.orm as orm
         properties = kwargs.get("properties", {})
-        spells = core.implementations_of(IModelSpell)
+        spells = core.spellbook.implementations_of(IModelSpell)
         for spell in spells:
             properties = spell.update_table_properties(self, properties, tableToMap, ClassToMap)
         orm.mapper(ClassToMap, tableToMap, properties)
