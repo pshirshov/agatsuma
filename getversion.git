@@ -1,0 +1,9 @@
+#!/bin/sh
+
+TRG=agatsuma/version.py
+
+echo "commits_count = `git rev-list --all|wc -l`" > ${TRG}
+echo "branch_id = '`git status|grep "On branch"|awk '{ print $4 }'`'" >> ${TRG}
+echo "commit_id = '`git rev-parse --verify HEAD|head -c 16`'" >> ${TRG}
+
+cat $TRG
