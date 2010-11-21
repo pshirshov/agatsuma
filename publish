@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -d .git ] ; then
+REPOTYPE='git'
+else
+REPOTYPE='hg'
+fi
+
+/bin/sh getversion.$REPOTYPE
+
+/usr/bin/python setup.py sdist upload
+
