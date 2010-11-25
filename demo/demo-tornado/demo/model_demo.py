@@ -13,7 +13,7 @@ from agatsuma import Spell
 
 from agatsuma.interfaces import AbstractSpell, IModelSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 from agatsuma.web.tornado import AgatsumaHandler, FidelityWorker
 from agatsuma.web.tornado.interfaces import  IHandlingSpell

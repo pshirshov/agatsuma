@@ -13,7 +13,7 @@ from agatsuma.interfaces import (AbstractSpell,
                                  ISettingsBackendSpell,
                                  AbstractSettingsBackend)
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class MemcachedAbstractSettingsBackend(AbstractSettingsBackend):
     def __init__(self, uri):

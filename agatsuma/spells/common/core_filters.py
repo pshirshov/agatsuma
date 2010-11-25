@@ -6,7 +6,7 @@ from agatsuma import Implementations
 from agatsuma.interfaces import AbstractSpell, IInternalSpell
 from agatsuma.interfaces import IFilteringSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class TextFiltersSpell(AbstractSpell, IInternalSpell):
     def __init__(self):

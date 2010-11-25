@@ -9,7 +9,7 @@ from agatsuma import log
 from agatsuma.interfaces import AbstractSpell, IInternalSpell
 from agatsuma.web.tornado.interfaces import IRequestSpell, ISessionHandler
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class SessionSpell(AbstractSpell, IInternalSpell, IRequestSpell):
     def __init__(self):

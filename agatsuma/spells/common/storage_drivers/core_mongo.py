@@ -10,7 +10,7 @@ from agatsuma.settings import Settings
 from agatsuma.interfaces import AbstractSpell, IInternalSpell
 from agatsuma.interfaces import IStorageSpell, ISetupSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class MongoDBSpell(AbstractSpell, IInternalSpell, IStorageSpell, ISetupSpell):
     def __init__(self):

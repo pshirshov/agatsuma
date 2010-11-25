@@ -2,7 +2,7 @@
 
 from agatsuma.interfaces import AbstractSpell, ISetupSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 from agatsuma.web.pylons.interfaces import IHandlingSpell
 

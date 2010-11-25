@@ -9,7 +9,7 @@ from agatsuma import Spell
 from agatsuma.interfaces import AbstractSpell, IInternalSpell
 from agatsuma.interfaces import ISettingsBackendSpell, AbstractSettingsBackend
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class MongoAbstractSettingsBackend(AbstractSettingsBackend):
     def __init__(self, uri):

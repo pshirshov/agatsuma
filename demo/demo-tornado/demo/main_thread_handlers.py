@@ -6,7 +6,7 @@ import time
 
 from agatsuma.interfaces import AbstractSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 from agatsuma.web.tornado.interfaces import  IHandlingSpell
 from agatsuma.web.tornado import Url, UrlFor, AgatsumaHandler

@@ -15,7 +15,7 @@ from agatsuma import Spell
 
 from agatsuma.interfaces import AbstractSpell, IInternalSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 from agatsuma.web.tornado.interfaces import ISessionBackendSpell
 from agatsuma.web.tornado import BaseSessionManager

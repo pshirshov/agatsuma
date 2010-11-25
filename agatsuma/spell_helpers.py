@@ -2,7 +2,7 @@
 
 from agatsuma.minicache import EternalInvariant
 from agatsuma.core import Core
-from agatsuma.elements import to_atom, is_atom
+from agatsuma.commons.types import to_atom, is_atom
 
 def Spell(spell_id):
     """Helper function which returns spell with given name (name should be an atom)

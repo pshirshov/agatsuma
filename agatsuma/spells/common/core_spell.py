@@ -2,7 +2,7 @@
 
 from agatsuma.interfaces import AbstractSpell, IInternalSpell, ISetupSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class CoreSpell(AbstractSpell, IInternalSpell, ISetupSpell):
     def __init__(self):

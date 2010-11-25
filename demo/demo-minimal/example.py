@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from agatsuma.log import log
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 from agatsuma.interfaces import AbstractSpell
 

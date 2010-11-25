@@ -8,7 +8,7 @@ from agatsuma import Settings
 from agatsuma import SpellByStr
 from agatsuma.interfaces import AbstractSpell, IInternalSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class SettingsSpell(AbstractSpell, IInternalSpell):
     def __init__(self):

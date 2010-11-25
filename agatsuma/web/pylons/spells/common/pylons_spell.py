@@ -4,7 +4,7 @@ from agatsuma.log import log
 
 from agatsuma.interfaces import AbstractSpell, IInternalSpell, ISetupSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class PylonsSpell(AbstractSpell, IInternalSpell, ISetupSpell):
     def __init__(self):

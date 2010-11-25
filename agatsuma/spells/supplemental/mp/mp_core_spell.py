@@ -5,7 +5,7 @@ from agatsuma.core import MultiprocessingCoreExtension
 
 from agatsuma.interfaces import AbstractSpell, IInternalSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class MPCoreSpell(AbstractSpell, IInternalSpell):
     def __init__(self):

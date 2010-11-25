@@ -9,7 +9,7 @@ from agatsuma import Spell
 
 from agatsuma.interfaces import AbstractSpell, IFilteringSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 from agatsuma.web.tornado.interfaces import  ISessionHandler
 from agatsuma.web.tornado import AgatsumaHandler, MsgPumpHandler, FidelityWorker

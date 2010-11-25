@@ -5,7 +5,7 @@ from agatsuma.interfaces import AbstractSpell, IInternalSpell
 from agatsuma.web.tornado.interfaces import ISessionBackendSpell
 from agatsuma.web.tornado import BaseSessionManager
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class DummySessionManager(BaseSessionManager):
     def __init__(self):

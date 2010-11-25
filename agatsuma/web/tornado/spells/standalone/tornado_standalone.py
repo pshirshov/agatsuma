@@ -9,7 +9,7 @@ from agatsuma.interfaces import IPoolEventSpell
 from agatsuma.web.tornado.interfaces import IHandlingSpell
 from agatsuma.web.tornado import Url
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class TornadoSpell(AbstractSpell, IInternalSpell, ISetupSpell, IPoolEventSpell):
     def __init__(self):

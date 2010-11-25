@@ -17,7 +17,7 @@ from agatsuma import Implementations
 from agatsuma.interfaces import AbstractSpell, IInternalSpell
 from agatsuma.interfaces import IStorageSpell, IModelSpell, ISetupSpell
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 class SQLASpell(AbstractSpell, IInternalSpell, IStorageSpell, ISetupSpell):
     """.. _sqla-driver:

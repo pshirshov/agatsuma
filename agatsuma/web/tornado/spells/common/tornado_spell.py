@@ -2,7 +2,7 @@
 
 from agatsuma.log import log
 
-from agatsuma.elements import Atom
+from agatsuma.commons.types import Atom
 
 from agatsuma.interfaces import AbstractSpell, IInternalSpell
 
