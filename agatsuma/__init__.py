@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from log import log
-from settings import Settings
-from enumerator import Enumerator
-from spellbook import Spellbook
-from spell_helpers import Spell, SpellByStr, Implementations
-from mp_log_handler import MPLogHandler
+from logging_system import LoggingSystem
+from core import Core
 
-__all__ = ["Spell",
-           "SpellByStr",
-           "Implementations",
-           "Settings",
-           "log",
-           "Enumerator",
-           "MPLogHandler",
+__all__ = ["Core"
+           "LoggingSystem",
            ]
